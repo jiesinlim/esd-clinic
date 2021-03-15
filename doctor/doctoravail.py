@@ -6,6 +6,7 @@ import json
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL')
+#run this command to connect to SQL
 #Mac: set dbURL=mysql+mysqlconnector://root:root@localhost:3306/doctor python doctoravail.py
 #Windows: set dbURL=mysql+mysqlconnector://root@localhost:3306/doctor python doctoravail.py
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -32,8 +33,7 @@ class Doctor(db.Model):
     def json(self):
         return {"did": self.did, "name": self.name, "date": self.date, "availability": self.availability}
 
-#http://127.0.0.1:6000/doctor
-#postman link: https://app.getpostman.com/join-team?invite_code=070d8129eba91022935f3c488d0ed83b 
+
 @app.route("/doctor")
 def get_all():
     doctorlist = Doctor.query.all()
@@ -53,7 +53,6 @@ def get_all():
         }
     ), 404
 
-#http://127.0.0.1:6000/doctor/1
 @app.route("/doctor/<string:did>")
 def find_by_did(did):
     doctor = Doctor.query.filter_by(did=did).first()
@@ -72,12 +71,6 @@ def find_by_did(did):
     ), 404
 
 
-#http://127.0.0.1:6000/doctor/4
-#{
-#    "name": "Dr. Strange",
-#    "date": "2021-03-24",
-#    "availability": "1500, 1600, 1800"
-#}
 @app.route("/doctor", methods=['POST'])
 def add_doctor():
     did = request.json.get('did', None)
@@ -117,14 +110,9 @@ def add_doctor():
         }
     ), 201
 
-##http://127.0.0.1:6000/doctor/4
-#{
-#    "name": "Dr. Stevens",
-#    "date": "2021-03-24",
-#    "availability": "1500, 1600, 1800, 1900, 2000, 2100"
-#}
-@app.route("/doctor/<string:did>", methods=['PUT'])
-def update_doctor(did):
+@app.route("/doctor", methods=['PUT'])
+def update_doctor():
+    did = request.json.get('did', None)
     doctor = Doctor.query.filter_by(did=did).first()
     if doctor:
         data = request.get_json()
@@ -151,7 +139,6 @@ def update_doctor(did):
         }
     ), 404
 
-#http://127.0.0.1:6000/doctor/4
 @app.route("/doctor/<string:did>", methods=['DELETE'])
 def delete_doctor(did):
     doctor = Doctor.query.filter_by(did=did).first()

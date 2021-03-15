@@ -19,7 +19,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `book`
+-- Database: `doctor`
 --
 CREATE DATABASE IF NOT EXISTS `doctor` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
 USE `doctor`;
@@ -27,7 +27,7 @@ USE `doctor`;
 -- --------------------------------------------------------
 
 --
--- Table structure for table `books`
+-- Table structure for table `doctor`
 --
 
 DROP TABLE IF EXISTS `doctor`;
