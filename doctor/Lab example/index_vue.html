@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Title</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+</head>
+<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+
+<body>
+    <div id="app" class="container">
+        <h1>Bookstore</h1>
+        <div class="row" v-show="!orderPlaced">
+            <div id="main" class="col-8">
+                Search by ISBN: <input v-model="isbn13" placeholder="ISBN number">
+                <button @click="findBook()" type="button" class="my-1 btn btn-sm btn-primary">Search</button><br>
+
+                <table class="table table-striped" v-if="hasBooks">
+                    <!-- <table class="table table-striped"> -->
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>ISBN13</th>
+                            <th>Price</th>
+                            <th>Availability</th>
+                            <th>Place Order</th>
+                        </tr>
+                        <tr v-for="book in books">
+                            <td>{{ book.title }}</td>
+                            <td>{{ book.isbn13 }}</td>
+                            <td>{{ book.price }}</td>
+                            <td>{{ book.availability }}</td>
+                            <td><button @click="placeOrder(book)" type="button" class="btn btn-primary">Place
+                                    Order</button>
+                            </td>
+
+                        </tr>
+                    </thead>
+                </table>
+                <div class="text-danger" v-if="!hasBooks">{{ message }}</div>
+            </div> <!-- main & col -->
+            <div class="col-4">
+                <h2>Add a Book</h2>
+                <div class="form-group">
+                    <label for="title">Title</label>
+                    <input v-model="newTitle" type="text" class="form-control" id="title" placeholder="Enter title">
+                </div>
+                <div class="form-group">
+                    <label for="isbn13">ISBN13</label>
+                    <input v-model="newISBN13" type="number" class="form-control" id="isbn13"
+                        placeholder="Enter ISBN13">
+                </div>
+                <div class="form-group">
+                    <label for="price">Price</label>
+                    <input v-model="newPrice" type="number" class="form-control" id="price" placeholder="Enter Price">
+                </div>
+                <div class="form-group">
+                    <label for="availability">Availability</label>
+                    <input v-model="newAvailability" type="number" class="form-control" id="availability"
+                        placeholder="Enter Availability">
+                </div>
+                <button @click="addBook" class="btn btn-primary" v-on:submit.prevent="onSubmit">Add Book</button>
+                <div class="text-success" v-if="bookAdded">
+                    The book has been successfully placed! <br>
+                    <br>
+                </div>
+                <div class="text-danger" v-if="addBookError!=''">
+                    There is a problem adding this new book:<br>
+                    {{ addBookError}}
+                    <br>
+                </div>
+            </div> <!-- col -->
+        </div> <!-- row -->
+
+        <div id="place_order" v-show="orderPlaced">
+            <h3>Place Order</h3>
+            <table class="table table-striped" v-if="hasBooks">
+                <!-- <table class="table table-striped"> -->
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>ISBN13</th>
+                        <th>Price</th>
+                        <th>Availability</th>
+                    </tr>
+                    <tr>
+                        <td>{{ orderedBook.title }}</td>
+                        <td>{{ orderedBook.isbn13 }}</td>
+                        <td>{{ orderedBook.price }}</td>
+                        <td>{{ orderedBook.availability }}</td>
+                    </tr>
+                </thead>
+            </table>
+            <div class="text-success" v-if="orderSuccessful">
+                The order has been successfully placed! <br>
+                <br>
+            </div>
+            <div class="text-danger" v-else>
+                There is a problem with placing this order, please check with the store for more details.<br>
+                <br>
+            </div>
+            <button @click="orderPlaced = false; orderSuccessful = false" class="btn btn-primary">Return to home
+                page</button>
+        </div> <!-- place order -->
+    </div> <!-- app: container -->
+
+    <script>
+        var get_all_URL = "http://localhost:5000/book";
+        var place_order_URL = "http://localhost:5100/place_order";
+
+        var app = new Vue({
+            el: "#app",
+            computed: {
+                hasBooks: function () {
+                    return this.books.length > 0;
+                }
+            },
+            data: {
+                isbn13: "",
+                "books": [],
+                message: "There is a problem retrieving books data, please try again later.",
+                newTitle: "",
+                newISBN13: "",
+                newPrice: "",
+                newAvailability: "",
+                bookAdded: false,
+                addBookError: "",
+                orderedBook: "",
+                orderPlaced: false,
+                orderSuccessful: false,
+            },
+            methods: {
+                getAllBooks: function () {
+                    // on Vue instance created, load the book list
+                    const response =
+                        fetch(get_all_URL)
+                            .then(response => response.json())
+                            .then(data => {
+                                console.log(response);
+                                if (data.code === 404) {
+                                    // no book in db
+                                    this.message = data.message;
+                                } else {
+                                    this.books = data.data.books;
+                                }
+                            })
+                            .catch(error => {
+                                // Errors when calling the service; such as network error, 
+                                // service offline, etc
+                                console.log(this.message + error);
+
+                            });
+
+                },
+                findBook: function () {
+                    console.log(this.isbn13);
+                    const response =
+                        fetch(`${get_all_URL}/${this.isbn13}`)
+                            .then(response => response.json())
+                            .then(data => {
+                                console.log(response);
+                                if (data.code === 404) {
+                                    // no book in db
+                                    this.message = data.message;
+                                    this.books = [];
+                                } else {
+                                    this.books = [data.data];
+                                }
+                            })
+                            .catch(error => {
+                                // Errors when calling the service; such as network error, 
+                                // service offline, etc
+                                console.log(this.message + error);
+
+                            });
+
+                },
+                addBook: function () {
+                    // reset data
+                    this.bookAdded = false;
+                    this.addBookError = "";
+
+                    let jsonData = JSON.stringify({
+                        title: this.newTitle,
+                        price: this.newPrice,
+                        availability: this.newAvailability
+                    });
+
+                    fetch(`${get_all_URL}/${this.newISBN13}`,
+                        {
+                            method: "POST",
+                            headers: {
+                                "Content-type": "application/json"
+                            },
+                            body: jsonData
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log(data);
+                            result = data.data;
+                            console.log(result);
+                            // 3 cases
+                            switch (data.code) {
+                                case 201:
+                                    this.bookAdded = true;
+
+                                    // refresh book list
+                                    this.getAllBooks();
+
+                                    // an alternate way is to add this one element into this.books
+                                    break;
+                                case 400:
+                                case 500:
+                                    this.addBookError = data.message;
+                                    break;
+                                default:
+                                    throw `${data.code}: ${data.message}`;
+                            }
+                        })
+                },
+                placeOrder: function (book) {
+
+                    // use this to trigger an error
+                    // "customer_id": "ERROR",
+                    this.orderedBook = book;
+                    fetch(place_order_URL,
+                        {
+                            method: "POST",
+                            headers: {
+                                "Content-type": "application/json"
+                            },
+                            body: JSON.stringify(
+                                {
+                                    "customer_id": "Apple TAN",
+                                    "cart_item": [{
+                                        "book_id": book.isbn13,
+                                        "quantity": 1
+                                    }]
+                                })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log(data);
+                            result = data.data;
+                            console.log(result);
+                            // 3 cases
+                            switch (data.code) {
+                                case 201:
+                                    // 201
+                                    this.orderSuccessful = true;
+                                    orderMessage =
+                                        `Order placed
+                                        Order Result:
+                                        ${result.order_result.code}:${result.order_result.data.status}
+
+                                        Shipping Result:
+                                        ${result.shipping_result.code}:${result.shipping_result.message}`;
+                                    break;
+
+                                case 400:
+                                    // 400 
+                                    this.orderSuccessful = true;
+                                    orderMessage =
+                                        `Order placed
+                                        Order Result:
+                                        ${result.order_result.code}:${result.order_result.data.status}
+
+                                        Shipping Result:
+                                        ${result.shipping_result.code}:${result.shipping_result.message}
+
+                                        Error handling:
+                                        ${data.message}`;
+                                    break;
+                                case 500:
+                                    // 500 
+                                    orderMessage =
+                                        `Order placed with error:
+                                        Order Result:
+                                        ${result.order_result.code}:${result.order_result.message}
+
+                                        Error handling:
+                                        ${data.message}`;
+                                    break;
+                                default:
+                                    orderMessage = `Unexpected error: ${data.code}`;
+                                    console.log(`Unknown error code : ${data.code}`);
+                                    break;
+
+                            } // switch
+                            console.log(orderMessage);
+                            this.orderPlaced = true;
+                        })
+                        .catch(error => {
+                            console.log("Problem in placing an order. " + error);
+                        })
+                }
+            },
+            created: function () {
+                // on Vue instance created, load the book list
+                this.getAllBooks();
+            }
+        });
+    </script>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
