@@ -19,10 +19,10 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `doctor`
+-- Database: `clinic`
 --
-CREATE DATABASE IF NOT EXISTS `doctor` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
-USE `doctor`;
+CREATE DATABASE IF NOT EXISTS `clinic` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+USE `clinic`;
 
 -- --------------------------------------------------------
 
@@ -32,22 +32,24 @@ USE `doctor`;
 
 DROP TABLE IF EXISTS `doctor`;
 CREATE TABLE IF NOT EXISTS `doctor` (
+  `aid` INT NOT NULL AUTO_INCREMENT,
   `did` INT NOT NULL,
   `name` CHAR(26) NOT NULL,
   `date` DATE NOT NULL,
   `availability` varchar(1000) DEFAULT NULL,
-  PRIMARY KEY (`did`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  PRIMARY KEY (`aid`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `doctor`
 --
 
 INSERT INTO `doctor` 
-(`did`, `name`, `date`, `availability`) VALUES
-(1, 'Dr. Marcus', '2021-03-21', '0900, 1000, 1100, 1300, 1400, 1500'),
-(2, 'Dr. John', '2021-03-22', '1200, 1300, 1400, 1500, 1600, 1700'),
-(3, 'Dr. Kenny', '2021-03-23', '1600, 1700, 1800, 1900, 2000, 2100');
+(`aid`,`did`, `name`, `date`, `availability`) VALUES
+(1, 1, 'Dr. Marcus', '2021-03-21', '0900, 1000, 1100, 1300, 1400, 1500'),
+(2, 2, 'Dr. John', '2021-03-22', '1200, 1300, 1400, 1500, 1600, 1700'),
+(3, 3, 'Dr. Kenny', '2021-03-23', '1600, 1700, 1800, 1900, 2000, 2100'),
+(4, 1, 'Dr. Marcus', '2021-03-23', '1500, 1700, 1800, 1900, 2000, 2100');
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

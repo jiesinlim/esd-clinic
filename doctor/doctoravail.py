@@ -3,11 +3,14 @@ from flask_sqlalchemy import SQLAlchemy
 from os import environ
 from flask_cors import CORS
 import json
+import datetime
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL')
+app.config[
+    "SQLALCHEMY_DATABASE_URI"
+] = "mysql+mysqlconnector://root:root@localhost:3306/clinic"
 #run this command to connect to SQL
-#Mac: set dbURL=mysql+mysqlconnector://root:root@localhost:3306/doctor python doctoravail.py
+#Mac: export dbURL=mysql+mysqlconnector://root:root@localhost:3306/doctor python doctoravail.py
 #Windows: set dbURL=mysql+mysqlconnector://root@localhost:3306/doctor python doctoravail.py
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_recycle': 299}
@@ -19,19 +22,21 @@ CORS(app)
 class Doctor(db.Model):
     __tablename__ = 'doctor'
 
-    did = db.Column(db.Integer, primary_key=True)
+    aid = db.Column(db.Integer, primary_key=True)
+    did = db.Column(db.Integer, nullable=False)
     name = db.Column(db.String(26), nullable=False)
     date = db.Column(db.Date, nullable=False)
     availability = db.Column(db.VARCHAR(1000), nullable=True)
 
-    def __init__(self, did, name, date, availability):
+    def __init__(self, aid, did, name, date, availability):
+        self.aid = aid
         self.did = did
         self.name = name
         self.date = date
         self.availability = availability
 
     def json(self):
-        return {"did": self.did, "name": self.name, "date": self.date, "availability": self.availability}
+        return {"aid": self.aid, "did": self.did, "name": self.name, "date": self.date, "availability": self.availability}
 
 
 @app.route("/doctor")
@@ -53,10 +58,10 @@ def get_all():
         }
     ), 404
 
-@app.route("/doctor/<string:did>")
-def find_by_did(did):
-    doctor = Doctor.query.filter_by(did=did).first()
-    if did:
+@app.route("/doctor/<string:aid>")
+def find_by_aid(aid):
+    doctor = Doctor.query.filter_by(aid=aid).first()
+    if aid:
         return jsonify(
             {
                 "code": 200,
@@ -73,16 +78,16 @@ def find_by_did(did):
 
 @app.route("/doctor", methods=['POST'])
 def add_doctor():
-    did = request.json.get('did', None)
+    aid = request.json.get('aid', None)
     
-    if (Doctor.query.filter_by(did=did).first()):
+    if (Doctor.query.filter_by(aid=aid).first()):
         return jsonify(
             {
                 "code": 400,
                 "data": {
-                    "did": did
+                    "aid": aid
                 },
-                "message": "Doctor already exists in database."
+                "message": "Doctor availability ID already exists in database."
             }
         ), 400
 
@@ -92,16 +97,13 @@ def add_doctor():
     try:
         db.session.add(doctor)
         db.session.commit()
-    except Exception as e:
+    except:
         return jsonify(
             {
                 "code": 500,
-                "message": "An error occurred while creating the order. " + str(e)
+                "message": "An error occurred while adding doctor availability. "
             }
         ), 500
-
-    print(json.dumps(doctor.json(), default=str)) # convert a JSON object to a string and print
-    print()
 
     return jsonify(
         {
@@ -112,10 +114,12 @@ def add_doctor():
 
 @app.route("/doctor", methods=['PUT'])
 def update_doctor():
-    did = request.json.get('did', None)
-    doctor = Doctor.query.filter_by(did=did).first()
+    aid = request.json.get('aid', None)
+    doctor = Doctor.query.filter_by(aid=aid).first()
     if doctor:
         data = request.get_json()
+        if data['did']:
+            doctor.did = data['did']
         if data['name']:
             doctor.name = data['name']
         if data['date']:
@@ -133,15 +137,15 @@ def update_doctor():
         {
             "code": 404,
             "data": {
-                "did": did
+                "aid": aid
             },
-            "message": "Doctor not found."
+            "message": "Doctor availability ID not found."
         }
     ), 404
 
-@app.route("/doctor/<string:did>", methods=['DELETE'])
-def delete_doctor(did):
-    doctor = Doctor.query.filter_by(did=did).first()
+@app.route("/doctor/<string:aid>", methods=['DELETE'])
+def delete_doctor_avail(aid):
+    doctor = Doctor.query.filter_by(aid=aid).first()
     if doctor:
         db.session.delete(doctor)
         db.session.commit()
@@ -149,7 +153,7 @@ def delete_doctor(did):
             {
                 "code": 200,
                 "data": {
-                    "did": did
+                    "aid": aid
                 }
             }
         )
@@ -157,12 +161,12 @@ def delete_doctor(did):
         {
             "code": 404,
             "data": {
-                "did": did
+                "aid": aid
             },
-            "message": "Doctor not found."
+            "message": "Doctor availability ID not found."
         }
     ), 404
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=6000, debug=True)
+    app.run(port=5001, debug=True)
