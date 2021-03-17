@@ -11,7 +11,7 @@
 
 body {
   background: #fff;
-  color: #444;
+  color: rgb(0, 0, 0);
   font-family: "Open Sans", sans-serif;
 }
 
@@ -1135,5 +1135,11 @@ body.mobile-nav-active #mobile-nav-toggle {
 @media (max-width: 576px) {
   #contact #google-map {
     margin-top: 20px;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  .md-margintop {
+    margin-top: 30px;
   }
 }

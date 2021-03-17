@@ -90,6 +90,23 @@
     </div>
   </header><!-- #header -->
 
+
+    <!--==========================
+      Call To Action Section
+    ============================-->
+    <section id="call-to-action" class="wow fadeInUp md-margintop">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-9 text-center text-lg-left">
+            <h3 class="cta-title">Back to Nurse Administration Portal Homepage</h3>
+          </div>
+          <div class="col-lg-3 cta-btn-container text-center">
+            <a class="cta-btn align-middle" href="./nurseUI.html">Home</a>
+          </div>
+        </div>
+
+      </div>
+    </section><!-- #call-to-action -->
   <!--==========================
     Intro Section
   ============================-->
@@ -97,9 +114,9 @@
   <section id="intro">
     <div class="intro-content">
       <h2 style="font-size:xx-large;">Patient Appointments <span>Confirmation</span></h2>
-      <div>
-        <table class="table table-hover table-responsive-md table-bordered">
-          <thead class="thead-light">
+      <div class="table-responsive">
+        <table class="table table-hover table-bordered">
+          <thead class="table-info">
             <tr>
               <th scope="col">Patient ID</th>
               <th scope="col">Patient Name</th>
@@ -114,7 +131,7 @@
           <tbody>
             <!-- create a for loop in javascript after calling microservice api
             to get patient booking with status "matched" -->
-            <tr>
+            <tr class="table-light">
               <th scope="row">1</th>
               <td>Mark</td>
               <td>27/03/2021</td>
@@ -122,7 +139,7 @@
               <td>3</td>
               <td>Dr Tan</td>
               <td>Matched</td>
-              <td><button class="btn btn-success" href="#">Confirm</button></td>
+              <td><button class="btn btn-success" data-toggle="modal" data-target="#confirmModal">Confirm</button></td>
             </tr>
           </tbody>
         </table>
@@ -138,27 +155,31 @@
       <div class="item" style="background-image: url('img/intro-carousel/5.jpg');"></div>
     </div>
 
+    <!-- Modal -->
+    <!-- display success/error alert with if condition -->
+<div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content" style="background-color:rgb(207, 252, 226);">
+      <!-- <div class="modal-header">
+        <h5 class="modal-title" id="confirmModalLabel">You have successfully confirmed an appointment!</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div> -->
+      <div class="modal-body mt-4">
+        <h5 class="font-weight-bold text-center">You have successfully confirmed this appointment!</h5>
+      </div>
+      <div class="modal-footer mx-auto">
+        <button type="button" class="btn btn-primary" href='#'>Notify Patient</button>
+      </div>
+    </div>
+  </div>
+</div>
+
   </section><!-- #intro -->
 
 
 
-    <!--==========================
-      Call To Action Section
-    ============================-->
-    <section id="call-to-action" class="wow fadeInUp">
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-9 text-center text-lg-left">
-            <h3 class="cta-title">Call To Action</h3>
-            <p class="cta-text"> Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-          </div>
-          <div class="col-lg-3 cta-btn-container text-center">
-            <a class="cta-btn align-middle" href="#">Call To Action</a>
-          </div>
-        </div>
-
-      </div>
-    </section><!-- #call-to-action -->
 
   <!--==========================
     Footer
