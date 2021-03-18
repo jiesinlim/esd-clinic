@@ -1,0 +1,29 @@
+version: "3.8"
+#Command to run:
+#docker-compose build
+#docker-compose up -d
+services:
+
+  #################################
+  # Doctor: The Doctor Availability microservice
+  #################################
+  doctoravail:
+    build:
+      context: ./
+      dockerfile: doctor/doctor.Dockerfile
+    image: marcsoh/doctor:esd
+    restart: always
+    environment:
+      dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/clinic
+      PYTHONUNBUFFERED: 1
+    ports:
+      - "5001:5001"
+
+  ###############################################
+  # Nurse: Nurse
+  ###############################################
+
+
+  ###############################################
+  # Patient: Patient
+  ###############################################

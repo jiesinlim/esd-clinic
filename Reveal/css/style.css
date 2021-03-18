@@ -8,6 +8,11 @@
 /*--------------------------------------------------------------
 # General
 --------------------------------------------------------------*/
+.btn-blue {
+  background: #0c2e8a;
+  border: 2px solid #0c2e8a;
+  color: white;
+}
 
 body {
   background: #fff;
@@ -1143,3 +1148,4 @@ body.mobile-nav-active #mobile-nav-toggle {
     margin-top: 30px;
   }
 }
+

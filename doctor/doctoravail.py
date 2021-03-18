@@ -1,17 +1,14 @@
+import os
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
-from os import environ
 from flask_cors import CORS
+
+from datetime import datetime
 import json
-import datetime
+from os import environ
 
 app = Flask(__name__)
-app.config[
-    "SQLALCHEMY_DATABASE_URI"
-] = "mysql+mysqlconnector://root:root@localhost:3306/clinic"
-#run this command to connect to SQL
-#Mac: export dbURL=mysql+mysqlconnector://root:root@localhost:3306/doctor python doctoravail.py
-#Windows: set dbURL=mysql+mysqlconnector://root@localhost:3306/doctor python doctoravail.py
+app.config["SQLALCHEMY_DATABASE_URI"] = environ.get('dbURL') or 'mysql+mysqlconnector://root:root@localhost:3306/clinic' or 'mysql+mysqlconnector://root@localhost:3306/clinic'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_recycle': 299}
 
@@ -61,7 +58,7 @@ def get_all():
 @app.route("/doctor/<string:aid>")
 def find_by_aid(aid):
     doctor = Doctor.query.filter_by(aid=aid).first()
-    if aid:
+    if doctor:
         return jsonify(
             {
                 "code": 200,
@@ -169,4 +166,5 @@ def delete_doctor_avail(aid):
 
 
 if __name__ == '__main__':
-    app.run(port=5001, debug=True)
+    print("This is flask for " + os.path.basename(__file__) + ": doctor availability ...")
+    app.run(host='0.0.0.0', port=5001, debug=True)

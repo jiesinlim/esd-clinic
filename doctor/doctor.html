@@ -17,13 +17,18 @@
 <body>
     <div id="app" class="container">
         <h1>Doctor Availability</h1>
-        <div class="row">
+        <div class="row" v-show="!edit">
             <div id="main" class="col-8">
-                Enter your Doctor ID: <input v-model="did" placeholder="Doctor ID number">
-                <button @click="findDoctor()" type="button" class="my-1 btn btn-sm btn-primary">Search</button><br>
+                Enter your Availability S/N: <input v-model="aid" placeholder="Doctor Availability SN">
+                <button @click="findDoctor()" type="button" class="my-1 btn btn-sm btn-primary">Search</button>
+                <button @click="pageRefresh()" type="button" class="my-1 btn btn-sm btn-primary">Clear</button><br>
+
+                <span class="text-danger" v-if="searchError!=''">
+                    {{ searchError}}
+                    <br>
+                </span>
 
                 <table class="table table-striped" v-if="hasDoctors">
-                    <!-- <table class="table table-striped"> -->
                     <thead>
                         <tr>
                             <th>Availability S/N</th>
@@ -31,6 +36,7 @@
                             <th>Name</th>
                             <th>Date</th>
                             <th>Availability</th>
+                            <th>Edit</th>
                             <th>Delete?</th>
                         </tr>
                         <tr v-for="doctor in doctors">
@@ -39,15 +45,16 @@
                             <td>{{ doctor.name }}</td>
                             <td>{{ doctor.date }}</td>
                             <td>{{ doctor.availability }}</td>
-                            <td><button @click="del(doctor.aid)" type="button" class="btn btn-primary">Del</button>
+                            <td><button @click="editDoctorForm(doctor)" type="button"
+                                    class="btn btn-primary">Edit</button>
                             </td>
-
+                            <td><button @click="del(doctor.aid)" type="button" class="btn btn-primary">Del</button></td>
                         </tr>
                     </thead>
                 </table>
                 <div class="text-danger" v-if="!hasDoctors">{{ message }}</div>
             </div> <!-- main & col -->
-            <div class="col-4">
+            <div class="col-4"> <!-- Add Availability-->
                 <h2>Indicate Doctor Availability</h2>
                 <div class="form-group">
                     <label for="did">Availability S/N</label>
@@ -64,13 +71,13 @@
                 </div>
                 <div class="form-group">
                     <label for="date">Date</label>
-                    <input v-model="newDate" type="text" class="form-control" id="date"
+                    <input v-model="newDate" type="date" class="form-control" id="date"
                         placeholder="Enter Date YYYY-MM-DD">
                 </div>
                 <div class="form-group">
                     <label for="availability">Availability</label>
                     <input v-model="newAvailability" type="text" class="form-control" id="availability"
-                        placeholder="Enter Availability 24H time seperated by commas">
+                        placeholder="e.g 1300,1400,1500">
                 </div>
                 <button @click="addDoctor" class="btn btn-primary" v-on:submit.prevent="onSubmit">Add
                     Availability</button>
@@ -87,168 +94,79 @@
                     {{ addDoctorError}}
                     <br>
                 </div>
-            </div> <!-- col -->
-        </div> <!-- row -->
+            </div> <!-- col Add Availability--> 
+        </div> <!-- row v-show: !edit -->
 
+        <div v-show="edit">
+            <h3>Current Availability</h3>
+            <table class="table table-striped" v-if="hasDoctors">
+                <thead>
+                    <tr>
+                        <th>Availability S/N</th>
+                        <th>Doctor ID</th>
+                        <th>Name</th>
+                        <th>Date</th>
+                        <th>Availability</th>
+                    </tr>
+                    <tr>
+                        <td> {{ editCurrentDoctor.aid }} </td>
+                        <td> {{ editCurrentDoctor.did }} </td>
+                        <td> {{ editCurrentDoctor.name }} </td>
+                        <td> {{ editCurrentDoctor.date }} </td>
+                        <td> {{ editCurrentDoctor.availability }} </td>
+                    </tr>
+                </thead>
+            </table>
+
+            <h3>To Edit Availability</h3>
+            <table class="table table-striped" v-if="hasDoctors">
+                <thead>
+                    <tr>
+                        <th>Availability S/N</th>
+                        <th>Doctor ID</th>
+                        <th>Name</th>
+                        <th>Date</th>
+                        <th>Availability</th>
+                    </tr>
+                    <tr>
+                        <td class="form-group">
+                            {{ editCurrentDoctor.aid }}
+                        </td>
+                        <td class="form-group">
+                            <input type="number" class="form-control" v-model="editDid">
+                        </td>
+                        <td class="form-group">
+                            <input type="text" class="form-control" v-model="editName">
+                        </td>
+                        <td class="form-group">
+                            <input type="date" class="form-control" v-model="editDate">
+                        </td>
+                        <td class="form-group">
+                            <input type="text" class="form-control" v-model="editAvailability">
+                        </td>
+                    </tr>
+                </thead>
+            </table>
+
+            <div>
+                <button @click="editDoctor" class="btn btn-primary" v-on:submit.prevent="onSubmit">Confirm
+                    Edit</button>
+            </div>
+            <div class="text-success" v-if="editSuccessful">
+                The edit has been successful! <br>
+                <br>
+            </div>
+
+            <div class='mt-4'>
+                <button @click="pageRefresh" class="btn btn-secondary">Return to home
+                    page</button>
+            </div>
+
+        </div> <!-- v-show: edit -->
     </div> <!-- app: container -->
 
-    <script>
-        var get_all_URL = "http://localhost:5001/doctor";
-        var place_order_URL = "http://localhost:5100/place_order";
-
-        var app = new Vue({
-            el: "#app",
-            computed: {
-                hasDoctors: function () {
-                    return this.doctors.length > 0;
-                }
-            },
-            data: {
-                aid: "",
-                did: "",
-                "doctors": [],
-                message: "There is a problem retrieving doctors data, please try again later.",
-                newAid: "",
-                newDid: "",
-                newName: "",
-                newDate: "",
-                newAvailability: "",
-                doctorAdded: false,
-                addDoctorError: "",
-                availDeleted: false
-            },
-            methods: {
-                getAllDoctors: function () {
-                    // on Vue instance created, load the book list
-                    const response =
-                        fetch(get_all_URL)
-                        .then(response => response.json())
-                        .then(data => {
-                            console.log(response);
-                            if (data.code === 404) {
-                                // no doctors in db
-                                this.message = data.message;
-                            } else {
-                                this.doctors = data.data.doctoravail;
-                            }
-                        })
-                        .catch(error => {
-                            // Errors when calling the service; such as network error, 
-                            // service offline, etc
-                            console.log(this.message + error);
-
-                        });
-
-                },
-                findDoctor: function () {
-                    console.log(this.did);
-                    const response =
-                        fetch(`${get_all_URL}/${this.did}`)
-                        .then(response => response.json())
-                        .then(data => {
-                            console.log(response);
-                            if (data.code === 404) {
-                                // no book in db
-                                this.message = data.message;
-                                this.doctors = [];
-                            } else {
-                                this.doctors = [data.data];
-                            }
-                        })
-                        .catch(error => {
-                            // Errors when calling the service; such as network error, 
-                            // service offline, etc
-                            console.log(this.message + error);
-
-                        });
-
-                },
-                addDoctor: function () {
-                    // reset data
-                    this.doctorAdded = false;
-                    this.addDoctorError = "";
-
-                    let jsonData = JSON.stringify({
-                        aid: this.newAid,
-                        did: this.newDid,
-                        name: this.newName,
-                        date: this.newDate,
-                        availability: this.newAvailability
-                    });
-
-                    fetch(`${get_all_URL}`, {
-                            method: "POST",
-                            headers: {
-                                "Content-type": "application/json"
-                            },
-                            body: jsonData
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            console.log(data);
-                            result = data.data;
-                            console.log(result);
-                            // 3 cases
-                            switch (data.code) {
-                                case 201:
-                                    this.doctorAdded = true;
-
-                                    // refresh book list
-                                    this.getAllDoctors();
-
-                                    // an alternate way is to add this one element into this.books
-                                    break;
-                                case 400:
-                                case 500:
-                                    this.addDoctorError = data.message;
-                                    break;
-                                default:
-                                    throw `${data.code}: ${data.message}`;
-                            }
-                        })
-                },
-                del: function (aid) {
-                    this.aid = aid;
-                    this.availDeleted = false;
-                    const response =
-                        fetch(`${get_all_URL}/${this.aid}`, {
-                            method: "DELETE",
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            console.log(response);
-                            if (data.code === 404) {
-                                // no book in db
-                                this.message = data.message;
-                                this.doctors = [];
-                            } else {
-                                this.availDeleted = true;
-                            }
-                        })
-                        .catch(error => {
-                            // Errors when calling the service; such as network error,
-                            // service offline, etc
-                            console.log(this.message + error);
-
-                        });
-
-                    //Front end Vue
-                    var idx = 0
-                    for (doctor of this.doctors) {
-                        if (doctor.aid == aid) {
-                            this.doctors.splice(idx, 1) // remove this element
-                            break
-                        }
-                        idx++
-                    }
-                }
-            },
-            created: function () {
-                // on Vue instance created, load the book list
-                this.getAllDoctors();
-            }
-        });
-    </script>
+    <!-- VueJS code-->
+    <script src = "../Reveal/js/doctor.js"></script>
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
