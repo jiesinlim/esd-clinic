@@ -21,6 +21,9 @@ SET time_zone = "+00:00";
 --
 -- Database: `esd_clinic`
 --
+CREATE DATABASE IF NOT EXISTS `esd_clinic` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+USE `esd_clinic`;
 
 -- --------------------------------------------------------
 
@@ -82,3 +85,19 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+DROP TABLE IF EXISTS `patientlogin`;
+CREATE TABLE IF NOT EXISTS `patientlogin` (
+  `fullname` char(50) NOT NULL,
+  `NRIC` char(9) NOT NULL,
+  PRIMARY KEY (`fullname`)
+)
+
+INSERT INTO `patientlogin` (`fullname`, `NRIC`) VALUES
+('Amanda Ng', 'T0123456U'),
+('Jessie Ong', 'T1234567I'),
+('Tan See Hong', 'S1234567J'),
+('Karen Soh', 'J1234567I'),
+('Jonathan Liu', 'P1234567I');
+COMMIT;
+
