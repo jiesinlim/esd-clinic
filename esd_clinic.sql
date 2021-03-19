@@ -21,6 +21,9 @@ SET time_zone = "+00:00";
 --
 -- Database: `esd_clinic`
 --
+CREATE DATABASE IF NOT EXISTS `esd_clinic` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+USE `esd_clinic`;
 
 -- --------------------------------------------------------
 
@@ -56,28 +59,47 @@ INSERT INTO `doctor` (`aid`, `did`, `name`, `date`, `availability`) VALUES
 
 DROP TABLE IF EXISTS `patient`;
 CREATE TABLE IF NOT EXISTS `patient` (
-  `pid` int(5) NOT NULL,
-  `name` varchar(15) NOT NULL,
+  `pid` int(5) NOT NULL AUTO_INCREMENT,
+  `name` varchar(20) NOT NULL,
+  `email` varchar(100) NOT NULL,
   `appointment_date` date NOT NULL,
   `appointment_time` varchar(15) NOT NULL,
   `did` int(5) DEFAULT NULL,
-  `doctor_name` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
-  `status` varchar(10) NOT NULL,
+  `doctor_name` varchar(50) DEFAULT NULL,
+  `status` varchar(20) NOT NULL,
   PRIMARY KEY (`pid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `patient`
 --
 
-INSERT INTO `patient` (`pid`, `name`, `appointment_date`, `appointment_time`, `did`, `doctor_name`, `status`) VALUES
-(1, 'Leslie Ng', '2021-03-22', '1000', NULL, NULL, 'booked'),
-(2, 'Reuben Ong', '2021-03-21', '1300', NULL, NULL, 'booked'),
-(3, 'Tan Li Ming', '2021-03-23', '1500', NULL, NULL, 'booked'),
-(4, 'Amelia Soh', '2021-03-23', '1900', NULL, NULL, 'booked'),
-(5, 'Jack Lam', '2021-03-22', '1400', NULL, NULL, 'booked');
-COMMIT;
+INSERT INTO `patient` (`pid`, `name`, `email`, `appointment_date`, `appointment_time`, `did`, `doctor_name`, `status`) VALUES
+(1, 'Leslie', NULL, '2021-03-22', '1000', NULL, NULL, 'booked'),
+(2, 'Reuben', NULL, '2021-03-21', '1300', NULL, NULL, 'booked'),
+(3, 'Jasmine', NULL, '2021-03-23', '1500', NULL, NULL, 'booked'),
+(4, 'Amelia', NULL, '2021-03-23', '1900', NULL, NULL, 'booked'),
+(5, 'Jack', NULL, '2021-03-22', '1400', NULL, NULL, 'booked');
+
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+DROP TABLE IF EXISTS `patientlogin`;
+CREATE TABLE IF NOT EXISTS `patientlogin` (
+  `Name` char(50),
+  `NRIC` char(9) NOT NULL,
+  PRIMARY KEY (`Name`)
+);
+
+INSERT INTO `patientlogin` (`Name`, `NRIC`) VALUES
+('Leslie', 'T0123456U'),
+('Reuben', 'T1234567I'),
+('Jasmine', 'S1234567J'),
+('Amelia', 'J1234567I'),
+('Jack', 'P1234567I');
+COMMIT;
+
+
+
