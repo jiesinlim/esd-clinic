@@ -59,28 +59,28 @@ INSERT INTO `doctor` (`aid`, `did`, `name`, `date`, `availability`) VALUES
 
 DROP TABLE IF EXISTS `patient`;
 CREATE TABLE IF NOT EXISTS `patient` (
-  `pid` int(5) NOT NULL,
-  `name` varchar(15) NOT NULL,
-  `email` varchar(100) NULL,
+  `pid` int(5) NOT NULL AUTO_INCREMENT,
+  `name` varchar(20) NOT NULL,
+  `email` varchar(100) NOT NULL,
   `appointment_date` date NOT NULL,
   `appointment_time` varchar(15) NOT NULL,
   `did` int(5) DEFAULT NULL,
-  `doctor_name` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
-  `status` varchar(10) NOT NULL,
+  `doctor_name` varchar(50) DEFAULT NULL,
+  `status` varchar(20) NOT NULL,
   PRIMARY KEY (`pid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `patient`
 --
 
-INSERT INTO `patient` (`pid`, `name`, `appointment_date`, `appointment_time`, `did`, `doctor_name`, `status`) VALUES
+INSERT INTO `patient` (`pid`, `name`, `email`, `appointment_date`, `appointment_time`, `did`, `doctor_name`, `status`) VALUES
 (1, 'Leslie Ng', NULL, '2021-03-22', '1000', NULL, NULL, 'booked'),
 (2, 'Reuben Ong', NULL, '2021-03-21', '1300', NULL, NULL, 'booked'),
 (3, 'Tan Li Ming', NULL, '2021-03-23', '1500', NULL, NULL, 'booked'),
 (4, 'Amelia Soh', NULL, '2021-03-23', '1900', NULL, NULL, 'booked'),
 (5, 'Jack Lam', NULL, '2021-03-22', '1400', NULL, NULL, 'booked');
-COMMIT;
+
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
@@ -91,7 +91,7 @@ CREATE TABLE IF NOT EXISTS `patientlogin` (
   `fullname` char(50) NOT NULL,
   `NRIC` char(9) NOT NULL,
   PRIMARY KEY (`fullname`)
-)
+);
 
 INSERT INTO `patientlogin` (`fullname`, `NRIC`) VALUES
 ('Amanda Ng', 'T0123456U'),
@@ -99,5 +99,4 @@ INSERT INTO `patientlogin` (`fullname`, `NRIC`) VALUES
 ('Tan See Hong', 'S1234567J'),
 ('Karen Soh', 'J1234567I'),
 ('Jonathan Liu', 'P1234567I');
-COMMIT;
 

@@ -5,7 +5,7 @@
     $patientAccDAO = new patientAccDAO;
 
     $result = $patientAccDAO->lookFor($fullName);
-    if(!$result){ //if username is in the database
+    if($result){ //if username is in the database
         $NRIC_retrieved = $patientAccDAO->loginCheck($fullName);
         
         if($NRIC != $NRIC_retrieved){
