@@ -18,3 +18,12 @@ create_results = invoke_http(
 
 print()
 print( create_results )
+
+
+# invoke book microservice to get filtered available doctors for timeslot
+appointment = '2021-03-23+1900'
+results = invoke_http("http://localhost:6000/doctor/" + appointment, method='GET')
+
+print( type(results) )
+print()
+print( results )

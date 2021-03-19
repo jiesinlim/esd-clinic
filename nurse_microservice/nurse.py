@@ -4,7 +4,7 @@ from os import environ
 from flask_cors import CORS
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL')  or 'mysql+mysqlconnector://root:root@localhost:3306/esd_clinic' or 'mysql+mysqlconnector://root@localhost:3306/esd_clinic'
+app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL') or 'mysql+mysqlconnector://root@localhost:3306/esd_clinic' or 'mysql+mysqlconnector://root:root@localhost:3306/esd_clinic'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_recycle': 299}
 
@@ -57,84 +57,41 @@ def get_all():
     ), 404
 
 #add find_by_appointmentslot function to doctoravail.py
-@app.route("/doctor/<string:appointment>")  #syntax of appointment = "YYYY-MM-DD+HHMM"
-def find_by_appointmentslot(appointment):
-    appointment_date = appointment[0:10]
-    appointment_time = appointment[11:]
+# @app.route("/doctor/<string:appointment>")  #syntax of appointment = "YYYY-MM-DD+HHMM"
+# def find_by_appointmentslot(appointment):
+#     appointment_date = appointment[0:10]
+#     appointment_time = appointment[11:]
     
-    #doctor avail matches patient booking
-    avail_doctors = Doctor.query.filter_by(appointment_date=appointment_date, appointment_time=appointment_time) #gets a list of doctors
+#     #doctor avail matches patient booking
+#     avail_doctors = Doctor.query.filter_by(appointment_date=appointment_date, appointment_time=appointment_time) #gets a list of doctors
 
-    if avail_doctors:
-        return jsonify(
-            {
-                "code": 200,
-                "data": {
-                    "avail_doctors":[doctor.json() for doctor in avail_doctors]
-                }
-            }
-        )
-    return jsonify(
-        {
-            "code": 404,
-            "message": "There are currently no doctors available at this appointment timeslot."
-        }
-    ), 404
-
-
-# @app.route("/nurse/<string:id>", methods=['POST'])
-# # syntax of id = "pid+did" as string
-# def match_doctor(id):
-#     id_array = id.split("+")
-#     pid = int(id_array[0])
-#     did = int(id_array[1])
-#     if (Patient.query.filter_by(did=did,pid=pid).first()):
+#     if avail_doctors:
 #         return jsonify(
 #             {
-#                 "code": 400,
+#                 "code": 200,
 #                 "data": {
-#                     "pid": pid,
-#                     "did": did
-#                 },
-#                 "message": "This doctor has already been assigned to the patient."
+#                     "avail_doctors":[doctor.json() for doctor in avail_doctors]
+#                 }
 #             }
-#         ), 400
-
-#     data = request.get_json()
-#     book = Book(pid, **data)
-
-#     try:
-#         db.session.add(book)
-#         db.session.commit()
-#     except:
-#         return jsonify(
-#             {
-#                 "code": 500,
-#                 "data": {
-#                     "pid": pid,
-#                 },
-#                 "message": "An error occurred creating the book."
-#             }
-#         ), 500
-
+#         )
 #     return jsonify(
 #         {
-#             "code": 201,
-#             "data": book.json()
+#             "code": 404,
+#             "message": "There are currently no doctors available at this appointment timeslot."
 #         }
-#     ), 201
+#     ), 404
 
 
-@app.route("/nurse/<string:pid>", methods=['PUT'])
+@app.route("/nurse/<string:pid>", methods=['PATCH'])
 def match_doctor(pid):
     patient = Patient.query.filter_by(pid=pid).first()
     if patient:
         data = request.get_json()
-        if data['name']:
-            patient.doctor_name = data['name']
+        if data['doctor_name']:
+            patient.doctor_name = data['doctor_name']
         if data['did']:
             patient.did = data['did']
-        if data['name'] and data['did']:
+        if data['doctor_name'] and data['did']:
             patient.status = "Matched" 
         db.session.commit()
         return jsonify(
@@ -149,17 +106,17 @@ def match_doctor(pid):
             "data": {
                 "pid": pid
             },
-            "message": "Patient not found."
+            "message": "Patient not found in booked appointments."
         }  
     ), 404
 
 
-@app.route("/nurse/confirm", methods=['PUT'])
+@app.route("/nurse/confirm", methods=['PATCH'])
 def confirm(pid):  #confirm and notify using AMQP
     patient = Patient.query.filter_by(pid=pid).first()
     if patient:
-        data = request.get_json()
-        if patient.status == "Matched":
+        data = request.get_json()  #returns data of  "confirm" when nurse clicks confirm
+        if patient.status == "Matched" and data == "confirm":
             patient.status = "Confirmed" 
         db.session.commit()
         return jsonify(
@@ -174,34 +131,9 @@ def confirm(pid):  #confirm and notify using AMQP
             "data": {
                 "pid": pid
             },
-            "message": "Patient not found."
+            "message": "Patient not found in matched appointments."
         }  
     ), 404
-
-
-# @app.route("/book/<string:pid>", methods=['DELETE'])
-# def delete_book(pid):
-#     book = Book.query.filter_by(pid=pid).first()
-#     if book:
-#         db.session.delete(book)
-#         db.session.commit()
-#         return jsonify(
-#             {
-#                 "code": 200,
-#                 "data": {
-#                     "pid": pid
-#                 }
-#             }
-#         )
-#     return jsonify(
-#         {
-#             "code": 404,
-#             "data": {
-#                 "pid": pid
-#             },
-#             "message": "Book not found."
-#         }
-#     ), 404
 
 
 if __name__ == '__main__':

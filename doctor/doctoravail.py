@@ -8,7 +8,7 @@ import json
 from os import environ
 
 app = Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = environ.get('dbURL') or 'mysql+mysqlconnector://root:root@localhost:3306/clinic' or 'mysql+mysqlconnector://root@localhost:3306/clinic'
+app.config["SQLALCHEMY_DATABASE_URI"] = environ.get('dbURL') or 'mysql+mysqlconnector://root@localhost:3306/clinic' or 'mysql+mysqlconnector://root:root@localhost:3306/clinic'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_recycle': 299}
 
@@ -164,6 +164,30 @@ def delete_doctor_avail(aid):
         }
     ), 404
 
+#add find_by_appointmentslot function to doctoravail.py
+@app.route("/doctor")  #syntax of appointment = "YYYY-MM-DD+HHMM"
+def find_by_appointmentslot(appointment):
+    appointment_date = appointment[0:10]
+    appointment_time = appointment[11:]
+    
+    #doctor avail matches patient booking
+    avail_doctors = Doctor.query.filter_by(date=appointment_date, availability=appointment_time) #gets a list of doctors
+
+    if avail_doctors:
+        return jsonify(
+            {
+                "code": 200,
+                "data": {
+                    "avail_doctors":[doctor.json() for doctor in avail_doctors]
+                }
+            }
+        )
+    return jsonify(
+        {
+            "code": 404,
+            "message": "There are currently no doctors available at this appointment timeslot."
+        }
+    ), 404
 
 if __name__ == '__main__':
     print("This is flask for " + os.path.basename(__file__) + ": doctor availability ...")
