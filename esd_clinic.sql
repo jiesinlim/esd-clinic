@@ -58,6 +58,7 @@ DROP TABLE IF EXISTS `patient`;
 CREATE TABLE IF NOT EXISTS `patient` (
   `pid` int(5) NOT NULL,
   `name` varchar(15) NOT NULL,
+  `email` varchar(100) NULL,
   `appointment_date` date NOT NULL,
   `appointment_time` varchar(15) NOT NULL,
   `did` int(5) DEFAULT NULL,
@@ -71,11 +72,11 @@ CREATE TABLE IF NOT EXISTS `patient` (
 --
 
 INSERT INTO `patient` (`pid`, `name`, `appointment_date`, `appointment_time`, `did`, `doctor_name`, `status`) VALUES
-(1, 'Leslie Ng', '2021-03-22', '1000', NULL, NULL, 'booked'),
-(2, 'Reuben Ong', '2021-03-21', '1300', NULL, NULL, 'booked'),
-(3, 'Tan Li Ming', '2021-03-23', '1500', NULL, NULL, 'booked'),
-(4, 'Amelia Soh', '2021-03-23', '1900', NULL, NULL, 'booked'),
-(5, 'Jack Lam', '2021-03-22', '1400', NULL, NULL, 'booked');
+(1, 'Leslie Ng', NULL, '2021-03-22', '1000', NULL, NULL, 'booked'),
+(2, 'Reuben Ong', NULL, '2021-03-21', '1300', NULL, NULL, 'booked'),
+(3, 'Tan Li Ming', NULL, '2021-03-23', '1500', NULL, NULL, 'booked'),
+(4, 'Amelia Soh', NULL, '2021-03-23', '1900', NULL, NULL, 'booked'),
+(5, 'Jack Lam', NULL, '2021-03-22', '1400', NULL, NULL, 'booked');
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
