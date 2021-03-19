@@ -1,3 +1,4 @@
+//var get_all_URL = "http://localhost:8000/api/v1/doctor";
 var get_all_URL = "http://localhost:5001/doctor";
 
 var app = new Vue({
