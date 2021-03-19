@@ -2,13 +2,13 @@
 class patientAccDAO {
 
     //check if patient is already registered with the clinic
-    public function lookFor($fullName) {
+    public function lookFor($Name) {
         $connMgr = new ConnectionManager();
         $conn = $connMgr->getConnection();
 
-        $sql = "select fullName from patientlogin where fullName = :fullName";
+        $sql = "select Name from patientlogin where Name = :Name";
         $stmt = $conn->prepare($sql);
-        $stmt->bindParam(':fullName', $fullName, PDO::PARAM_STR);
+        $stmt->bindParam(':Name', $Name, PDO::PARAM_STR);
 
         $stmt->execute();
         $stmt->setFetchMode(PDO::FETCH_ASSOC);
@@ -25,13 +25,13 @@ class patientAccDAO {
     }
 
     //retrieve fullName and NRIC to check at login
-    public function loginCheck($fullName) {
+    public function loginCheck($Name) {
         $connMgr = new ConnectionManager();
         $conn = $connMgr->getConnection();
 
-        $sql = "select NRIC from patientlogin where fullName = :fullName";
+        $sql = "select NRIC from patientlogin where Name = :Name";
         $stmt = $conn->prepare($sql);
-        $stmt->bindParam(':fullName', $fullName, PDO::PARAM_STR);
+        $stmt->bindParam(':Name', $Name, PDO::PARAM_STR);
 
         $stmt->execute();
         $stmt->setFetchMode(PDO::FETCH_ASSOC);

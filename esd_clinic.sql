@@ -75,11 +75,11 @@ CREATE TABLE IF NOT EXISTS `patient` (
 --
 
 INSERT INTO `patient` (`pid`, `name`, `email`, `appointment_date`, `appointment_time`, `did`, `doctor_name`, `status`) VALUES
-(1, 'Leslie Ng', NULL, '2021-03-22', '1000', NULL, NULL, 'booked'),
-(2, 'Reuben Ong', NULL, '2021-03-21', '1300', NULL, NULL, 'booked'),
-(3, 'Tan Li Ming', NULL, '2021-03-23', '1500', NULL, NULL, 'booked'),
-(4, 'Amelia Soh', NULL, '2021-03-23', '1900', NULL, NULL, 'booked'),
-(5, 'Jack Lam', NULL, '2021-03-22', '1400', NULL, NULL, 'booked');
+(1, 'Leslie', NULL, '2021-03-22', '1000', NULL, NULL, 'booked'),
+(2, 'Reuben', NULL, '2021-03-21', '1300', NULL, NULL, 'booked'),
+(3, 'Jasmine', NULL, '2021-03-23', '1500', NULL, NULL, 'booked'),
+(4, 'Amelia', NULL, '2021-03-23', '1900', NULL, NULL, 'booked'),
+(5, 'Jack', NULL, '2021-03-22', '1400', NULL, NULL, 'booked');
 
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
@@ -88,15 +88,18 @@ INSERT INTO `patient` (`pid`, `name`, `email`, `appointment_date`, `appointment_
 
 DROP TABLE IF EXISTS `patientlogin`;
 CREATE TABLE IF NOT EXISTS `patientlogin` (
-  `fullname` char(50) NOT NULL,
+  `Name` char(50),
   `NRIC` char(9) NOT NULL,
-  PRIMARY KEY (`fullname`)
+  PRIMARY KEY (`Name`)
 );
 
-INSERT INTO `patientlogin` (`fullname`, `NRIC`) VALUES
-('Amanda Ng', 'T0123456U'),
-('Jessie Ong', 'T1234567I'),
-('Tan See Hong', 'S1234567J'),
-('Karen Soh', 'J1234567I'),
-('Jonathan Liu', 'P1234567I');
+INSERT INTO `patientlogin` (`Name`, `NRIC`) VALUES
+('Leslie', 'T0123456U'),
+('Reuben', 'T1234567I'),
+('Jasmine', 'S1234567J'),
+('Amelia', 'J1234567I'),
+('Jack', 'P1234567I');
+COMMIT;
+
+
 
