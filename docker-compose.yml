@@ -26,7 +26,7 @@ services:
     image: marcsoh/doctor:1.0
     restart: always
     environment:
-      dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/clinic
+      dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/esd_clinic
       PYTHONUNBUFFERED: 1
     ports:
       - "5001:5001"
@@ -132,7 +132,7 @@ services:
     networks:
       - kong-net
     environment:
-      dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/clinic
+      dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/esd_clinic
       PYTHONUNBUFFERED: 1
     depends_on:
       - kong
