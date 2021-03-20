@@ -1,6 +1,7 @@
 import os
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import *
 from flask_cors import CORS
 
 from datetime import datetime
@@ -8,13 +9,15 @@ import json
 from os import environ
 
 app = Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = environ.get('dbURL') or 'mysql+mysqlconnector://root@localhost:3306/clinic' or 'mysql+mysqlconnector://root:root@localhost:3306/clinic'
+app.config["SQLALCHEMY_DATABASE_URI"] = environ.get(
+    'dbURL') or 'mysql+mysqlconnector://root:root@localhost:3306/clinic' or 'mysql+mysqlconnector://root:root@localhost:3306/clinic'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_recycle': 299}
 
 db = SQLAlchemy(app)
 
 CORS(app)
+
 
 class Doctor(db.Model):
     __tablename__ = 'doctor'
@@ -55,6 +58,7 @@ def get_all():
         }
     ), 404
 
+
 @app.route("/doctor/<string:aid>")
 def find_by_aid(aid):
     doctor = Doctor.query.filter_by(aid=aid).first()
@@ -76,7 +80,7 @@ def find_by_aid(aid):
 @app.route("/doctor", methods=['POST'])
 def add_doctor():
     aid = request.json.get('aid', None)
-    
+
     if (Doctor.query.filter_by(aid=aid).first()):
         return jsonify(
             {
@@ -109,6 +113,7 @@ def add_doctor():
         }
     ), 201
 
+
 @app.route("/doctor", methods=['PUT'])
 def update_doctor():
     aid = request.json.get('aid', None)
@@ -122,7 +127,7 @@ def update_doctor():
         if data['date']:
             doctor.date = data['date']
         if data['availability']:
-            doctor.availability = data['availability'] 
+            doctor.availability = data['availability']
         db.session.commit()
         return jsonify(
             {
@@ -139,6 +144,7 @@ def update_doctor():
             "message": "Doctor availability ID not found."
         }
     ), 404
+
 
 @app.route("/doctor/<string:aid>", methods=['DELETE'])
 def delete_doctor_avail(aid):
@@ -164,22 +170,29 @@ def delete_doctor_avail(aid):
         }
     ), 404
 
-#add find_by_appointmentslot function to doctoravail.py
-@app.route("/doctor")  #syntax of appointment = "YYYY-MM-DD+HHMM"
+# add find_by_appointmentslot function to doctoravail.py
+
+
+# syntax of appointment = "YYYY-MM-DD+HHMM"
+#SQL Query: 
+#SELECT * FROM doctor WHERE availability LIKE '%1500%' AND date = '2021-03-21'
+#guide how to use LIKE https://stackoverflow.com/questions/39384923/how-to-use-like-operator-in-sqlalchemy 
+
+@app.route("/doctor/datetime/<string:appointment>")
 def find_by_appointmentslot(appointment):
     appointment_date = appointment[0:10]
     appointment_time = appointment[11:]
     
-    #doctor avail matches patient booking
-    avail_doctors = Doctor.query.filter_by(date=appointment_date, availability=appointment_time) #gets a list of doctors
+    avail_doctors = Doctor.query.filter(Doctor.availability.like("%" + appointment_time + "%"), Doctor.date.like(appointment_date)).all()
 
     if avail_doctors:
         return jsonify(
             {
                 "code": 200,
                 "data": {
-                    "avail_doctors":[doctor.json() for doctor in avail_doctors]
+                    "avail_doctors": [doctor.json() for doctor in avail_doctors]
                 }
+                
             }
         )
     return jsonify(
@@ -189,6 +202,8 @@ def find_by_appointmentslot(appointment):
         }
     ), 404
 
+
 if __name__ == '__main__':
-    print("This is flask for " + os.path.basename(__file__) + ": doctor availability ...")
+    print("This is flask for " + os.path.basename(__file__) +
+          ": doctor availability ...")
     app.run(host='0.0.0.0', port=5001, debug=True)
