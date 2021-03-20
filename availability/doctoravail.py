@@ -9,8 +9,9 @@ import json
 from os import environ
 
 app = Flask(__name__)
+#REMEMBER TO CHANGE WINDOWS OR MAC ROOT or ROOT:ROOT
 app.config["SQLALCHEMY_DATABASE_URI"] = environ.get(
-    'dbURL') or 'mysql+mysqlconnector://root:root@localhost:3306/clinic' or 'mysql+mysqlconnector://root:root@localhost:3306/clinic'
+    'dbURL') or 'mysql+mysqlconnector://root@localhost:3306/clinic'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_recycle': 299}
 
@@ -170,13 +171,11 @@ def delete_doctor_avail(aid):
         }
     ), 404
 
-# add find_by_appointmentslot function to doctoravail.py
 
-
-# syntax of appointment = "YYYY-MM-DD+HHMM"
+#Syntax of appointment = "YYYY-MM-DD+HHMM"
 #SQL Query: 
-#SELECT * FROM doctor WHERE availability LIKE '%1500%' AND date = '2021-03-21'
-#guide how to use LIKE https://stackoverflow.com/questions/39384923/how-to-use-like-operator-in-sqlalchemy 
+#SELECT * FROM doctor WHERE availability LIKE '%1500%' AND date LIKE '2021-03-21'
+#Guide how to use LIKE https://stackoverflow.com/questions/39384923/how-to-use-like-operator-in-sqlalchemy 
 
 @app.route("/doctor/datetime/<string:appointment>")
 def find_by_appointmentslot(appointment):
