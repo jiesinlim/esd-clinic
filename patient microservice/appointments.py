@@ -30,11 +30,11 @@ class Patient(db.Model):
     __tablename__ = 'patient'
 
     NRIC = db.Column(db.VARCHAR(9), primary_key=True)
-    patient_name = db.Column(db.VARCHAR(15), nullable=False)
+    patient_name = db.Column(db.VARCHAR(50), nullable=False)
     gender = db.Column(db.Column(db.CHAR(1)) , nullable=False)
     # !!!!! need to find the actual one for F/M
     contact_number = db.Column(db.Integer, nullable=False)
-    email = db.Column(db.VARCHAR(15) ,nullable=False) 
+    email = db.Column(db.VARCHAR(50) ,nullable=False) 
 
     def __init__(self, NRIC, patient_name, gender, contact_number, email):
         self.NRIC = NRIC
@@ -61,11 +61,11 @@ class Appointments(db.Model):
     appointment_date = db.Column(db.Date(), nullable=False)
     appointment_time = db.Column(db.Time(), nullable=False)
     did = db.Column(db.Integer, nullable=True)
-    doctor_name = db.Column(db.VARCHAR(15), nullable=True)
+    doctor_name = db.Column(db.VARCHAR(50), nullable=True)
     status = db.Column(db.VARCHAR(10), nullable=False)
     room_no = db.Column(db.VARCHAR(10), nullable=True)
 
-    def __init__(self, aid, pid, did, doctor_name, appointment_date, appointment_time, status, room_no):
+    def __init__(self, aid, NRIC, did, doctor_name, appointment_date, appointment_time, status, room_no):
         self.aid = aid
         self.NRIC = NRIC
         self.did = did
@@ -77,9 +77,10 @@ class Appointments(db.Model):
 
     def json(self):
         return {"aid": self.aid, "NRIC":self.NRIC, 
-                "did": self.did, "appointment_date": self.appointment_date, 
-                "appointment_time": self.appointment_time, "status": self.status,
-                "room_no": self.room_no}
+                "did": self.did, "doctor_name": self.doctor_name, 
+                "appointment_date": self.appointment_date, 
+                "appointment_time": self.appointment_time, 
+                "status": self.status, "room_no": self.room_no}
 
 # Add new appointment
 # [POST] 
