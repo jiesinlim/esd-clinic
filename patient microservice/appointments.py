@@ -61,13 +61,15 @@ class Appointments(db.Model):
     appointment_date = db.Column(db.appointment_date, nullable=False)
     appointment_time = db.Column(db.appointment_time, nullable=False)
     did = db.Column(db.Integer, nullable=True)
-    status = db.Column(db.VARCHAR(10), nullable=True)
+    doctor_name = db.Column(db.VARCHAR(15), nullable=True)
+    status = db.Column(db.VARCHAR(10), nullable=False)
     room_no = db.Column(db.VARCHAR(10), nullable=True)
 
-    def __init__(self, aid, pid, did, date, time, status, room_no):
+    def __init__(self, aid, pid, did, doctor_name, appointment_date, appointment_time, status, room_no):
         self.aid = aid
         self.nric = nric
         self.did = did
+        self.doctor_name = doctor_name
         self.appointment_date = appointment_date
         self.appointment_time = appointment_time
         self.status = status
@@ -75,13 +77,12 @@ class Appointments(db.Model):
 
     def json(self):
         return {"aid": self.aid, "nric":self.nric, 
-                "did": self.did, "date": self.appointment_date, 
-                "time": self.appointment_time, "status": self.status,
+                "did": self.did, "appointment_date": self.appointment_date, 
+                "appointment_time": self.appointment_time, "status": self.status,
                 "room_no": self.room_no}
 
 # Add new appointment
 # [POST] 
-# /appointment 
 @app.route("/appointment", methods=['POST'])
 def add_new_appointment(nric, appointment_date, appointment_time):
     # !!!!! need to check if the inputs are correct?
@@ -92,15 +93,16 @@ def add_new_appointment(nric, appointment_date, appointment_time):
                 "data": {
                     "nric": nric,
                     "appointment_date": appointment_date,
-                    "appointment_time" : appointment_time
+                    "appointment_time" : appointment_time,
                 },
                 "message": "Appointment already exists."
             }
         ), 400
 
     data = request.get_json()
-    appointment = Appointments(nric, appointment_date, appointment_time, **data)
-
+    appointment = Appointments(nric, appointment_date, appointment_time, status='booked', **data)
+    #!!!!! check how to add status='booked'
+    
     try:
         db.session.add(appointment)
         db.session.commit()
@@ -126,7 +128,6 @@ def add_new_appointment(nric, appointment_date, appointment_time):
 		
 # Get appointment details
 # [GET] 
-# /appointment?status={booked/confirmed}
 @app.route("/appointment/<string:aid>")
 def get_appointment_details(aid):
     appointment = Appointment.query.filter_by(aid=aid).first()
@@ -146,7 +147,6 @@ def get_appointment_details(aid):
 
 # Change Date & Time of appointment 
 # [PUT] 
-# /appointment/{appointmentID}
 @app.route("/appointment/<string:aid>", methods=['PUT'])
 def change_appointment_details(aid):
     appointment = appointment.query.filter_by(aid=aid).first()
@@ -176,7 +176,6 @@ def change_appointment_details(aid):
 
 # Delete appointment details
 # [GET]
-# /appointment?status={booked/confirmed}
 @app.route("/appointment/<string:aid>", methods=['DELETE'])
 def delete_appointment_details(aid):
     appointment = Appointment.query.filter_by(aid=aid).first()
