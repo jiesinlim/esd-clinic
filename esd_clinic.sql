@@ -61,14 +61,11 @@ INSERT INTO `doctor` (`aid`, `did`, `name`, `date`, `availability`) VALUES
 
 DROP TABLE IF EXISTS `patient`;
 CREATE TABLE IF NOT EXISTS `patient` (
-  `pid` int(5) NOT NULL AUTO_INCREMENT,
-  `name` varchar(20) NOT NULL,
-  `email` varchar(100) NOT NULL,
-  `appointment_date` date NOT NULL,
-  `appointment_time` varchar(15) NOT NULL,
-  `did` int(5) DEFAULT NULL,
-  `doctor_name` varchar(50) DEFAULT NULL,
-  `status` varchar(20) NOT NULL,
+  `NRIC` varchar(9) NOT NULL,
+  `patient_name` varchar(15) NOT NULL,
+  `gender` varchar(15) NOT NULL,
+  `contact_number` int(8) NOT NULL,
+  `email` varchar(15) NOT NULL,
   PRIMARY KEY (`pid`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 
@@ -76,7 +73,7 @@ CREATE TABLE IF NOT EXISTS `patient` (
 -- Dumping data for table `patient`
 --
 
-INSERT INTO `patient` (`nric`, `patient_name`, `gender`, `contact_number`, `email`) VALUES
+INSERT INTO `patient` (`NRIC`, `patient_name`, `gender`, `contact_number`, `email`) VALUES
 ('T0123456U', 'Leslie', 'M', '82873618', 'leslie123@gmail.com'),
 ('T1234567I', 'Reuben', 'M', '83476123', 'reuben234@yahoo.com'),
 ('S1234567J', 'Jasmine', 'F', '98374986', 'jasmine345@hotmail.com'),
@@ -84,10 +81,27 @@ INSERT INTO `patient` (`nric`, `patient_name`, `gender`, `contact_number`, `emai
 ('P1234567I', 'Jack', 'M', '98683274', 'jack567@xyz.com');
 
 --
+-- Table structure for table `appointment`
+--
+
+DROP TABLE IF EXISTS `appointment`;
+CREATE TABLE IF NOT EXISTS `appointment` (
+  `aid` int(5) NOT NULL AUTO_INCREMENT,
+  `NRIC` varchar(9) NOT NULL,
+  `appointment_date` date NOT NULL,
+  `appointment_time` varchar(15) NOT NULL,
+  `did` int(5) DEFAULT NULL,
+  `doctor_name` varchar(15) DEFAULT NULL,
+  `status` varchar(10) NOT NULL DEFAULT 'booked',
+  `room_no` varchar(10) NULL,
+  PRIMARY KEY (`aid`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+
+--
 -- Dumping data for table `appointment`
 --
 
-INSERT INTO `patient` (`aid`, `nric`, `appointment_date`, `appointment_time`, `did`, `doctor_name`, `status`, `room_no`) VALUES
+INSERT INTO `patient` (`aid`, `NRIC`, `appointment_date`, `appointment_time`, `did`, `doctor_name`, `status`, `room_no`) VALUES
 (1, 'T0123456U', '2021-03-22', '1000', NULL, NULL, 'booked', NULL),
 (2, 'T1234567I', '2021-03-21', '1300', NULL, NULL, 'booked', NULL),
 (3, 'S1234567J', '2021-03-23', '1500', NULL, NULL, 'booked', NULL),
@@ -102,7 +116,7 @@ INSERT INTO `patient` (`aid`, `nric`, `appointment_date`, `appointment_time`, `d
 DROP TABLE IF EXISTS `patientlogin`;
 CREATE TABLE IF NOT EXISTS `patientlogin` (
   `Name` char(50),
-  `NRIC` char(9) NOT NULL,
+  `NRIC` varchar(9) NOT NULL,
   PRIMARY KEY (`Name`)
 );
 
