@@ -76,12 +76,23 @@ CREATE TABLE IF NOT EXISTS `patient` (
 -- Dumping data for table `patient`
 --
 
-INSERT INTO `patient` (`pid`, `name`, `email`, `appointment_date`, `appointment_time`, `did`, `doctor_name`, `status`) VALUES
-(1, 'Leslie', NULL, '2021-03-22', '1000', NULL, NULL, 'booked'),
-(2, 'Reuben', NULL, '2021-03-21', '1300', NULL, NULL, 'booked'),
-(3, 'Jasmine', NULL, '2021-03-23', '1500', NULL, NULL, 'booked'),
-(4, 'Amelia', NULL, '2021-03-23', '1900', NULL, NULL, 'booked'),
-(5, 'Jack', NULL, '2021-03-22', '1400', NULL, NULL, 'booked');
+INSERT INTO `patient` (`nric`, `patient_name`, `gender`, `contact_number`, `email`) VALUES
+('T0123456U', 'Leslie', 'M', '82873618', 'leslie123@gmail.com'),
+('T1234567I', 'Reuben', 'M', '83476123', 'reuben234@yahoo.com'),
+('S1234567J', 'Jasmine', 'F', '98374986', 'jasmine345@hotmail.com'),
+('J1234567I', 'Amelia', 'F', '81097192', 'amelia456@abc.com'),
+('P1234567I', 'Jack', 'M', '98683274', 'jack567@xyz.com');
+
+--
+-- Dumping data for table `appointment`
+--
+
+INSERT INTO `patient` (`aid`, `nric`, `appointment_date`, `appointment_time`, `did`, `doctor_name`, `status`, `room_no`) VALUES
+(1, 'T0123456U', '2021-03-22', '1000', NULL, NULL, 'booked', NULL),
+(2, 'T1234567I', '2021-03-21', '1300', NULL, NULL, 'booked', NULL),
+(3, 'S1234567J', '2021-03-23', '1500', NULL, NULL, 'booked', NULL),
+(4, 'J1234567I', '2021-03-23', '1900', NULL, NULL, 'booked', NULL),
+(5, 'P1234567I', '2021-03-22', '1400', NULL, NULL, 'booked', NULL);
 
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
