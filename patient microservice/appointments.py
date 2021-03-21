@@ -61,13 +61,15 @@ class Appointments(db.Model):
     appointment_date = db.Column(db.appointment_date, nullable=False)
     appointment_time = db.Column(db.appointment_time, nullable=False)
     did = db.Column(db.Integer, nullable=True)
+    doctor_name = db.Column(db.VARCHAR(15), nullable=True)
     status = db.Column(db.VARCHAR(10), nullable=True)
     room_no = db.Column(db.VARCHAR(10), nullable=True)
 
-    def __init__(self, aid, pid, did, date, time, status, room_no):
+    def __init__(self, aid, pid, did, doctor_name, appointment_date, appointment_time, status, room_no):
         self.aid = aid
         self.nric = nric
         self.did = did
+        self.doctor_name = doctor_name
         self.appointment_date = appointment_date
         self.appointment_time = appointment_time
         self.status = status
@@ -75,8 +77,8 @@ class Appointments(db.Model):
 
     def json(self):
         return {"aid": self.aid, "nric":self.nric, 
-                "did": self.did, "date": self.appointment_date, 
-                "time": self.appointment_time, "status": self.status,
+                "did": self.did, "appointment_date": self.appointment_date, 
+                "appointment_time": self.appointment_time, "status": self.status,
                 "room_no": self.room_no}
 
 # Add new appointment
