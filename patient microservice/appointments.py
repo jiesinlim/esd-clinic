@@ -8,7 +8,7 @@
 #partial update = PATCH
 #change whole thing = PUT
 
-import os
+
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
@@ -18,7 +18,8 @@ import json
 from os import environ
 
 app = Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = environ.get('dbURL') or 'mysql+mysqlconnector://root:root@localhost:3306/appointment' or 'mysql+mysqlconnector://root@localhost:3306/appointment'
+#REMEMBER TO CHANGE WINDOWS OR MAC ROOT or ROOT:ROOT
+app.config["SQLALCHEMY_DATABASE_URI"] = environ.get('dbURL') or 'mysql+mysqlconnector://root@localhost:3306/esd_clinic' 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_recycle': 299}
 
@@ -31,7 +32,7 @@ class Patient(db.Model):
 
     NRIC = db.Column(db.VARCHAR(9), primary_key=True)
     patient_name = db.Column(db.VARCHAR(50), nullable=False)
-    gender = db.Column(db.Column(db.CHAR(1)) , nullable=False)
+    gender = db.Column(db.VARCHAR(1) , nullable=False)
     # !!!!! need to find the actual one for F/M
     contact_number = db.Column(db.Integer, nullable=False)
     email = db.Column(db.VARCHAR(50) ,nullable=False) 
@@ -176,7 +177,7 @@ def change_appointment_details(aid):
     ), 404
 
 # Delete appointment details
-# [GET]
+# [DELETE]
 @app.route("/appointment/<string:aid>", methods=['DELETE'])
 def delete_appointment_details(aid):
     appointment = Appointment.query.filter_by(aid=aid).first()
