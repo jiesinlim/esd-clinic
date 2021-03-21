@@ -66,7 +66,7 @@ CREATE TABLE IF NOT EXISTS `patient` (
   `gender` varchar(15) NOT NULL,
   `contact_number` int(8) NOT NULL,
   `email` varchar(15) NOT NULL,
-  PRIMARY KEY (`pid`)
+  PRIMARY KEY (`NRIC`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 
 --
