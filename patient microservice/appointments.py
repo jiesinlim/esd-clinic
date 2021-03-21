@@ -29,22 +29,22 @@ CORS(app)
 class Patient(db.Model):
     __tablename__ = 'patient'
 
-    nric = db.Column(db.VARCHAR(9), primary_key=True)
+    NRIC = db.Column(db.VARCHAR(9), primary_key=True)
     patient_name = db.Column(db.VARCHAR(15), nullable=False)
-    gender = db.Column(db.Column(db.VARCHAR(15)) , nullable=False)
+    gender = db.Column(db.Column(db.CHAR(1)) , nullable=False)
     # !!!!! need to find the actual one for F/M
-    contact_number = db.Column(db.Integer(), nullable=False)
+    contact_number = db.Column(db.Integer, nullable=False)
     email = db.Column(db.VARCHAR(15) ,nullable=False) 
 
-    def __init__(self, nric, patient_name, gender, contact_number, email):
-        self.nric = nric
+    def __init__(self, NRIC, patient_name, gender, contact_number, email):
+        self.NRIC = NRIC
         self.patient_name = patient_name
         self.gender = gender
         self.contact_number = contact_number
         self.email = email
 
     def json(self):
-        return {"nric": self.nric, "patient_name": self.patient_name, 
+        return {"NRIC": self.NRIC, "patient_name": self.patient_name, 
                 "gender": self.gender, "contact_number": self.contact_number, 
                 "email": self.email}
 
@@ -57,9 +57,9 @@ class Appointments(db.Model):
     
     # !!! need to test which code can auto-increment the aid
     aid = db.Column(db.Integer, primary_key=True)
-    nric = db.Column(db.VARCHAR(10), nullable=False)
-    appointment_date = db.Column(db.appointment_date, nullable=False)
-    appointment_time = db.Column(db.appointment_time, nullable=False)
+    NRIC = db.Column(db.VARCHAR(9), nullable=False)
+    appointment_date = db.Column(db.Date(), nullable=False)
+    appointment_time = db.Column(db.Time(), nullable=False)
     did = db.Column(db.Integer, nullable=True)
     doctor_name = db.Column(db.VARCHAR(15), nullable=True)
     status = db.Column(db.VARCHAR(10), nullable=False)
@@ -67,7 +67,7 @@ class Appointments(db.Model):
 
     def __init__(self, aid, pid, did, doctor_name, appointment_date, appointment_time, status, room_no):
         self.aid = aid
-        self.nric = nric
+        self.NRIC = NRIC
         self.did = did
         self.doctor_name = doctor_name
         self.appointment_date = appointment_date
@@ -76,7 +76,7 @@ class Appointments(db.Model):
         self.room_no = room_no
 
     def json(self):
-        return {"aid": self.aid, "nric":self.nric, 
+        return {"aid": self.aid, "NRIC":self.NRIC, 
                 "did": self.did, "appointment_date": self.appointment_date, 
                 "appointment_time": self.appointment_time, "status": self.status,
                 "room_no": self.room_no}
@@ -84,14 +84,14 @@ class Appointments(db.Model):
 # Add new appointment
 # [POST] 
 @app.route("/appointment", methods=['POST'])
-def add_new_appointment(nric, appointment_date, appointment_time):
+def add_new_appointment(NRIC, appointment_date, appointment_time):
     # !!!!! need to check if the inputs are correct?
-    if (Appointments.query.filter_by(nric=nric, appointment_date=appointment_date, appointment_time=appointment_time).first()):
+    if (Appointments.query.filter_by(NRIC=NRIC, appointment_date=appointment_date, appointment_time=appointment_time).first()):
         return jsonify(
             {
                 "code": 400,
                 "data": {
-                    "nric": nric,
+                    "NRIC": NRIC,
                     "appointment_date": appointment_date,
                     "appointment_time" : appointment_time,
                 },
@@ -100,7 +100,7 @@ def add_new_appointment(nric, appointment_date, appointment_time):
         ), 400
 
     data = request.get_json()
-    appointment = Appointments(nric, appointment_date, appointment_time, status='booked', **data)
+    appointment = Appointments(NRIC, appointment_date, appointment_time, status, **data)
     #!!!!! check how to add status='booked'
     
     try:
@@ -111,7 +111,7 @@ def add_new_appointment(nric, appointment_date, appointment_time):
             {
                 "code": 500,
                 "data": {
-                    "nric": nric,
+                    "NRIC": NRIC,
                     "appointment_date": appointment_date,
                     "appointment_time" : appointment_time
                 },
