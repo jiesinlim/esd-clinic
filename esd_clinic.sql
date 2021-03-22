@@ -101,7 +101,7 @@ CREATE TABLE IF NOT EXISTS `appointment` (
 -- Dumping data for table `appointment`
 --
 
-INSERT INTO `patient` (`aid`, `NRIC`, `appointment_date`, `appointment_time`, `did`, `doctor_name`, `status`, `room_no`) VALUES
+INSERT INTO `appointment` (`aid`, `NRIC`, `appointment_date`, `appointment_time`, `did`, `doctor_name`, `status`, `room_no`) VALUES
 (1, 'T0123456U', '2021-03-22', '1000', NULL, NULL, 'booked', NULL),
 (2, 'T1234567I', '2021-03-21', '1300', NULL, NULL, 'booked', NULL),
 (3, 'S1234567J', '2021-03-23', '1500', NULL, NULL, 'booked', NULL),
