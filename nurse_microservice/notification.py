@@ -1,7 +1,6 @@
 from flask import Flask, request, jsonify
 from os import environ
-from sendgrid import SendGridAPIClient
-from sendgrid.helpers.mail import Mail
+import requests
 
 app = Flask(__name__)
 
