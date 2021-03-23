@@ -115,7 +115,7 @@ def add_doctor():
     ), 201
 
 
-@app.route("/doctor", methods=['PUT'])
+@app.route("/doctor", methods=['PATCH'])
 def update_doctor():
     aid = request.json.get('aid', None)
     doctor = Doctor.query.filter_by(aid=aid).first()
