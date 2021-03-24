@@ -11,7 +11,7 @@ from os import environ
 app = Flask(__name__)
 # REMEMBER TO CHANGE WINDOWS OR MAC ROOT or ROOT:ROOT
 app.config["SQLALCHEMY_DATABASE_URI"] = environ.get(
-    'dbURL') or 'mysql+mysqlconnector://root:root@localhost:3306/esd_clinic'
+    'dbURL') or 'mysql+mysqlconnector://root@localhost:3306/esd_clinic' or 'mysql+mysqlconnector://root:root@localhost:3306/esd_clinic'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_recycle': 299}
 
@@ -115,7 +115,7 @@ def add_doctor():
     ), 201
 
 
-@app.route("/doctor", methods=['PUT'])
+@app.route("/doctor", methods=['PATCH'])
 def update_doctor():
     aid = request.json.get('aid', None)
     doctor = Availability.query.filter_by(aid=aid).first()

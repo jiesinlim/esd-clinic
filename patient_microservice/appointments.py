@@ -19,7 +19,7 @@ from os import environ
 
 app = Flask(__name__)
 #REMEMBER TO CHANGE WINDOWS OR MAC ROOT or ROOT:ROOT
-app.config["SQLALCHEMY_DATABASE_URI"] = environ.get('dbURL') or 'mysql+mysqlconnector://root@localhost:3306/esd_clinic' 
+app.config["SQLALCHEMY_DATABASE_URI"] = environ.get('dbURL') or 'mysql+mysqlconnector://root@localhost:3306/esd_clinic' or 'mysql+mysqlconnector://root:root@localhost:3306/esd_clinic' 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_recycle': 299}
 
@@ -83,6 +83,8 @@ class Appointments(db.Model):
                 "appointment_time": self.appointment_time, 
                 "status": self.status, "room_no": self.room_no}
 
+
+
 # Add new appointment
 # [POST] 
 @app.route("/appointment", methods=['POST'])
@@ -132,7 +134,7 @@ def add_new_appointment(NRIC, appointment_date, appointment_time):
 # [GET] 
 @app.route("/appointment/<string:aid>")
 def get_appointment_details(aid):
-    appointment = Appointment.query.filter_by(aid=aid).first()
+    appointment = Appointments.query.filter_by(aid=aid).first()
     if appointment:
         return jsonify(
             {
@@ -151,7 +153,7 @@ def get_appointment_details(aid):
 # [PUT] 
 @app.route("/appointment/<string:aid>", methods=['PUT'])
 def change_appointment_details(aid):
-    appointment = appointment.query.filter_by(aid=aid).first()
+    appointment = Appointments.query.filter_by(aid=aid).first()
     if appointment:
         data = request.get_json()
         if data['appointment_date']:
@@ -180,9 +182,9 @@ def change_appointment_details(aid):
 # [DELETE]
 @app.route("/appointment/<string:aid>", methods=['DELETE'])
 def delete_appointment_details(aid):
-    appointment = Appointment.query.filter_by(aid=aid).first()
+    appointment = Appointments.query.filter_by(aid=aid).first()
     if appointment:
-        db.session.delete(book)
+        db.session.delete(appointment)
         db.session.commit()
         return jsonify(
             {
@@ -209,6 +211,48 @@ def delete_appointment_details(aid):
 # @app.route("/appointment/<string:booked>")
 #     def get_all_appointments():
 #         pass
+
+# Get all appointments
+
+# @app.route("/appointment/<string:status>")
+# def get_all_appointments():
+#     appointments = Appointments.query.filter_by(status=status)
+#     if len(appointments):
+#         return jsonify(
+#             {
+#                 "code": 200,
+#                 "data": {
+#                     "appointments": [record.json() for record in appointments]
+#                 }
+#             }
+#         )
+#     return jsonify(
+#         {
+#             "code": 404,
+#             "message": "There are no appointments."
+#         }
+#     ), 404
+
+# OR
+
+@app.route("/appointment/all")
+def get_all_appointments():
+    appointments = Appointments.query.all()
+    if len(appointments):
+        return jsonify(
+            {
+                "code": 200,
+                "data": {
+                    "appointments": [record.json() for record in appointments]
+                }
+            }
+        )
+    return jsonify(
+        {
+            "code": 404,
+            "message": "There are no appointments."
+        }
+    ), 404
 
 # # Get all next day appointments
 # # [GET] 

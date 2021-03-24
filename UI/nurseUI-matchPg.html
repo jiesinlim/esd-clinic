@@ -113,7 +113,7 @@
 
   <section id="intro">
     <div class="intro-content">
-      <h2 style="font-size:xx-large;">Patient Appointments <span>Match</span></h2>
+      <h2 style="font-size:xx-large;"> <span>Match</span> Patient Appointments</h2>
       <div class="table-responsive">
         <table class="table table-hover table-bordered">
           <thead class="table-info">
@@ -122,22 +122,26 @@
               <th scope="col">Patient Name</th>
               <th scope="col">Appointment Date</th>
               <th scope="col">Appointment Time</th>
-              <th scope="col">Appointed Doctor ID</th>
-              <th scope="col">Appointed Doctor Name</th>
+              <th scope="col">Available Doctors</th>
               <th scope="col">Status</th>
-              <th scope="col">Action</th>
+              
             </tr>
           </thead>
           <tbody>
             <tr v-for="appointment in appointments" class="table-light">
-              <th scope="row"> {{appointment.apid}} </th>
+              <th scope="row">{{appointment.apid}} </th>
               <td>{{appointment.pname}}</td>
-              <td> {{appointment.date}} </td>
-              <td> {{appointment.time}} </td>
-              <td>  </td>
-              <td> </td>
-              <td> {{appointment.status}} </td>
-              <td><a href="nurseUI-matchPg.html" class="btn btn-success">Match</a></td>
+              <td>{{appointment.date}}</td>
+              <td>{{appointment.time}}</td>
+              <td v-if="!doctorsAvail"> {{message}} </td>
+              <td v-else> 
+                  <select v-model="selected">
+                    <option v-for="doctor in {{data.availableDoctors}}">
+                        {{doctor}}
+                    </option>
+                  </select> 
+                </td>
+              <td><button class="btn btn-success" data-toggle="modal" data-target="#matchedModal" @click="deleteDrAvail()">Match</button> </td>
             </tr>
             
           </tbody>
@@ -155,12 +159,25 @@
     </div>
 
     
-
+    <div class="modal fade" id="matchedModal" tabindex="-1" role="dialog" aria-labelledby="matchModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content" style="background-color:rgb(234, 243, 238);">
+          <div class="modal-body mt-4">
+            <h5 class="font-weight-bold text-center"> Matched Appointment </h5>
+            <p class="font-weight-bold mt-8 ml-4"> Patient: </p>
+            <p class="font-weight-bold mt-8 ml-4"> Date: </p>
+            <p class="font-weight-bold mt-8 ml-4"> Time: </p>
+            <p class="font-weight-bold mt-8 ml-4"> Doctor: </p>
+           
+          </div>
+        </div>
+      </div>
+    </div>
+    
   </section><!-- #intro -->
 
-  <script>
-   
-  </script>
+
+
 
   <!--==========================
     Footer
@@ -184,6 +201,52 @@
 
   <a href="#" class="back-to-top"><i class="fa fa-chevron-up"></i></a>
 
+  <script>
+     var findByDatetime = "http://127.0.0.1:5001/doctor/datetime/" + date + "+" + time;
+    
+    var app = new Vue({
+      el: "#app",
+      computed: {
+        doctorsAvail: function() {
+          return this.doctors.length > 0;
+        }
+      },
+      data: {
+        message: "There are currently no doctors available.",
+        availableDoctors: []
+      },
+      methods: {
+        getAvailDoctors: function() {
+          //on Vue instance created, load the avail doctors list
+            const response =
+                fetch(findByDatetime)
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(response);
+                        if (data.code === 404) {
+                            // no doctor available in db
+                            this.message = data.message;
+                        } else {
+                            this.availableDoctors = data.data.availableDoctors;
+                        }
+                    })
+                    .catch(error => {
+                        // Errors when calling the service; such as network error, 
+                        // service offline, etc
+                        console.log(this.message + error);
+
+                    });
+
+        },
+        deleteDrAvail: function() {
+            
+        }
+        }
+        
+        });
+    
+
+  </script>
   <!-- JavaScript Libraries -->
   <script src="lib/jquery/jquery.min.js"></script>
   <script src="lib/jquery/jquery-migrate.min.js"></script>
