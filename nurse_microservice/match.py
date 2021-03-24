@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+import json
 
 import os
 
@@ -10,18 +11,20 @@ app = Flask(__name__)
 CORS(app)
 
 # appointments_URL = "http://localhost:5000/appointment/" # check correct patient url for updating patient record
-doctor_URL = "http://127.0.0.1:5001/doctor/datetime/" # add patient booked datetime to doctor_URL
+doctor_datetime_URL = "http://127.0.0.1:5001/doctor/datetime/" # add patient booked datetime to doctor_URL
 doctor_URL = "http://127.0.0.1:5001/doctor/" #update doctor availability (remove alr matched timeslot)
 
 
-def getAvailDoctors(date, time):
+def getAvailDoctors(datetime):
     # Invoke the doctor microservice
     print('\n-----Invoking doctor microservice-----')
-    datetime = f"{date}+{time}"
-    availDoctors = invoke_http(doctor_URL + datetime, method='GET')
-    print('Available doctors:')
-    for i in range(len(availDoctors)):
-        print(availDoctors[i])
+    # datetime = f"{date}+{time}"
+    availDoctors = invoke_http(doctor_datetime_URL + str(datetime), method='GET')
+    print('Available doctors:', availDoctors)
+    return availDoctors
+    # availDoctors = json.loads(availDoctors)
+    # for i in range(len(availDoctors)):
+    #     print(availDoctors[i])
 
 # def updateMatchDetails(appt_id,avail_id,doc_id,doc_name,time):
 #     #get patient appointment by appt id
@@ -78,19 +81,20 @@ def getAvailDoctors(date, time):
 
 
 
-@app.route("/availdoctors", methods=['GET'])
-def getAvailDoctorsbyDatetime():
-  
-        if request.is_json:
+@app.route("/availdoctors/<string:datetime>", methods=['GET'])
+def getAvailDoctorsbyDatetime(datetime):
+    
+    # if request.is_json:
+    if datetime:
         try:
-            data = request.get_json() #pass data of patient's appt time and date
-            date = data.appointment_date
-            time = data.appointment_time
-            print("\nReceived a patient's appointment date & time in JSON:", date, time)
+        # data = request.get_json() #pass data of patient's appt time and date
+        # date = data.appointment_date
+        # time = data.appointment_time
+            print("\nReceived a patient's appointment date & time in JSON:", datetime)
 
-            # do the actual work
-            result = getAvailDoctors(date,time)
-            return jsonify(result), result["code"]
+        # do the actual work
+            result = getAvailDoctors(datetime)
+            return result, result["code"]
 
         except Exception as e:
             pass  # do nothing.
