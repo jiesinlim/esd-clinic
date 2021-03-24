@@ -28,11 +28,11 @@ USE `esd_clinic`;
 -- --------------------------------------------------------
 
 --
--- Table structure for table `doctor`
+-- Table structure for table `availability`
 --
 
-DROP TABLE IF EXISTS `doctor`;
-CREATE TABLE IF NOT EXISTS `doctor` (
+DROP TABLE IF EXISTS `availability`;
+CREATE TABLE IF NOT EXISTS `availability` (
   `aid` int(11) NOT NULL AUTO_INCREMENT,
   `did` int(11) NOT NULL,
   `name` char(26) NOT NULL,
@@ -42,10 +42,10 @@ CREATE TABLE IF NOT EXISTS `doctor` (
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 
 --
--- Dumping data for table `doctor`
+-- Dumping data for table `availability`
 --
 
-INSERT INTO `doctor` (`aid`, `did`, `name`, `date`, `availability`) VALUES
+INSERT INTO `availability` (`aid`, `did`, `name`, `date`, `availability`) VALUES
 (1, 1, 'Dr. Marcus', '2021-03-21', '0900, 1000, 1100, 1300, 1400, 1500'),
 (2, 2, 'Dr. Alan', '2021-03-22', '1200, 1300, 1400, 1500, 1600, 1700'),
 (3, 3, 'Dr. Hong Seng', '2021-03-23', '1600, 1700, 1800, 1900, 2000, 2100'),

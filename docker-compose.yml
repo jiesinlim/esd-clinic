@@ -17,7 +17,7 @@ version: "3.8"
 
 services:
   #################################
-  # Doctor: Availability
+  # Availability
   #################################
   availability:
     build:
@@ -32,17 +32,54 @@ services:
       - "5001:5001"
 
   ###############################################
-  # Nurse: Nurse
+  # Appointment
   ###############################################
+  appointment:
+    build:
+      context: ./
+      dockerfile: appointment/appointment.Dockerfile
+    image: marcsoh/appointment:latest
+    restart: always
+    environment:
+      dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/esd_clinic
+      PYTHONUNBUFFERED: 1
+    ports:
+      - "5000:5000"
+  
+  ###############################################
+  # Notification
+  ###############################################
+  notification:
+    build:
+      context: ./
+      dockerfile: notification/notification.Dockerfile
+    image: marcsoh/notification:latest
+    restart: always
+    environment:
+      dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/esd_clinic
+      PYTHONUNBUFFERED: 1
+    ports:
+      - "5003:5003"
+  
+  
+  
 
-  
-  ###############################################
-  # Patient: Patient
-  ###############################################
 
-  
-  
-  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   # #######################################
   # # Postgres: The database used by Kong
   # #######################################

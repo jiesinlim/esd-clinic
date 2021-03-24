@@ -9,7 +9,7 @@ import json
 from os import environ
 
 app = Flask(__name__)
-#REMEMBER TO CHANGE WINDOWS OR MAC ROOT or ROOT:ROOT
+# REMEMBER TO CHANGE WINDOWS OR MAC ROOT or ROOT:ROOT
 app.config["SQLALCHEMY_DATABASE_URI"] = environ.get(
     'dbURL') or 'mysql+mysqlconnector://root@localhost:3306/esd_clinic' or 'mysql+mysqlconnector://root:root@localhost:3306/esd_clinic'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -20,8 +20,8 @@ db = SQLAlchemy(app)
 CORS(app)
 
 
-class Doctor(db.Model):
-    __tablename__ = 'doctor'
+class Availability(db.Model):
+    __tablename__ = 'availability'
 
     aid = db.Column(db.Integer, primary_key=True)
     did = db.Column(db.Integer, nullable=False)
@@ -42,13 +42,13 @@ class Doctor(db.Model):
 
 @app.route("/doctor")
 def get_all():
-    doctorlist = Doctor.query.all()
+    doctorlist = Availability.query.all()
     if len(doctorlist):
         return jsonify(
             {
                 "code": 200,
                 "data": {
-                    "doctoravail": [doctor.json() for doctor in doctorlist]
+                    "doctor_availability": [doctor.json() for doctor in doctorlist]
                 }
             }
         )
@@ -62,7 +62,7 @@ def get_all():
 
 @app.route("/doctor/<string:aid>")
 def find_by_aid(aid):
-    doctor = Doctor.query.filter_by(aid=aid).first()
+    doctor = Availability.query.filter_by(aid=aid).first()
     if doctor:
         return jsonify(
             {
@@ -82,7 +82,7 @@ def find_by_aid(aid):
 def add_doctor():
     aid = request.json.get('aid', None)
 
-    if (Doctor.query.filter_by(aid=aid).first()):
+    if (Availability.query.filter_by(aid=aid).first()):
         return jsonify(
             {
                 "code": 400,
@@ -94,7 +94,7 @@ def add_doctor():
         ), 400
 
     data = request.get_json()
-    doctor = Doctor(**data)
+    doctor = Availability(**data)
 
     try:
         db.session.add(doctor)
@@ -118,7 +118,7 @@ def add_doctor():
 @app.route("/doctor", methods=['PATCH'])
 def update_doctor():
     aid = request.json.get('aid', None)
-    doctor = Doctor.query.filter_by(aid=aid).first()
+    doctor = Availability.query.filter_by(aid=aid).first()
     if doctor:
         data = request.get_json()
         if data['did']:
@@ -149,7 +149,7 @@ def update_doctor():
 
 @app.route("/doctor/<string:aid>", methods=['DELETE'])
 def delete_doctor_avail(aid):
-    doctor = Doctor.query.filter_by(aid=aid).first()
+    doctor = Availability.query.filter_by(aid=aid).first()
     if doctor:
         db.session.delete(doctor)
         db.session.commit()
@@ -172,26 +172,27 @@ def delete_doctor_avail(aid):
     ), 404
 
 
-#Syntax of appointment = "YYYY-MM-DD+HHMM"
-#SQL Query: 
-#SELECT * FROM doctor WHERE availability LIKE '%1500%' AND date LIKE '2021-03-21'
-#Guide how to use LIKE https://stackoverflow.com/questions/39384923/how-to-use-like-operator-in-sqlalchemy 
+# Syntax of appointment = "YYYY-MM-DD+HHMM"
+# SQL Query:
+# SELECT * FROM doctor WHERE availability LIKE '%1500%' AND date LIKE '2021-03-21'
+# Guide how to use LIKE https://stackoverflow.com/questions/39384923/how-to-use-like-operator-in-sqlalchemy
 
 @app.route("/doctor/datetime/<string:appointment>")
 def find_by_appointmentslot(appointment):
     appointment_date = appointment[0:10]
     appointment_time = appointment[11:]
-    
-    avail_doctors = Doctor.query.filter(Doctor.availability.like("%" + appointment_time + "%"), Doctor.date.like(appointment_date)).all()
+
+    avail_doctors = Availability.query.filter(Availability.availability.like(
+        "%" + appointment_time + "%"), Availability.date.like(appointment_date)).all()
 
     if avail_doctors:
         return jsonify(
             {
                 "code": 200,
                 "data": {
-                    "avail_doctors": [doctor.json() for doctor in avail_doctors]
+                    "available_doctors": [doctor.json() for doctor in avail_doctors]
                 }
-                
+
             }
         )
     return jsonify(
