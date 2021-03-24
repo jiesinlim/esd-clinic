@@ -21,7 +21,19 @@ def create_book():
     response = requests.request("POST", url, data=payload, headers=headers)
 
     
-    return response.text
+    if(response):
+        return jsonify(
+        {
+            "code": 200,
+            "message": "The email is sent successfully."
+        })
+    else:
+        return jsonify(
+        {
+            "code": 500,
+            "message": "The email failed to send."
+        })
+
 
 if __name__ == '__main__':
     print("This is flask for " + os.path.basename(__file__) +
