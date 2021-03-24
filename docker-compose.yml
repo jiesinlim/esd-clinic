@@ -34,17 +34,17 @@ services:
   ###############################################
   # Appointment
   ###############################################
-  appointment:
-    build:
-      context: ./
-      dockerfile: appointment/appointment.Dockerfile
-    image: marcsoh/appointment:latest
-    restart: always
-    environment:
-      dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/esd_clinic
-      PYTHONUNBUFFERED: 1
-    ports:
-      - "5000:5000"
+  # appointment:
+  #   build:
+  #     context: ./
+  #     dockerfile: appointment/appointment.Dockerfile
+  #   image: marcsoh/appointment:latest
+  #   restart: always
+  #   environment:
+  #     dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/esd_clinic
+  #     PYTHONUNBUFFERED: 1
+  #   ports:
+  #     - "5000:5000"
   
   ###############################################
   # Notification

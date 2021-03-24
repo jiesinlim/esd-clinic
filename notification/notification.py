@@ -20,7 +20,8 @@ def create_book():
 
     response = requests.request("POST", url, data=payload, headers=headers)
 
-    print(response.text)
+    
+    return response.text
 
 if __name__ == '__main__':
     print("This is flask for " + os.path.basename(__file__) +
