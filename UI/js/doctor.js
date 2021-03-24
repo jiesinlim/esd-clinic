@@ -49,7 +49,7 @@ var app = new Vue({
                         // no doctors in db
                         this.message = data.message;
                     } else {
-                        this.doctors = data.data.doctoravail;
+                        this.doctors = data.data.doctor_availability;
                     }
                 })
                 .catch(error => {
@@ -156,7 +156,7 @@ var app = new Vue({
             });
 
             fetch(`${get_all_URL}`, {
-                    method: "PUT",
+                    method: "PATCH",
                     headers: {
                         "Content-type": "application/json"
                     },
