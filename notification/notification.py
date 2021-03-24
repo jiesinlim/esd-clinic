@@ -1,12 +1,13 @@
 from flask import Flask, request, jsonify
 from os import environ
 import requests
+import os
 
 app = Flask(__name__)
 
 #retrieve name, email address & date\time of appt
-@app.route("/book/<string:info>", methods=['POST'])
-def create_book(info):
+@app.route("/notification", methods=['POST'])
+def create_book():
     url = "https://rapidprod-sendgrid-v1.p.rapidapi.com/mail/send"
     #dissect the info here and put it into payload
 
@@ -22,5 +23,7 @@ def create_book(info):
     print(response.text)
 
 if __name__ == '__main__':
+    print("This is flask for " + os.path.basename(__file__) +
+          ": notification ...")
     app.run(host='0.0.0.0', port=5003, debug=True)
 
