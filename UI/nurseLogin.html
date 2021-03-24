@@ -39,32 +39,43 @@
     <div class="container">
 
       <div id="logo" class="pull-left">
-        <h1><a href="#body" class="scrollto">ESD <span>G7T6</span></a></h1>
+        <h1><a href="./index.html" class="scrollto">ESD <span>G7T6</span></a></h1>
       </div>
 
-      
+      <nav id="nav-menu-container">
+        <ul class="nav-menu">
+          <li><a href="./patientLogin.html">Patient</a></li>
+          <li><a href="./nurseLogin.html">Nurse</a></li>
+          <li><a href="./doctorLogin.html">Doctor</a></li>
+        </ul>
+      </nav><!-- #nav-menu-container -->
+
+
     </div>
   </header><!-- #header -->
 
   <main id="main">
-
-    <div class="container" style="padding-top: 150px; padding-bottom: 200px;">
-      <form style="padding-left: 200px; padding-right: 200px;">
-        <h3>Nurse Login Page</h3>
-        <div >
-          <label for="inputEmail" class="form-label">Email</label>
-          <input type="email" class="form-control" id="inputEmail">
+    <!--==========================
+      Log In Section
+    ============================-->
+    <section id="call-to-action" class="wow fadeInUp">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg text-center text-lg-left">
+            <h3 class="cta-title">Nurse Log In</h3>
+            <label for="inputEmail" class="cta-text">Email</label>
+            <input type="email" class="form-control" id="inputEmail">
+            <label for="inputPassword" class="cta-text">Password</label>
+            <input type="password" class="form-control" id="inputPassword">
+          </div>
         </div>
-        <div>
-          <label for="inputPassword" class="form-label">Password</label>
-          <input type="password" class="form-control" id="inputPassword">
+        <div class="row">
+          <div class="col-lg cta-btn-container text-center">
+            <a class="cta-btn align-middle" href="nurseUI.html">Log In</a>
+          </div>
         </div>
-        <div style="padding-top: 20px;">
-          <button type="submit" class="btn btn-primary" onclick="nurselogin()">Sign in</button>
-        </div>
-      </form>
-    </div>
-
+      </div>
+    </section><!-- #Log In Section -->
   </main>
 
   <a href="#" class="back-to-top"><i class="fa fa-chevron-up"></i></a>
