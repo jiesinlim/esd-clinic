@@ -8,7 +8,7 @@
 #partial update = PATCH
 #change whole thing = PUT
 
-
+import os
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
@@ -52,22 +52,22 @@ class Patient(db.Model):
 class Appointments(db.Model):
     __tablename__ = 'appointment'
     
-    #aid is auto-generated
-    # aid = db.Column(primary_key=True, db.ForeignKey(
-    #     'appointment.aid', ondelete='CASCADE', onupdate='CASCADE'), nullable=False, index=True)
+    #appointment_id is auto-generated
+    # appointment_id = db.Column(primary_key=True, db.ForeignKey(
+    #     'appointment.appointment_id', ondelete='CASCADE', onupdate='CASCADE'), nullable=False, index=True)
     
-    # !!! need to test which code can auto-increment the aid
-    aid = db.Column(db.Integer, primary_key=True)
+    # !!! need to test which code can auto-increment the appointment_id
+    appointment_id = db.Column(db.Integer, primary_key=True)
     NRIC = db.Column(db.VARCHAR(9), nullable=False)
-    appointment_date = db.Column(db.Date(), nullable=False)
-    appointment_time = db.Column(db.Time(), nullable=False)
+    appointment_date = db.Column(db.Date, nullable=False)
+    appointment_time = db.Column(db.VARCHAR(9), nullable=False)
     did = db.Column(db.Integer, nullable=True)
     doctor_name = db.Column(db.VARCHAR(50), nullable=True)
     status = db.Column(db.VARCHAR(10), nullable=False)
     room_no = db.Column(db.VARCHAR(10), nullable=True)
 
-    def __init__(self, aid, NRIC, did, doctor_name, appointment_date, appointment_time, status, room_no):
-        self.aid = aid
+    def __init__(self, appointment_id, NRIC, did, doctor_name, appointment_date, appointment_time, status, room_no):
+        self.appointment_id = appointment_id
         self.NRIC = NRIC
         self.did = did
         self.doctor_name = doctor_name
@@ -77,7 +77,7 @@ class Appointments(db.Model):
         self.room_no = room_no
 
     def json(self):
-        return {"aid": self.aid, "NRIC":self.NRIC, 
+        return {"appointment_id": self.appointment_id, "NRIC":self.NRIC, 
                 "did": self.did, "doctor_name": self.doctor_name, 
                 "appointment_date": self.appointment_date, 
                 "appointment_time": self.appointment_time, 
@@ -88,8 +88,12 @@ class Appointments(db.Model):
 # Add new appointment
 # [POST] 
 @app.route("/appointment", methods=['POST'])
-def add_new_appointment(NRIC, appointment_date, appointment_time):
+def add_new_appointment():
     # !!!!! need to check if the inputs are correct?
+    NRIC = request.json.get('NRIC', None)
+    appointment_date = request.json.get('appointment_date', None)
+    appointment_time = request.json.get('appointment_time', None)
+
     if (Appointments.query.filter_by(NRIC=NRIC, appointment_date=appointment_date, appointment_time=appointment_time).first()):
         return jsonify(
             {
@@ -132,9 +136,9 @@ def add_new_appointment(NRIC, appointment_date, appointment_time):
 		
 # Get appointment details
 # [GET] 
-@app.route("/appointment/<string:aid>")
-def get_appointment_details(aid):
-    appointment = Appointments.query.filter_by(aid=aid).first()
+@app.route("/appointment/<string:appointment_id>")
+def get_appointment_details(appointment_id):
+    appointment = Appointments.query.filter_by(appointment_id=appointment_id).first()
     if appointment:
         return jsonify(
             {
@@ -151,9 +155,9 @@ def get_appointment_details(aid):
 
 # Change Date & Time of appointment 
 # [PUT] 
-@app.route("/appointment/<string:aid>", methods=['PUT'])
-def change_appointment_details(aid):
-    appointment = Appointments.query.filter_by(aid=aid).first()
+@app.route("/appointment/<string:appointment_id>", methods=['PUT'])
+def change_appointment_details(appointment_id):
+    appointment = Appointments.query.filter_by(appointment_id=appointment_id).first()
     if appointment:
         data = request.get_json()
         if data['appointment_date']:
@@ -172,7 +176,7 @@ def change_appointment_details(aid):
         {
             "code": 404,
             "data": {
-                "aid": aid
+                "appointment_id": appointment_id
             },
             "message": "Appointment not found."
         }
@@ -180,9 +184,9 @@ def change_appointment_details(aid):
 
 # Delete appointment details
 # [DELETE]
-@app.route("/appointment/<string:aid>", methods=['DELETE'])
-def delete_appointment_details(aid):
-    appointment = Appointments.query.filter_by(aid=aid).first()
+@app.route("/appointment/<string:appointment_id>", methods=['DELETE'])
+def delete_appointment_details(appointment_id):
+    appointment = Appointments.query.filter_by(appointment_id=appointment_id).first()
     if appointment:
         db.session.delete(appointment)
         db.session.commit()
@@ -190,7 +194,7 @@ def delete_appointment_details(aid):
             {
                 "code": 200,
                 "data": {
-                    "aid": aid
+                    "appointment_id": appointment_id
                 }
             }
         )
@@ -198,7 +202,7 @@ def delete_appointment_details(aid):
         {
             "code": 404,
             "data": {
-                "aid": aid
+                "appointment_id": appointment_id
             },
             "message": "Appointment not found."
         }
@@ -275,6 +279,6 @@ def get_all_appointments():
 if __name__ == '__main__':
     print("This is flask for " + os.path.basename(__file__) +
           ": patient appointment ...")
-    app.run(host='0.0.0.0', port=5002, debug=True)
+    app.run(host='0.0.0.0', port=5005, debug=True)
 
 
