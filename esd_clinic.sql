@@ -89,7 +89,7 @@ CREATE TABLE IF NOT EXISTS `appointment` (
   `appointment_id` int(5) NOT NULL AUTO_INCREMENT,
   `NRIC` varchar(9) NOT NULL,
   `appointment_date` date NOT NULL,
-  `appointment_time` varchar(15) NOT NULL,
+  `appointment_time` varchar(9) NOT NULL,
   `did` int(5) DEFAULT NULL,
   `doctor_name` varchar(15) DEFAULT NULL,
   `status` varchar(10) NOT NULL DEFAULT 'booked',

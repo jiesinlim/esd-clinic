@@ -93,6 +93,7 @@ def add_new_appointment():
     NRIC = request.json.get('NRIC', None)
     appointment_date = request.json.get('appointment_date', None)
     appointment_time = request.json.get('appointment_time', None)
+    status = 'booked'
 
     if (Appointments.query.filter_by(NRIC=NRIC, appointment_date=appointment_date, appointment_time=appointment_time).first()):
         return jsonify(
