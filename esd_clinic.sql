@@ -86,22 +86,22 @@ INSERT INTO `patient` (`NRIC`, `patient_name`, `gender`, `contact_number`, `emai
 
 DROP TABLE IF EXISTS `appointment`;
 CREATE TABLE IF NOT EXISTS `appointment` (
-  `aid` int(5) NOT NULL AUTO_INCREMENT,
+  `appointment_id` int(5) NOT NULL AUTO_INCREMENT,
   `NRIC` varchar(9) NOT NULL,
   `appointment_date` date NOT NULL,
-  `appointment_time` varchar(15) NOT NULL,
+  `appointment_time` varchar(9) NOT NULL,
   `did` int(5) DEFAULT NULL,
   `doctor_name` varchar(15) DEFAULT NULL,
   `status` varchar(10) NOT NULL DEFAULT 'booked',
   `room_no` varchar(10) NULL,
-  PRIMARY KEY (`aid`)
+  PRIMARY KEY (`appointment_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `appointment`
 --
 
-INSERT INTO `appointment` (`aid`, `NRIC`, `appointment_date`, `appointment_time`, `did`, `doctor_name`, `status`, `room_no`) VALUES
+INSERT INTO `appointment` (`appointment_id`, `NRIC`, `appointment_date`, `appointment_time`, `did`, `doctor_name`, `status`, `room_no`) VALUES
 (1, 'T0123456U', '2021-03-22', '1000', NULL, NULL, 'booked', NULL),
 (2, 'T1234567I', '2021-03-21', '1300', NULL, NULL, 'booked', NULL),
 (3, 'S1234567J', '2021-03-23', '1500', NULL, NULL, 'booked', NULL),
