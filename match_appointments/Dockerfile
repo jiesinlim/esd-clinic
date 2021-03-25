@@ -4,4 +4,4 @@ WORKDIR /usr/src/app
 COPY http.reqs.txt ./
 RUN pip install --no-cache-dir -r http.reqs.txt
 COPY nurse_microservice/nurse.py .
-CMD [ "python", "nurse.py" ]
+CMD [ "python", "match.py" ]
