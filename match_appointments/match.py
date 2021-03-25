@@ -10,7 +10,7 @@ from invokes import invoke_http
 app = Flask(__name__)
 CORS(app)
 
-# appointments_URL = "http://localhost:5000/appointment/" # check correct patient url for updating patient record
+appointments_URL = "http://localhost:5005/appointment/" # check correct patient url for updating patient record
 doctor_datetime_URL = "http://127.0.0.1:5001/doctor/datetime/" # add patient booked datetime to doctor_URL
 doctor_URL = "http://127.0.0.1:5001/doctor/" #update doctor availability (remove alr matched timeslot)
 
@@ -26,58 +26,57 @@ def getAvailDoctors(datetime):
     # for i in range(len(availDoctors)):
     #     print(availDoctors[i])
 
-# def updateMatchDetails(appt_id,avail_id,doc_id,doc_name,time):
-#     #get patient appointment by appt id
-#     print('\n-----Invoking appointment microservice-----')
-#     appt_details = invoke_http(appointments_URL + str(appt_id), method='GET')
-#     print('appointment details:', appt_details)
-#     appt_obj = json.loads(appt_details)
+def updateMatchDetails(appt_id,avail_id,doc_id,doc_name,time,doc_currentavail):
+    #get patient appointment by appt id
+    # print('\n-----Invoking appointment microservice-----')
+    # appt_details = invoke_http(appointments_URL + str(appt_id), method='GET')
+    # print('appointment details:', appt_details)
+    # appt_obj = json.loads(appt_details)
 
-#     #update patient appointment with assigned doctor id and name
-#     # Invoke the appointment microservice
-#     print('\n-----Invoking appointments microservice-----')
-#     doctor_details = jsonify(
-#         {
-#             aid: appt_id,
-#             NRIC: appt_obj.data.NRIC,
-#             appointment_date: appt_obj.data.appointment_date,
-#             appointment_time: appt_obj.data.appointment_time,
-#             did: doc_id,
-#             doctor_name: doc_name,
-#             status: appt_obj.data.status,
-#             room_no: appt_obj.data.room_no
-#         }
-#     )
-#     assignDoctor = invoke_http(appointments_URL + str(appt_id), method='PATCH', json=doctor_details)
-#     print('Match result:', assignDoctor)
+    #update patient appointment with assigned doctor id and name
+    # Invoke the appointment microservice
+    print('\n-----Invoking appointments microservice-----')
+    doctor_details = jsonify(
+        {
+            aid: "",
+            nric: "",
+            appointment_date: "",
+            appointment_time: "",
+            did: doc_id,
+            doctor_name: doc_name,
+            status: "matched",
+            room_no: ""
+        }
+    )
+    assignDoctor = invoke_http(appointments_URL + str(appt_id), method='PATCH', json=doctor_details)
+    print('Match result:', assignDoctor)
 
-#     # get doctors by aid
-#     print('\n-----Invoking doctor microservice-----')
-#     doctor_details = invoke_http(doctor_URL + str(avail_id), method='GET')
-#     print('assigned doctor result:', doctor_details)
+    # get doctors by aid
+    # print('\n-----Invoking doctor microservice-----')
+    # doctor_details = invoke_http(doctor_URL + str(avail_id), method='GET')
+    # print('assigned doctor result:', doctor_details)
 
-#     # handle doctor availability 
-#     avail_obj = json.loads(doctor_details)
-#     currentAvail = avail_obj.data.availability
-#     time_array = currentAvail.split(", ")
-#     updated_array = time_array.remove(time)
-#     newAvailability = ', '.join([str(slot) for slot in updated_array])
-#     new_avail = jsonify(
-#         {
-#             aid: avail_obj.data.aid,
-#             availability: newAvailability,
-#             date: avail_obj.data.date,
-#             did: avail_obj.data.did,
-#             name: avail_obj.data.name
-#         }
-#     )
+    # handle doctor availability 
 
-#     # update doctor(specific avail_id) availability
-#     # Invoke the doctor microservice
-#     print('\n-----Invoking appointments microservice-----')
+    time_array = doc_currentavail.split(", ")
+    updated_array = time_array.remove(time)
+    newAvailability = ', '.join([str(slot) for slot in updated_array])
+    new_avail = jsonify(
+        {
+            aid: "",
+            availability: newAvailability,
+            date: "",
+            did: "",
+            name: ""
+        }
+    )
 
-#     updateAvailability = invoke_http(doctor_URL + str(appt_id), method='PATCH', json=new_avail)
-#     print('updated timeslot result:', updateAvailability)
+    # update doctor(specific avail_id) availability
+    # Invoke the doctor microservice
+    print('\n-----Invoking appointments microservice-----')
+
+    updateAvailability = invoke_http(doctor_URL + str(avail_id), method='PATCH', json=new_avail)
+    print('updated timeslot result:', updateAvailability)
 
 
 
@@ -106,43 +105,46 @@ def getAvailDoctorsbyDatetime(datetime):
     }), 400
     
 
-# @app.route("/match", methods=['PATCH','GET'])
-# def match_doctor():
-#     # Simple check of input format and data of the request are JSON
-#     if request.is_json:
-#         try:
-#             match = request.get_json()  #pass both assigned doctor and patient id and name, appt time
-#             print("\nReceived a doctor-patient match in JSON:", match)
+@app.route("/match", methods=['PATCH'])
+def match_doctor():
+    # Simple check of input format and data of the request are JSON
+    if request.is_json:
+        try:
+            match = request.get_json()  #pass both assigned doctor and patient id and name, appt time
+            print("\nReceived a doctor-patient match in JSON:", match)
 
-#             # do the actual work
-#             #parse match into 4 separate values
-#             appt_id = match[0]
-#             did = match[1]
-#             doc_name = match[2]
-#             time = match[3]
+            # do the actual work
+            #parse match into 4 separate values
+            appt_id = match[0]
+            avail_id = match[1]
+            doc_id = match[2]
+            doc_name = match[3]
+            time = match[4]
+            doc_currentavail = match[5]  #get this info by getting doctor's full availability by avail_id
 
-#             result = updateMatchDetails(appt_id,avail_id,doc_id,doc_name,time)
-#             print('\n------------------------')
-#             print('\nresult: ', result)
-#             return jsonify(result), result["code"]
 
-#         except Exception as e:
-#             # Unexpected error in code
-#             exc_type, exc_obj, exc_tb = sys.exc_info()
-#             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-#             ex_str = str(e) + " at " + str(exc_type) + ": " + fname + ": line " + str(exc_tb.tb_lineno)
-#             print(ex_str)
+            result = updateMatchDetails(appt_id,avail_id,doc_id,doc_name,time, doc_currentavail)
+            print('\n------------------------')
+            print('\nresult: ', result)
+            return jsonify(result), result["code"]
 
-#             return jsonify({
-#                 "code": 500,
-#                 "message": "match.py internal error: " + ex_str
-#             }), 500
+        except Exception as e:
+            # Unexpected error in code
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            ex_str = str(e) + " at " + str(exc_type) + ": " + fname + ": line " + str(exc_tb.tb_lineno)
+            print(ex_str)
 
-#     # if reached here, not a JSON request.
-#     return jsonify({
-#         "code": 400,
-#         "message": "Invalid JSON input: " + str(request.get_data())
-#     }), 400
+            return jsonify({
+                "code": 500,
+                "message": "match.py internal error: " + ex_str
+            }), 500
+
+    # if reached here, not a JSON request.
+    return jsonify({
+        "code": 400,
+        "message": "Invalid JSON input: " + str(request.get_data())
+    }), 400
 
 
 
