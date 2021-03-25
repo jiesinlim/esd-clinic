@@ -269,7 +269,12 @@ def get_all_appointments():
 #         pass
 # # -------------------------------------------------
 
+# if __name__ == '__main__':
+#     app.run(port=5002, debug=True)
+
 if __name__ == '__main__':
-    app.run(port=5000, debug=True)
+    print("This is flask for " + os.path.basename(__file__) +
+          ": patient appointment ...")
+    app.run(host='0.0.0.0', port=5002, debug=True)
 
 
