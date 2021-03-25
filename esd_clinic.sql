@@ -28,11 +28,11 @@ USE `esd_clinic`;
 -- --------------------------------------------------------
 
 --
--- Table structure for table `doctor`
+-- Table structure for table `availability`
 --
 
-DROP TABLE IF EXISTS `doctor`;
-CREATE TABLE IF NOT EXISTS `doctor` (
+DROP TABLE IF EXISTS `availability`;
+CREATE TABLE IF NOT EXISTS `availability` (
   `aid` int(11) NOT NULL AUTO_INCREMENT,
   `did` int(11) NOT NULL,
   `name` char(26) NOT NULL,
@@ -42,10 +42,10 @@ CREATE TABLE IF NOT EXISTS `doctor` (
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 
 --
--- Dumping data for table `doctor`
+-- Dumping data for table `availability`
 --
 
-INSERT INTO `doctor` (`aid`, `did`, `name`, `date`, `availability`) VALUES
+INSERT INTO `availability` (`aid`, `did`, `name`, `date`, `availability`) VALUES
 (1, 1, 'Dr. Marcus', '2021-03-21', '0900, 1000, 1100, 1300, 1400, 1500'),
 (2, 2, 'Dr. Alan', '2021-03-22', '1200, 1300, 1400, 1500, 1600, 1700'),
 (3, 3, 'Dr. Hong Seng', '2021-03-23', '1600, 1700, 1800, 1900, 2000, 2100'),
@@ -86,22 +86,22 @@ INSERT INTO `patient` (`NRIC`, `patient_name`, `gender`, `contact_number`, `emai
 
 DROP TABLE IF EXISTS `appointment`;
 CREATE TABLE IF NOT EXISTS `appointment` (
-  `aid` int(5) NOT NULL AUTO_INCREMENT,
+  `appointment_id` int(5) NOT NULL AUTO_INCREMENT,
   `NRIC` varchar(9) NOT NULL,
   `appointment_date` date NOT NULL,
-  `appointment_time` varchar(15) NOT NULL,
+  `appointment_time` varchar(9) NOT NULL,
   `did` int(5) DEFAULT NULL,
   `doctor_name` varchar(15) DEFAULT NULL,
   `status` varchar(10) NOT NULL DEFAULT 'booked',
   `room_no` varchar(10) NULL,
-  PRIMARY KEY (`aid`)
+  PRIMARY KEY (`appointment_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `appointment`
 --
 
-INSERT INTO `appointment` (`aid`, `NRIC`, `appointment_date`, `appointment_time`, `did`, `doctor_name`, `status`, `room_no`) VALUES
+INSERT INTO `appointment` (`appointment_id`, `NRIC`, `appointment_date`, `appointment_time`, `did`, `doctor_name`, `status`, `room_no`) VALUES
 (1, 'T0123456U', '2021-03-22', '1000', NULL, NULL, 'booked', NULL),
 (2, 'T1234567I', '2021-03-21', '1300', NULL, NULL, 'booked', NULL),
 (3, 'S1234567J', '2021-03-23', '1500', NULL, NULL, 'booked', NULL),

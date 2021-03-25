@@ -1,13 +1,15 @@
 from flask import Flask, request, jsonify
 from os import environ
 import requests
+import os
 
 app = Flask(__name__)
 
-#retrieve name and email address, msg remains the same
-@app.route("/book/<string:msg>", methods=['POST'])
-def create_book(msg):
+#retrieve name, email address & date\time of appt
+@app.route("/notification", methods=['POST'])
+def create_book():
     url = "https://rapidprod-sendgrid-v1.p.rapidapi.com/mail/send"
+    #dissect the info here and put it into payload
 
     payload = "{\"personalizations\": [{\"to\": [{\"email\": \"kameolimjiesin@gmail.com\"}],\"subject\": \"Hello, World!789\"}],\"from\": {\"email\": \"jiesin.lim.2019@smu.edu.sg\"},\"content\": [{\"type\": \"text/plain\",\"value\": \"Hello, World!omggg\"}]}"
     headers = {
@@ -18,8 +20,23 @@ def create_book(msg):
 
     response = requests.request("POST", url, data=payload, headers=headers)
 
-    print(response.text)
+    
+    if(response):
+        return jsonify(
+        {
+            "code": 200,
+            "message": "The email is sent successfully."
+        })
+    else:
+        return jsonify(
+        {
+            "code": 500,
+            "message": "The email failed to send."
+        })
+
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    print("This is flask for " + os.path.basename(__file__) +
+          ": notification ...")
+    app.run(host='0.0.0.0', port=5003, debug=True)
 

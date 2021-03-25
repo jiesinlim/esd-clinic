@@ -1,5 +1,5 @@
 //var get_all_URL = "http://localhost:8000/api/v1/doctor";
-var get_all_URL = "http://localhost:5001/doctor";
+var get_all_URL = "http://localhost:5001/match";
 
 var app = new Vue({
     el: "#app",
@@ -49,7 +49,7 @@ var app = new Vue({
                         // no doctors in db
                         this.message = data.message;
                     } else {
-                        this.doctors = data.data.doctor_availability;
+                        this.doctors = data.data.doctoravail;
                     }
                 })
                 .catch(error => {
@@ -156,7 +156,7 @@ var app = new Vue({
             });
 
             fetch(`${get_all_URL}`, {
-                    method: "PATCH",
+                    method: "PUT",
                     headers: {
                         "Content-type": "application/json"
                     },
