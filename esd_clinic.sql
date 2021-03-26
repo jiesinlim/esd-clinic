@@ -35,17 +35,17 @@ DROP TABLE IF EXISTS `availability`;
 CREATE TABLE IF NOT EXISTS `availability` (
   `aid` int(11) NOT NULL AUTO_INCREMENT,
   `did` int(11) NOT NULL,
-  `name` char(26) NOT NULL,
+  `doctor_name` char(26) NOT NULL,
   `date` date NOT NULL,
   `availability` varchar(1000) DEFAULT NULL,
-  PRIMARY KEY (`aid`)
+  CONSTRAINT `availability_pk` PRIMARY KEY (`aid`, `did`, `doctor_name`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `availability`
 --
 
-INSERT INTO `availability` (`aid`, `did`, `name`, `date`, `availability`) VALUES
+INSERT INTO `availability` (`aid`, `did`, `doctor_name`, `date`, `availability`) VALUES
 (1, 1, 'Dr. Marcus', '2021-03-21', '0900, 1000, 1100, 1300, 1400, 1500'),
 (2, 2, 'Dr. Alan', '2021-03-22', '1200, 1300, 1400, 1500, 1600, 1700'),
 (3, 3, 'Dr. Hong Seng', '2021-03-23', '1600, 1700, 1800, 1900, 2000, 2100'),
@@ -65,7 +65,7 @@ CREATE TABLE IF NOT EXISTS `patient` (
   `patient_name` varchar(15) NOT NULL,
   `gender` varchar(15) NOT NULL,
   `contact_number` int(8) NOT NULL,
-  `email` varchar(15) NOT NULL,
+  `email` varchar(50) NOT NULL,
   PRIMARY KEY (`NRIC`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 
@@ -87,6 +87,7 @@ INSERT INTO `patient` (`NRIC`, `patient_name`, `gender`, `contact_number`, `emai
 DROP TABLE IF EXISTS `appointment`;
 CREATE TABLE IF NOT EXISTS `appointment` (
   `appointment_id` int(5) NOT NULL AUTO_INCREMENT,
+  `aid` int(11) NOT NULL,
   `NRIC` varchar(9) NOT NULL,
   `appointment_date` date NOT NULL,
   `appointment_time` varchar(9) NOT NULL,
@@ -94,39 +95,27 @@ CREATE TABLE IF NOT EXISTS `appointment` (
   `doctor_name` varchar(15) DEFAULT NULL,
   `status` varchar(10) NOT NULL DEFAULT 'booked',
   `room_no` varchar(10) NULL,
-  PRIMARY KEY (`appointment_id`)
+  PRIMARY KEY (`appointment_id`),
+  CONSTRAINT `appointment_fk_nric` FOREIGN KEY (`NRIC`) REFERENCES `patient` (`NRIC`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `appointment_fk_did_doctor_name` FOREIGN KEY (`aid`, `did`, `doctor_name`) REFERENCES `availability` (`aid`, `did`, `doctor_name`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `appointment`
 --
 
-INSERT INTO `appointment` (`appointment_id`, `NRIC`, `appointment_date`, `appointment_time`, `did`, `doctor_name`, `status`, `room_no`) VALUES
-(1, 'T0123456U', '2021-03-22', '1000', NULL, NULL, 'booked', NULL),
-(2, 'T1234567I', '2021-03-21', '1300', NULL, NULL, 'booked', NULL),
-(3, 'S1234567J', '2021-03-23', '1500', NULL, NULL, 'booked', NULL),
-(4, 'J1234567I', '2021-03-23', '1900', NULL, NULL, 'booked', NULL),
-(5, 'P1234567I', '2021-03-22', '1400', NULL, NULL, 'booked', NULL);
-
+INSERT INTO `appointment` (`appointment_id`, `aid`, `NRIC`, `appointment_date`, `appointment_time`, `did`, `doctor_name`, `status`, `room_no`) VALUES
+(1, 1, 'T0123456U', '2021-03-22', '1000', NULL, NULL, 'booked', NULL),
+(2, 2, 'T1234567I', '2021-03-21', '1300', NULL, NULL, 'booked', NULL),
+(3, 3, 'S1234567J', '2021-03-23', '1500', NULL, NULL, 'booked', NULL),
+(4, 4, 'J1234567I', '2021-03-23', '1900', NULL, NULL, 'booked', NULL),
+(5, 5, 'P1234567I', '2021-03-22', '1400', NULL, NULL, 'booked', NULL);
+COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 
-DROP TABLE IF EXISTS `patientlogin`;
-CREATE TABLE IF NOT EXISTS `patientlogin` (
-  `Name` char(50),
-  `NRIC` varchar(9) NOT NULL,
-  PRIMARY KEY (`Name`)
-);
-
-INSERT INTO `patientlogin` (`Name`, `NRIC`) VALUES
-('Leslie', 'T0123456U'),
-('Reuben', 'T1234567I'),
-('Jasmine', 'S1234567J'),
-('Amelia', 'J1234567I'),
-('Jack', 'P1234567I');
-COMMIT;
 
 
 
