@@ -80,7 +80,7 @@
         <table class="table table-hover table-bordered">
           <thead class="table-info">
             <tr>
-              <th scope="col">Patient ID</th>
+              <th scope="col">Appointment ID</th>
               <th scope="col">Patient Name</th>
               <th scope="col">Appointment Date</th>
               <th scope="col">Appointment Time</th>
@@ -92,13 +92,13 @@
           </thead>
           <tbody>
             <tr v-for="appointment in appointments" class="table-light">
-              <th scope="row"> {{appointment.apid}} </th>
-              <td>{{appointment.pname}}</td>
-              <td> {{appointment.date}} </td>
-              <td> {{appointment.time}} </td>
+              <th scope="row"> {{appointments.id}} </th>
+              <td>{{appointments.pname}}</td>
+              <td> {{appointments.date}} </td>
+              <td> {{appointments.time}} </td>
               <td> </td>
               <td> </td>
-              <td> {{appointment.status}} </td>
+              <td> {{appointments.status}} </td>
               <td><a href="nurseUI-matchPg.html" class="btn btn-success">Match</a></td>
             </tr>
             
@@ -121,7 +121,48 @@
   </section><!-- #intro -->
 
   <script>
-   
+    var get_all_appointments = "http://localhost:5000/appointment/all";
+
+    var app = new Vue({
+        el: "#app",
+        computed: {
+            appointments: function () {
+                return this.appointments.length > 0;
+            }
+        },
+        data: {
+            appointment_id: "",
+            patient_name: "",
+            message: "There is a problem retrieving appointments data, please try again later.",
+            appointment_date: "",
+            appointment_time: "",
+            did: "",
+            doctor_name: "",
+            status: "",
+        },
+        methods: {
+            getAllAppointments: function () {
+                // on Vue instance created, load the book list
+                const response =
+                    fetch(get_all_appointments)
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log(response);
+                            if (data.code === 404) {
+                                // no appointment in db
+                                this.message = data.message;
+                            } else {
+                                this.appointments = data.data.appointments;
+                            }
+                        })
+                        .catch(error => {
+                            // Errors when calling the service; such as network error, 
+                            // service offline, etc
+                            console.log(this.message + error);
+
+                        });
+
+    
   </script>
 
   <!--==========================
