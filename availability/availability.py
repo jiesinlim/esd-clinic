@@ -25,19 +25,19 @@ class Availability(db.Model):
 
     aid = db.Column(db.Integer, primary_key=True)
     did = db.Column(db.Integer, nullable=False)
-    name = db.Column(db.String(26), nullable=False)
+    doctor_name = db.Column(db.String(26), nullable=False)
     date = db.Column(db.Date, nullable=False)
     availability = db.Column(db.VARCHAR(1000), nullable=True)
 
     def __init__(self, aid, did, name, date, availability):
         self.aid = aid
         self.did = did
-        self.name = name
+        self.doctor_name = name
         self.date = date
         self.availability = availability
 
     def json(self):
-        return {"aid": self.aid, "did": self.did, "name": self.name, "date": self.date, "availability": self.availability}
+        return {"aid": self.aid, "did": self.did, "name": self.doctor_name, "date": self.date, "availability": self.availability}
 
 
 @app.route("/doctor")
