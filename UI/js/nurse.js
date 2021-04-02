@@ -1,16 +1,21 @@
 //var get_all_URL = "http://localhost:8000/api/v1/doctor";
-var get_all_URL = "http://localhost:5001/match";
+// var get_all_URL = "http://localhost:5001/match";
+var get_all_appts_URL = "http://127.0.0.1:5005/appointment/all";
+var get_avail_doctors_URL = "http://localhost:5002/availdoctors";
+var match_URL = "http://localhost:5002/match";
+
 
 var app = new Vue({
     el: "#app",
     computed: {
-        hasDoctors: function () {
-            return this.doctors.length > 0;
+        hasAppts: function () {
+            return this.appointments.length > 0;
         }
     },
     data: {
-        aid: "",
-        "doctors": [],
+        appointments:[],
+        appt_id: "",
+        datetime: "",
         message: "There is a problem retrieving doctors data, please try again later.",
         statusMessage: "",
 
@@ -38,10 +43,10 @@ var app = new Vue({
         editDoctorError: "",
     },
     methods: {
-        getAllDoctors: function () {
+        getAllAppointments: function () {
             // on Vue instance created, load the book list
             const response =
-                fetch(get_all_URL)
+                fetch(get_all_appts_URL)
                 .then(response => response.json())
                 .then(data => {
                     console.log(response);
@@ -49,7 +54,10 @@ var app = new Vue({
                         // no doctors in db
                         this.message = data.message;
                     } else {
-                        this.doctors = data.data.doctoravail;
+                        this.appt_id = data.data.appointment_id;
+                        this.appointments = data.data.appointment_id;
+                        this.date = data.data.date;
+                        this.time = data.data.time;
                     }
                 })
                 .catch(error => {
@@ -60,10 +68,10 @@ var app = new Vue({
                 });
 
         },
-        findDoctor: function () {
+        getAvailDoctors: function () {
             console.log(this.aid);
             const response =
-                fetch(`${get_all_URL}/${this.aid}`)
+                fetch(`${get_avail_doctors_URL}/${this.aid}`)
                 .then(response => response.json())
                 .then(data => {
                     console.log(response);

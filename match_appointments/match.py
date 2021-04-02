@@ -115,12 +115,12 @@ def match_doctor():
 
             # do the actual work
             #parse match into 4 separate values
-            appt_id = match[0]
-            avail_id = match[1]
-            doc_id = match[2]
-            doc_name = match[3]
-            time = match[4]
-            doc_currentavail = match[5]  #get this info by getting doctor's full availability by avail_id
+            appt_id = match.appointment_id
+            avail_id = match.aid
+            doc_id = match.did
+            doc_name = match.d_name
+            time = match.appt_time
+            doc_currentavail = match.doc_avail  #get this info by getting doctor's full availability by avail_id
 
 
             result = updateMatchDetails(appt_id,avail_id,doc_id,doc_name,time, doc_currentavail)
