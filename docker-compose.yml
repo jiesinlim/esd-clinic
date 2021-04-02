@@ -26,7 +26,7 @@ services:
     image: marcsoh/availability:latest
     restart: always
     environment:
-      dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/esd_clinic
+      dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/availability
       PYTHONUNBUFFERED: 1
     ports:
       - "5001:5001"
