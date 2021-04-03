@@ -18,7 +18,13 @@ def create_book():
     url = "https://rapidprod-sendgrid-v1.p.rapidapi.com/mail/send"
     #dissect the info here and put it into payload
 
-    payload = "{\"personalizations\": [{\"to\": [{\"email\": \"lewanna.erh.2019@smu.edu.sg\"}],\"subject\": \"Hello, World!789\"}],\"from\": {\"email\": \"jiesin.lim.2019@smu.edu.sg\"},\"content\": [{\"type\": \"text/plain\",\"value\": \"Hello, World!omggg\"}]}"
+    name = 'jiesin'
+    email = 'jiesin.lim.2019@smu.edu.sg'
+    appointment_time = '1100'
+
+    msg = "Dear "+name+", \\n\\nYour appointment with G9T6 clinic will take place tomorrow at "+appointment_time+". Please arrive 5 minutes before your appointment time to check in. Thank you and see you.\\n\\nBest Regards, \\nG9T6 Clinic"
+
+    payload = "{\"personalizations\": [{\"to\": [{\"email\":\"" + email + "\"}],\"subject\": \"Upcoming appointment details\"}],\"from\": {\"email\": \"esd.g9t6clinic@gmail.com\"},\"content\": [{\"type\": \"text/plain\",\"value\":\"" + msg + "\"}]}"
     headers = {
         'content-type': "application/json",
         'x-rapidapi-key': "ba007e6714msh5ec101f1353401cp18c367jsncafd61131b64",
@@ -62,13 +68,7 @@ def updateConfirmDetails(appt_id,avail_id,doc_id,doc_name,time,doc_currentavail)
     print('Update result:', updateStatus)
 
 def getConfirmedAppointmentDetails(appt_id,email,nric,appointment_date,appointment_time,doc_id,doc_name): 
-    #get patient appointment by appt id
-    # print('\n-----Invoking appointment microservice-----')
-    # appt_details = invoke_http(appointments_URL + str(appt_id), method='GET')
-    # print('appointment details:', appt_details)
-    # appt_obj = json.loads(appt_details)
-
-    #update patient appointment with assigned doctor id and name
+    #update patient appointment with confirmed status
     # Invoke the appointment microservice
     
     print('\n-----Invoking appointments microservice-----')
@@ -78,17 +78,12 @@ def getConfirmedAppointmentDetails(appt_id,email,nric,appointment_date,appointme
 @app.route("/appointment/confirmed", methods = ['GET'])
 def get_confirmed_appointments():
    try:
-        # data = request.get_json() #pass data of patient's appt time and date
-        # date = data.appointment_date
-        # time = data.appointment_time
-            print("\nReceived a patient's appointment date & time in JSON:", datetime)
-
         # do the actual work
-            result = getConfirmedAppointmentDetails()
-            return result, result["code"]
+        result = getConfirmedAppointmentDetails()
+        return result, result["code"]
 
-        except Exception as e:
-            pass  # do nothing.
+    except Exception as e:
+        pass  # do nothing.
 
     # if reached here, not a JSON request.
     return jsonify({

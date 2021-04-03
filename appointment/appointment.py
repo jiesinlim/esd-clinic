@@ -14,6 +14,8 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from datetime import datetime
 import json
+
+import os, sys
 from os import environ
 
 app = Flask(__name__)
@@ -49,7 +51,7 @@ class Patient(db.Model):
                 "email": self.email}
 
 class Appointments(db.Model):
-    __tablename__ = 'appointment'
+    __tablename__ = 'appointment' 
     
     #appointment_id is auto-generated
     # appointment_id = db.Column(primary_key=True, db.ForeignKey(
@@ -57,6 +59,7 @@ class Appointments(db.Model):
     
     # !!! need to test which code can auto-increment the appointment_id
     appointment_id = db.Column(db.Integer, primary_key=True)
+    aid = db.Column(db.Integer, nullable=False)
     NRIC = db.Column(db.VARCHAR(9), nullable=False)
     appointment_date = db.Column(db.Date, nullable=False)
     appointment_time = db.Column(db.VARCHAR(9), nullable=False)
@@ -65,8 +68,9 @@ class Appointments(db.Model):
     status = db.Column(db.VARCHAR(10), nullable=False)
     room_no = db.Column(db.VARCHAR(10), nullable=True)
 
-    def __init__(self, appointment_id, NRIC, did, doctor_name, appointment_date, appointment_time, status, room_no):
+    def __init__(self, appointment_id, aid, NRIC, did, doctor_name, appointment_date, appointment_time, status, room_no):
         self.appointment_id = appointment_id
+        self.aid = aid
         self.NRIC = NRIC
         self.did = did
         self.doctor_name = doctor_name
@@ -76,15 +80,15 @@ class Appointments(db.Model):
         self.room_no = room_no
 
     def json(self):
-        return {"appointment_id": self.appointment_id, "NRIC":self.NRIC, 
+        return {"appointment_id": self.appointment_id, "aid": self.aid, "NRIC":self.NRIC, 
                 "did": self.did, "doctor_name": self.doctor_name, 
                 "appointment_date": self.appointment_date, 
                 "appointment_time": self.appointment_time, 
                 "status": self.status, "room_no": self.room_no}
 
 
-
-# Add new appointment
+# Tentatively not using this set of code
+""" # Add new appointment
 # [POST] 
 @app.route("/appointment", methods=['POST'])
 def add_new_appointment():
@@ -132,7 +136,55 @@ def add_new_appointment():
             "code": 201,
             "data": appointment.json()
         }
-    ), 201
+    ), 201 """
+
+
+
+#----------------------------------------------------------------------------------------------------------------
+# Add new appointment
+# [POST] 
+@app.route("/appointment/<string:NRIC>", methods=['POST'])
+def add_new_appointment(NRIC):
+    if (Appointments.query.filter_by(NRIC=NRIC).first()):
+        return jsonify(
+            {
+                "code": 400,
+                "data": {
+                    "NRIC": NRIC,
+                },
+                "message": "Appointment already exists."
+            }
+        ), 400
+
+    data = request.get_json()
+    appointment = Appointments(NRIC, **data)
+    #!!!!! check how to add status='booked'
+
+    try:
+        db.session.add(appointment)
+        db.session.commit()
+    except:
+
+        return jsonify(
+            {
+                "code": 500,
+                "data": {
+                    "NRIC": NRIC
+                },
+                "message": "An error occurred adding the new appointment"
+            }
+
+        ), 500
+
+    return jsonify(
+        {
+            "code": 201,
+            "data": appointment.json()
+        }
+    ), 201 
+
+
+#----------------------------------------------------------------------------------------------
 		
 # Get appointment details
 # [GET] 
