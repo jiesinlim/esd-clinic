@@ -12,14 +12,15 @@ var app = new Vue({
             return this.appointments.length > 0;
         },
         doctorsAvail: function() {
-            return this.doctors.length > 0;
+            return this.availableDoctors.length > 0;
         },
     },
     data: {
         message: "There is a problem retrieving appointment data, please try again later.",
         "appointments": [],
         noDrs: "There are currently no doctors available.",
-        "availableDoctors": []
+        "availableDoctors": [],
+        selected: ""
     },
     methods: {
         getAllAppointments: function () {
@@ -58,7 +59,7 @@ var app = new Vue({
                         console.log(response);
                         if (data.code === 404) {
                             // no doctor available in db
-                            this.message = data.message;
+                            this.noDrs = data.noDrs;
                         } else {
                 
                             this.availableDoctors = data.data.available_doctors;
@@ -77,6 +78,7 @@ var app = new Vue({
             created: function () {
             // on Vue instance created, load the appt list
             this.getAllAppointments();
+            this.getAvailDoctors();
         }
     });
     

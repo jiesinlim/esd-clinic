@@ -97,20 +97,22 @@
               <td>{{ record.NRIC }}</td>
               <td> {{ record.appointment_date }} </td>
               <td> {{ record.appointment_time }} </td>
-              <td> 
-                <select v-model="selected">
-                  <option v-for="doctor in availableDoctors">
-                      {{available_doctors.name}}
+              <td v-if="doctorsAvail"> 
+                <select v-model="selected" > 
+                  <option disabled value="">Please select a doctor</option>
+                  <option v-for="doctor in availableDoctors" :key='doctor.name'>
+                      {{ doctor.name }}
                   </option>
                 </select> 
                </td>
+               <td class='text-danger' v-else>{{ noDrs }}</td>
               <td> {{ record.status }} </td>
               <td><button class="btn btn-success" data-toggle="modal" data-target="#matchedModal" @click="deleteDrAvail()">Match</button> </td>
             </tr>
             
           </tbody>
         </table>
-        <div class="text-danger" v-if="!hasAppointments">{{ message }}</div> <!-- Error message if can't get data from microservice-->
+        <div class="text-danger" v-else>{{ message }}</div> <!-- Error message if can't get data from microservice-->
       </div>
     </div>
 
