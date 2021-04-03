@@ -21,37 +21,10 @@ SET time_zone = "+00:00";
 --
 -- Database: `esd_clinic`
 --
-CREATE DATABASE IF NOT EXISTS `esd_clinic` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+CREATE DATABASE IF NOT EXISTS `appointment` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
 
-USE `esd_clinic`;
+USE `appointment`;
 
--- --------------------------------------------------------
-
---
--- Table structure for table `availability`
---
-
-DROP TABLE IF EXISTS `availability`;
-CREATE TABLE IF NOT EXISTS `availability` (
-  `aid` int(11) NOT NULL AUTO_INCREMENT,
-  `did` int(11) NOT NULL,
-  `doctor_name` char(26) NOT NULL,
-  `date` date NOT NULL,
-  `availability` varchar(1000) DEFAULT NULL,
-  CONSTRAINT `availability_pk` PRIMARY KEY (`aid`, `did`, `doctor_name`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
-
---
--- Dumping data for table `availability`
---
-
-INSERT INTO `availability` (`aid`, `did`, `doctor_name`, `date`, `availability`) VALUES
-(1, 1, 'Dr. Marcus', '2021-03-21', '0900, 1000, 1100, 1300, 1400, 1500'),
-(2, 2, 'Dr. Alan', '2021-03-22', '1200, 1300, 1400, 1500, 1600, 1700'),
-(3, 3, 'Dr. Hong Seng', '2021-03-23', '1600, 1700, 1800, 1900, 2000, 2100'),
-(4, 4, 'Dr. Strange', '2021-03-24', '0900, 1000, 1500, 1800, 2000, 2100'),
-(5, 5, 'Dr. Oz', '2021-03-25', '1100, 1300, 1400, 1900, 2000, 2100'),
-(6, 6, 'Dr. Phil', '2021-03-26', '0800, 0900, 1000, 1100, 1200, 1300');
 
 -- --------------------------------------------------------
 
@@ -79,7 +52,6 @@ INSERT INTO `patient` (`NRIC`, `patient_name`, `gender`, `contact_number`, `emai
 ('S1234567J', 'Jasmine', 'F', '98374986', 'jasmine345@hotmail.com'),
 ('J1234567I', 'Amelia', 'F', '81097192', 'amelia456@abc.com'),
 ('P1234567I', 'Jack', 'M', '98683274', 'jack567@xyz.com');
-('S8888888A', 'Kelvin', 'M', '88888888', 'kelvin@kkk.com');
 
 --
 -- Table structure for table `appointment`
@@ -88,7 +60,7 @@ INSERT INTO `patient` (`NRIC`, `patient_name`, `gender`, `contact_number`, `emai
 DROP TABLE IF EXISTS `appointment`;
 CREATE TABLE IF NOT EXISTS `appointment` (
   `appointment_id` int(5) NOT NULL AUTO_INCREMENT,
-  `aid` int(11) DEFAULT NULL,
+  `aid` int(11) NOT NULL,
   `NRIC` varchar(9) NOT NULL,
   `appointment_date` date NOT NULL,
   `appointment_time` varchar(9) NOT NULL,
