@@ -10,7 +10,7 @@ var app = new Vue({
     },
     data: {
         aid: "",
-        datetime: "",
+        searchStr: "",
         "doctors": [],
         message: "There is a problem retrieving doctors data, please try again later.",
         statusMessage: "",
@@ -24,7 +24,7 @@ var app = new Vue({
         newAvailability: "",
         doctorAdded: false,
         addDoctorError: "",
-        
+
         availDeleted: false,
 
         edit: false,
@@ -62,49 +62,49 @@ var app = new Vue({
 
         },
         findDoctor: function () {
-            console.log(this.aid);
-            const response =
-                fetch(`${get_all_URL}/${this.aid}`)
-                .then(response => response.json())
-                .then(data => {
-                    console.log(response);
-                    if (data.code === 404) {
-                        // no doctor found in db
-                        this.searchError = data.message;
-                    } else {
-                        this.doctors = [data.data];
-                        this.searchError = "";
-                    }
-                })
-                .catch(error => {
-                    // Errors when calling the service; such as network error, 
-                    // service offline, etc
-                    console.log(this.searchError + error);
+            if (this.searchStr.length == 10) { //Find by Date (2021-03-25 is length 10)
+                const response =
+                    fetch(`${get_all_URL}/datetime/${this.searchStr}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(response);
+                        if (data.code === 404) {
+                            // no doctor found in db
+                            this.searchError = data.message;
+                        } else {
+                            this.doctors = data.data.available_doctors;
+                            console.log(this.doctors)
+                            this.searchError = "";
+                        }
+                    })
+                    .catch(error => {
+                        // Errors when calling the service; such as network error, 
+                        // service offline, etc
+                        console.log(this.searchError + error);
 
-                });
+                    });
+            } else { //Find by AID
+                const response =
+                    fetch(`${get_all_URL}/${this.searchStr}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(response);
+                        if (data.code === 404) {
+                            // no doctor found in db
+                            this.searchError = data.message;
+                        } else {
+                            this.doctors = [data.data];
+                            this.searchError = "";
+                        }
+                    })
+                    .catch(error => {
+                        // Errors when calling the service; such as network error, 
+                        // service offline, etc
+                        console.log(this.searchError + error);
 
-        },
-        findByDateTime: function () {
-            const response =
-                fetch(`${get_all_URL}/datetime/${this.datetime}`)
-                .then(response => response.json())
-                .then(data => {
-                    console.log(response);
-                    if (data.code === 404) {
-                        // no doctor found in db
-                        this.searchError = data.message;
-                    } else {
-                        this.doctors = data.data.available_doctors;
-                        console.log(this.doctors)
-                        this.searchError = "";
-                    }
-                })
-                .catch(error => {
-                    // Errors when calling the service; such as network error, 
-                    // service offline, etc
-                    console.log(this.searchError + error);
+                    });
+            }
 
-                });
 
         },
         addDoctor: function () {
@@ -215,7 +215,7 @@ var app = new Vue({
             //reset all data to original setting
             this.aid = aid;
             this.availDeleted = false;
-            
+
             this.doctorAdded = false;
             this.addDoctorError = "";
             this.statusMessage = "";
@@ -258,7 +258,7 @@ var app = new Vue({
             this.edit = false;
             this.searchError = "";
             this.aid = "";
-            this.datetime = "";
+            this.searchStr = "";
         }
     },
     created: function () {

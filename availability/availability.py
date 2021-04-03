@@ -58,7 +58,7 @@ def get_all():
     return jsonify(
         {
             "code": 404,
-            "message": "There are no doctors."
+            "message": "There are no doctor availabilities."
         }
     ), 404
 
@@ -76,7 +76,7 @@ def find_by_aid(aid):
     return jsonify(
         {
             "code": 404,
-            "message": "Doctor not found."
+            "message": "Doctor availability not found."
         }
     ), 404
 
@@ -201,7 +201,7 @@ def find_by_appointmentslot(appointment):
     return jsonify(
         {
             "code": 404,
-            "message": "There are currently no doctors available at this appointment timeslot."
+            "message": "There are currently no doctors available at this date/time."
         }
     ), 404
 

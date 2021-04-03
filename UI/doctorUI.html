@@ -156,16 +156,17 @@
     <section class="wow fadeInUp mt-4"> <!-- Availability search bar and tables START-->
       <div class="container"> <!-- container START-->
         <div v-show="!edit"> <!-- v-show: !edit START-->
-          <span style='font-size: 20px;'> Search by Availability S/N: </span>
-          <input id="avail" v-model="aid" placeholder="Availability S/N">
-          <button @click="findDoctor()" type="button" class="btn btn-blue mx-2">Search</button>
-
-
-          <span style='font-size: 20px;'> Search by Date: </span>
-          <input id="datetime" v-model="datetime" placeholder="e.g. 2021-03-25">
-          <button @click="findByDateTime()" type="button" class="btn btn-blue mx-2">Search</button>
-
-          <button @click="pageRefresh()" type="button" class="btn btn-blue float-right">Clear All</button><br>
+          <!-- Search -->
+          <div class="input-group">
+            <input v-model="searchStr" type="text" class="form-control"
+              placeholder="Search for availabilities e.g Availability S/N: 1 or Date: 2021-03-25"
+              aria-label="Recipient's username"
+              aria-describedby="basic-addon2">
+            <div class="input-group-append">
+              <button @click="findDoctor()"  class="btn btn-blue" type="button">Search</button>
+              <button @click="pageRefresh()" class="btn btn-outline-info" type="button">Clear All</button>
+            </div>
+          </div> <!-- End Search-->
 
           <span class="text-danger" v-if="searchError!=''">
             {{ searchError}}
