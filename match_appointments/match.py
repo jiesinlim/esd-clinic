@@ -11,8 +11,9 @@ app = Flask(__name__)
 CORS(app)
 
 appointments_URL = "http://localhost:5005/appointment/" # check correct patient url for updating patient record
-doctor_datetime_URL = "http://127.0.0.1:5001/doctor/datetime/" # add patient booked datetime to doctor_URL
-doctor_URL = "http://127.0.0.1:5001/doctor/" #update doctor availability (remove alr matched timeslot)
+# add patient booked datetime to doctor_URL
+doctor_datetime_URL = "http://127.0.0.1:5001/availability/datetime/"
+doctor_URL = "http://127.0.0.1:5001/availability" #update doctor availability (remove alr matched timeslot)
 
 
 def getAvailDoctors(datetime):

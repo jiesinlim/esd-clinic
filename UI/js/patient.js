@@ -1,4 +1,4 @@
-var get_all_URL = "http://localhost:5001/doctor";
+var get_all_URL = "http://localhost:5001/availability";
 
 var app = new Vue({
     el: "#app",

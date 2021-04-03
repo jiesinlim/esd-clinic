@@ -43,15 +43,15 @@ class Availability(db.Model):
         return {"aid": self.aid, "did": self.did, "name": self.doctor_name, "date": self.date, "availability": self.availability}
 
 
-@app.route("/doctor")
+@app.route("/availability")
 def get_all():
-    doctorlist = Availability.query.all()
-    if len(doctorlist):
+    availability_list = Availability.query.all()
+    if len(availability_list):
         return jsonify(
             {
                 "code": 200,
                 "data": {
-                    "doctor_availability": [doctor.json() for doctor in doctorlist]
+                    "doctor_availability": [availability.json() for availability in availability_list]
                 }
             }
         )
@@ -63,14 +63,14 @@ def get_all():
     ), 404
 
 
-@app.route("/doctor/<string:aid>")
+@app.route("/availability/<string:aid>")
 def find_by_aid(aid):
-    doctor = Availability.query.filter_by(aid=aid).first()
-    if doctor:
+    availability = Availability.query.filter_by(aid=aid).first()
+    if availability:
         return jsonify(
             {
                 "code": 200,
-                "data": doctor.json()
+                "data": availability.json()
             }
         )
     return jsonify(
@@ -81,7 +81,7 @@ def find_by_aid(aid):
     ), 404
 
 
-@app.route("/doctor", methods=['POST'])
+@app.route("/availability", methods=['POST'])
 def add_doctor():
     aid = request.json.get('aid', None)
 
@@ -97,10 +97,10 @@ def add_doctor():
         ), 400
 
     data = request.get_json()
-    doctor = Availability(**data)
+    availability = Availability(**data)
 
     try:
-        db.session.add(doctor)
+        db.session.add(availability)
         db.session.commit()
     except:
         return jsonify(
@@ -113,30 +113,30 @@ def add_doctor():
     return jsonify(
         {
             "code": 201,
-            "data": doctor.json()
+            "data": availability.json()
         }
     ), 201
 
 
-@app.route("/doctor", methods=['PATCH'])
+@app.route("/availability", methods=['PATCH'])
 def update_doctor():
     aid = request.json.get('aid', None)
-    doctor = Availability.query.filter_by(aid=aid).first()
-    if doctor:
+    availability = Availability.query.filter_by(aid=aid).first()
+    if availability:
         data = request.get_json()
         if data['did']:
-            doctor.did = data['did']
+            availability.did = data['did']
         if data['name']:
-            doctor.name = data['name']
+            availability.name = data['name']
         if data['date']:
-            doctor.date = data['date']
+            availability.date = data['date']
         if data['availability']:
-            doctor.availability = data['availability']
+            availability.availability = data['availability']
         db.session.commit()
         return jsonify(
             {
                 "code": 200,
-                "data": doctor.json()
+                "data": availability.json()
             }
         )
     return jsonify(
@@ -150,11 +150,11 @@ def update_doctor():
     ), 404
 
 
-@app.route("/doctor/<string:aid>", methods=['DELETE'])
+@app.route("/availability/<string:aid>", methods=['DELETE'])
 def delete_doctor_avail(aid):
-    doctor = Availability.query.filter_by(aid=aid).first()
-    if doctor:
-        db.session.delete(doctor)
+    availability = Availability.query.filter_by(aid=aid).first()
+    if availability:
+        db.session.delete(availability)
         db.session.commit()
         return jsonify(
             {
@@ -180,7 +180,7 @@ def delete_doctor_avail(aid):
 # SELECT * FROM doctor WHERE availability LIKE '%1500%' AND date LIKE '2021-03-21'
 # Guide how to use LIKE https://stackoverflow.com/questions/39384923/how-to-use-like-operator-in-sqlalchemy
 
-@app.route("/doctor/datetime/<string:appointment>")
+@app.route("/availability/datetime/<string:appointment>")
 def find_by_appointmentslot(appointment):
     appointment_date = appointment[0:10]
     appointment_time = appointment[11:]
