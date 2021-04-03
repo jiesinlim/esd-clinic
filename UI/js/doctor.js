@@ -10,6 +10,7 @@ var app = new Vue({
     },
     data: {
         aid: "",
+        datetime: "",
         "doctors": [],
         message: "There is a problem retrieving doctors data, please try again later.",
         statusMessage: "",
@@ -72,6 +73,29 @@ var app = new Vue({
                         this.searchError = data.message;
                     } else {
                         this.doctors = [data.data];
+                        this.searchError = "";
+                    }
+                })
+                .catch(error => {
+                    // Errors when calling the service; such as network error, 
+                    // service offline, etc
+                    console.log(this.searchError + error);
+
+                });
+
+        },
+        findByDateTime: function () {
+            const response =
+                fetch(`${get_all_URL}/datetime/${this.datetime}`)
+                .then(response => response.json())
+                .then(data => {
+                    console.log(response);
+                    if (data.code === 404) {
+                        // no doctor found in db
+                        this.searchError = data.message;
+                    } else {
+                        this.doctors = data.data.available_doctors;
+                        console.log(this.doctors)
                         this.searchError = "";
                     }
                 })
@@ -234,6 +258,7 @@ var app = new Vue({
             this.edit = false;
             this.searchError = "";
             this.aid = "";
+            this.datetime = "";
         }
     },
     created: function () {
