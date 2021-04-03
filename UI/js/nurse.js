@@ -1,5 +1,9 @@
-var get_all_appointments = "http://localhost:5005/appointment/all";
-var doctor_datetime_URL = "http://127.0.0.1:5001/doctor/datetime/";
+//var get_all_URL = "http://localhost:8000/api/v1/doctor";
+// var get_all_URL = "http://localhost:5001/match";
+var get_all_appts_URL = "http://127.0.0.1:5005/appointment/all";
+var get_avail_doctors_URL = "http://localhost:5002/availdoctors";
+var match_URL = "http://localhost:5002/match";
+
 
 var app = new Vue({
     el: "#app",
@@ -21,7 +25,7 @@ var app = new Vue({
         getAllAppointments: function () {
             // on Vue instance created, load the appointment list
             const response =
-                fetch(get_all_appointments)
+                fetch(get_all_appts_URL)
                     .then(response => response.json())
                     .then(data => {
                         console.log(response);
@@ -42,8 +46,13 @@ var app = new Vue({
                 },
         getAvailDoctors: function() {
             //on Vue instance created, load the avail doctors list
+            // converting GMT to YYYY-MM-DD format
+            var date = new Date(this.appointments.appointment_date).toISOString();
+            var date = date.slice(0,10);
+            var datetime = date + "+" + (this.appointments.appointment_time).toString();
+            console.log(datetime);
             const response =
-                fetch(findByDatetime)
+                fetch(`${get_avail_doctors_URL}/${datetime}`)
                     .then(response => response.json())
                     .then(data => {
                         console.log(response);
@@ -51,8 +60,9 @@ var app = new Vue({
                             // no doctor available in db
                             this.message = data.message;
                         } else {
-                            console.log(availableDoctors);
+                
                             this.availableDoctors = data.data.available_doctors;
+                            console.log(availableDoctors);
                         }
                     })
                     .catch(error => {
