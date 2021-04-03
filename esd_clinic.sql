@@ -79,6 +79,7 @@ INSERT INTO `patient` (`NRIC`, `patient_name`, `gender`, `contact_number`, `emai
 ('S1234567J', 'Jasmine', 'F', '98374986', 'jasmine345@hotmail.com'),
 ('J1234567I', 'Amelia', 'F', '81097192', 'amelia456@abc.com'),
 ('P1234567I', 'Jack', 'M', '98683274', 'jack567@xyz.com');
+('S8888888A', 'Kelvin', 'M', '88888888', 'kelvin@kkk.com');
 
 --
 -- Table structure for table `appointment`
@@ -87,7 +88,7 @@ INSERT INTO `patient` (`NRIC`, `patient_name`, `gender`, `contact_number`, `emai
 DROP TABLE IF EXISTS `appointment`;
 CREATE TABLE IF NOT EXISTS `appointment` (
   `appointment_id` int(5) NOT NULL AUTO_INCREMENT,
-  `aid` int(11) NOT NULL,
+  `aid` int(11) DEFAULT NULL,
   `NRIC` varchar(9) NOT NULL,
   `appointment_date` date NOT NULL,
   `appointment_time` varchar(9) NOT NULL,
