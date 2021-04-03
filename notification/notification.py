@@ -43,12 +43,6 @@ def create_book():
 
 #updating status from matched to confirmed
 def updateConfirmDetails(appt_id,avail_id,doc_id,doc_name,time,doc_currentavail): 
-    #get patient appointment by appt id
-    # print('\n-----Invoking appointment microservice-----')
-    # appt_details = invoke_http(appointments_URL + str(appt_id), method='GET')
-    # print('appointment details:', appt_details)
-    # appt_obj = json.loads(appt_details)
-
     #update patient appointment with assigned doctor id and name
     # Invoke the appointment microservice
     print('\n-----Invoking appointments microservice-----')

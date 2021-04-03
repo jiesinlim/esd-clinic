@@ -1,6 +1,6 @@
 //var get_all_URL = "http://localhost:8000/api/v1/doctor";
 // var get_all_URL = "http://localhost:5001/match";
-var get_booked_appts_URL = "http://127.0.0.1:5005/appointment/booked";
+var get_appt_URL = "http://127.0.0.1:5005/appointment/all";
 var get_avail_doctors_URL = "http://localhost:5002/availdoctors";
 var match_URL = "http://localhost:5002/match";
 
@@ -18,16 +18,18 @@ var app = new Vue({
     data: {
         message: "There is a problem retrieving appointment data, please try again later.",
         "appointments": [],
+        status: "",
         noDrs: "There are currently no doctors available.",
         "available_doctors": [],
         selected: "",
-        "datetime": []
+        "datetime": [],
+        noAvail: "No Availability."
     },
     methods: {
-        getBookedAppointments: function () {
+        getAppointments: function () {
             // on Vue instance created, load the appointment list
             const response =
-                fetch(get_booked_appts_URL)
+                fetch(get_appt_URL)
                     .then(response => response.json())
                     .then(data => {
                         console.log(response);
@@ -55,7 +57,8 @@ var app = new Vue({
                         console.log(this.message + error);
 
                     });
-                },
+                }
+            },
         getAvailDoctors: function() {
             //on Vue instance created, load the avail doctors list
             // converting GMT to YYYY-MM-DD format
@@ -99,34 +102,24 @@ var app = new Vue({
                     .then(data => {
                         console.log(response);
                         if (data.code === 404) {
-                            // no appointment in db
-                            this.message = data.message;
+                            // no available time in db
+                            this.noAvail = data.noAvail;
                         } else {
-                            
                             this.appointments = data.data.appointments;
-                            console.log(this.appointments);
-                            for (var patient of this.appointments) {
-                                var date = new Date(patient.appointment_date).toISOString();
-                                date = date.slice(0,10);
-                                dateTime = date + "+" + patient.appointment_time;
-
-                                this.datetime.push(dateTime);
-                            }
-                            console.log(this.datetime);
-                            this.getAvailDoctors();
+                            
                         }
                     })
                     .catch(error => {
                         // Errors when calling the service; such as network error, 
                         // service offline, etc
-                        console.log(this.message + error);
+                        console.log(this.noAvail + error);
 
                     });
-        },
+    
     },
             created: function () {
             // on Vue instance created, load the appt list
-            this.getAllAppointments();
+            this.getAppointments();
         }
-    });
+});
     

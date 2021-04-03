@@ -260,7 +260,7 @@ def get_all_appointments():
 
 @app.route("/appointment/<string:status>")
 def get_confirmed_appointments():
-    appointments = Appointments.query.filter_by(status=status)
+    appointments = Appointments.query.filter_by(status=status).first()
     if len(appointments):
         return jsonify(
             {
@@ -294,6 +294,7 @@ def get_confirmed_appointments():
 
 # if __name__ == '__main__':
 #     app.run(port=5002, debug=True)
+
 
 if __name__ == '__main__':
     print("This is flask for " + os.path.basename(__file__) +
