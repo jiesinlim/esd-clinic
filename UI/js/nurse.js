@@ -48,32 +48,41 @@ var app = new Vue({
         getAvailDoctors: function() {
             //on Vue instance created, load the avail doctors list
             // converting GMT to YYYY-MM-DD format
-            var date = new Date(this.appointments.appointment_date).toISOString();
-            var date = date.slice(0,10);
-            var datetime = date + "+" + (this.appointments.appointment_time).toString();
-            console.log(datetime);
-            const response =
-                fetch(`${get_avail_doctors_URL}/${datetime}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        console.log(response);
-                        if (data.code === 404) {
-                            // no doctor available in db
-                            this.noDrs = data.noDrs;
-                        } else {
+            for (appointment in this.appointments) {
+                console.log(this.appointments);
+                var new_date = appointment.appointment_date;
+                console.log(new_date);
+                var new_time = appointment.appointment_time;
+                console.log(new_time);
+                var date = new Date(new_date).toISOString();
+                var date = date.slice(0,10);
+                var datetime = date + "+" + (new_time).toString();
+                console.log(datetime);
+                const response =
+                    fetch(`${get_avail_doctors_URL}/${datetime}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log(response);
+                            if (data.code === 404) {
+                                // no doctor available in db
+                                this.noDrs = data.noDrs;
+                            } else {
+                    
+                                this.availableDoctors = data.data.available_doctors;
+                                console.log(availableDoctors);
+                            }
+                        })
+                        .catch(error => {
+                            // Errors when calling the service; such as network error, 
+                            // service offline, etc
+                            console.log(this.message + error);
+
+                        });
+
                 
-                            this.availableDoctors = data.data.available_doctors;
-                            console.log(availableDoctors);
-                        }
-                    })
-                    .catch(error => {
-                        // Errors when calling the service; such as network error, 
-                        // service offline, etc
-                        console.log(this.message + error);
-
-                    });
-
-            },
+            }
+        },
+            
         },
             created: function () {
             // on Vue instance created, load the appt list

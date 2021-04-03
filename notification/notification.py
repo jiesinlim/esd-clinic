@@ -1,9 +1,16 @@
 from flask import Flask, request, jsonify
-from os import environ
-import requests
 import os
+from os import environ
+import requests 
+from invokes import invokes_http
+
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
+
+matched_appointments_URL = "http://localhost:5005/appointment/matched"
+confirmed_appointments_URL = "http://localhost:5005/appointment/confirmed"
 
 #retrieve name, email address & date\time of appt
 @app.route("/notification", methods=['POST'])
@@ -53,31 +60,47 @@ def updateConfirmDetails(appt_id,avail_id,doc_id,doc_name,time,doc_currentavail)
             appointment_time: "",
             did: doc_id,
             doctor_name: doc_name,
-            status: "Confirmed",
+            status: "confirmed",
             room_no: ""
         }
     )
-    UpdateStatus = invoke_http(appointments_URL + str(appt_id), method='PATCH', json=doctor_details)
-    print('Confirm result:', UpdateStatus)
+    updateStatus = invoke_http(appointments_URL, method='PATCH', json=doctor_details)
+    print('Update result:', updateStatus)
 
-print('\n-----Invoking appointments microservice-----')
-    doctor_details = jsonify(
-        {
-            aid: "",
-            nric: "",
-            patient_name: "",
-            email: "",
-            appointment_date: "",
-            appointment_time: "",
-            did: doc_id,
-            doctor_name: doc_name,
-            status: "Confirmed",
-            room_no: ""
-        }
-    )
-    UpdateStatus = invoke_http(appointments_URL + str(appt_id), method='PATCH', json=doctor_details)
-    print('Confirm result:', UpdateStatus)
+def getConfirmedAppointmentDetails(appt_id,email,nric,appointment_date,appointment_time,doc_id,doc_name): 
+    #get patient appointment by appt id
+    # print('\n-----Invoking appointment microservice-----')
+    # appt_details = invoke_http(appointments_URL + str(appt_id), method='GET')
+    # print('appointment details:', appt_details)
+    # appt_obj = json.loads(appt_details)
 
+    #update patient appointment with assigned doctor id and name
+    # Invoke the appointment microservice
+    
+    print('\n-----Invoking appointments microservice-----')
+    getDetails = invoke_http(confirmed_appointments_URL, method='GET')
+    print('Get result:', getDetails)
+
+@app.route("/appointment/confirmed", methods = ['GET'])
+def get_confirmed_appointments():
+   try:
+        # data = request.get_json() #pass data of patient's appt time and date
+        # date = data.appointment_date
+        # time = data.appointment_time
+            print("\nReceived a patient's appointment date & time in JSON:", datetime)
+
+        # do the actual work
+            result = getConfirmedAppointmentDetails()
+            return result, result["code"]
+
+        except Exception as e:
+            pass  # do nothing.
+
+    # if reached here, not a JSON request.
+    return jsonify({
+        "code": 400,
+        "message": "Invalid JSON input: " + str(request.get_data())
+    }), 400
 
 if __name__ == '__main__':
     print("This is flask for " + os.path.basename(__file__) +
