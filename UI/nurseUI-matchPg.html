@@ -74,13 +74,13 @@
   ============================-->
 
   <section id="intro">
-    <div class="intro-content">
+    <div id="app" class="intro-content">
       <h2 style="font-size:xx-large;"> <span>Match</span> Patient Appointments</h2>
       <div class="table-responsive">
         <table class="table table-hover table-bordered">
           <thead class="table-info">
             <tr>
-              <th scope="col">Patient ID</th>
+              <th scope="col">Patient NRIC</th>
               <th scope="col">Patient Name</th>
               <th scope="col">Appointment Date</th>
               <th scope="col">Appointment Time</th>
@@ -91,25 +91,25 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="appointment in appointments" class="table-light">
-              <th scope="row">{{appointment.apid}} </th>
-              <td>{{appointment.pname}}</td>
-              <td>{{appointment.date}}</td>
-              <td>{{appointment.time}}</td>
-              <td v-if="!doctorsAvail"> {{message}} </td>
+            <tr v-for="record in appointments" class="table-light">
+              <th scope="row">{{record.NRIC}} </th>
+              <td>{{record.name}}</td>
+              <td>{{record.appointment_date}}</td>
+              <td>{{record.appointment_time}}</td>
               <td v-else> 
                   <select v-model="selected">
-                    <option v-for="doctor in {{data.availableDoctors}}">
-                        {{doctor}}
+                    <option v-for="doctor in {{availableDoctors}}">
+                        {{available_doctors.name}}
                     </option>
                   </select> 
-                </td>
+              </td>
+                <td>{{record.status}}</td>
               <td><button class="btn btn-success" data-toggle="modal" data-target="#matchedModal" @click="deleteDrAvail()">Match</button> </td>
             </tr>
             
           </tbody>
         </table>
-
+        <div class="text-danger" v-if="!doctorsAvail">{{ message }}</div> <!-- Error message if can't get data from microservice-->
       </div>
     </div>
 
@@ -127,9 +127,9 @@
         <div class="modal-content" style="background-color:rgb(234, 243, 238);">
           <div class="modal-body mt-4">
             <h5 class="font-weight-bold text-center"> Matched Appointment </h5>
-            <p class="font-weight-bold mt-8 ml-4"> Patient: </p>
-            <p class="font-weight-bold mt-8 ml-4"> Date: </p>
-            <p class="font-weight-bold mt-8 ml-4"> Time: </p>
+            <p class="font-weight-bold mt-8 ml-4"> Patient: {{ record.name }}</p>
+            <p class="font-weight-bold mt-8 ml-4"> Date: {{record.appointment_date}} </p>
+            <p class="font-weight-bold mt-8 ml-4"> Time: {{record.appointment_time}} </p>
             <p class="font-weight-bold mt-8 ml-4"> Doctor: </p>
            
           </div>
@@ -165,7 +165,7 @@
   <a href="#" class="back-to-top"><i class="fa fa-chevron-up"></i></a>
 
   <script>
-    var findByDatetime = "http://127.0.0.1:5001/doctor/datetime/" + date + "+" + time;
+    doctor_datetime_URL = "http://127.0.0.1:5001/doctor/datetime/"
     
     var app = new Vue({
       el: "#app",
@@ -190,7 +190,8 @@
                             // no doctor available in db
                             this.message = data.message;
                         } else {
-                            this.availableDoctors = data.data.availableDoctors;
+                            console.log(availableDoctors);
+                            this.availableDoctors = data.data.available_doctors;
                         }
                     })
                     .catch(error => {
@@ -200,11 +201,8 @@
 
                     });
 
-        },
-        deleteDrAvail: function() {
-            
-        }
-        
+                },
+            }
         });
     
 
@@ -226,6 +224,7 @@
 
   <!-- Template Main Javascript File -->
   <script src="js/main.js"></script>
+  <script src="js/nurse.js"></script>
 
 </body>
 </html>

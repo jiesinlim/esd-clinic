@@ -36,6 +36,8 @@
   ======================================================= -->
 </head>
 
+<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+
 <body id="body">
 
   <!--==========================
@@ -74,37 +76,41 @@
   ============================-->
 
   <section id="intro">
-    <div class="intro-content">
+    <div  id="app" class="intro-content">
       <h2 style="font-size:xx-large;"><span>Match </span>Patient Appointments</h2>
       <div class="table-responsive">
-        <table class="table table-hover table-bordered">
+        <table class="table table-hover table-bordered" v-if="hasAppointments">
           <thead class="table-info">
             <tr>
               <th scope="col">Appointment ID</th>
-              <th scope="col">Patient Name</th>
+              <th scope="col">Patient NRIC</th>
               <th scope="col">Appointment Date</th>
               <th scope="col">Appointment Time</th>
-              <th scope="col">Appointed Doctor ID</th>
-              <th scope="col">Appointed Doctor Name</th>
+              <th scope="col">Available Doctors</th>
               <th scope="col">Status</th>
               <th scope="col">Action</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="appointment in appointments" class="table-light">
-              <th scope="row"> {{appointments.id}} </th>
-              <td>{{appointments.pname}}</td>
-              <td> {{appointments.date}} </td>
-              <td> {{appointments.time}} </td>
-              <td> </td>
-              <td> </td>
-              <td> {{appointments.status}} </td>
-              <td><a href="nurseUI-matchPg.html" class="btn btn-success">Match</a></td>
+            <tr v-for="record in appointments" class="table-light">
+              <th scope="row"> {{ record.appointment_id }} </th>
+              <td>{{ record.NRIC }}</td>
+              <td> {{ record.appointment_date }} </td>
+              <td> {{ record.appointment_time }} </td>
+              <td v-else> 
+                <select v-model="selected">
+                  <option v-for="doctor in {{availableDoctors}}">
+                      {{available_doctors.name}}
+                  </option>
+                </select> 
+               </td>
+              <td> {{ record.status }} </td>
+              <td><button class="btn btn-success" data-toggle="modal" data-target="#matchedModal" @click="deleteDrAvail()">Match</button> </td>
             </tr>
             
           </tbody>
         </table>
-
+        <div class="text-danger" v-if="!hasAppointments">{{ message }}</div> <!-- Error message if can't get data from microservice-->
       </div>
     </div>
 
@@ -116,54 +122,25 @@
       <div class="item" style="background-image: url('img/intro-carousel/5.jpg');"></div>
     </div>
 
+     <div class="modal fade" id="matchedModal" tabindex="-1" role="dialog" aria-labelledby="matchModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content" style="background-color:rgb(234, 243, 238);">
+          <div class="modal-body mt-4">
+            <h5 class="font-weight-bold text-center"> Matched Appointment </h5>
+            <p class="font-weight-bold mt-8 ml-4"> Patient: {{ record.name }}</p>
+            <p class="font-weight-bold mt-8 ml-4"> Date: {{record.appointment_date}} </p>
+            <p class="font-weight-bold mt-8 ml-4"> Time: {{record.appointment_time}} </p>
+            <p class="font-weight-bold mt-8 ml-4"> Doctor: </p>
+           
+          </div>
+        </div>
+      </div>
+    </div>
     
 
   </section><!-- #intro -->
 
-  <script>
-    var get_all_appointments = "http://localhost:5000/appointment/all";
-
-    var app = new Vue({
-        el: "#app",
-        computed: {
-            appointments: function () {
-                return this.appointments.length > 0;
-            }
-        },
-        data: {
-            appointment_id: "",
-            patient_name: "",
-            message: "There is a problem retrieving appointments data, please try again later.",
-            appointment_date: "",
-            appointment_time: "",
-            did: "",
-            doctor_name: "",
-            status: "",
-        },
-        methods: {
-            getAllAppointments: function () {
-                // on Vue instance created, load the book list
-                const response =
-                    fetch(get_all_appointments)
-                        .then(response => response.json())
-                        .then(data => {
-                            console.log(response);
-                            if (data.code === 404) {
-                                // no appointment in db
-                                this.message = data.message;
-                            } else {
-                                this.appointments = data.data.appointments;
-                            }
-                        })
-                        .catch(error => {
-                            // Errors when calling the service; such as network error, 
-                            // service offline, etc
-                            console.log(this.message + error);
-
-                        });
-
     
-  </script>
 
   <!--==========================
     Footer
@@ -205,6 +182,18 @@
   <!-- Template Main Javascript File -->
   <script src="js/main.js"></script>
   <script src="js/nurse.js"></script>
+
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
 
 </body>
 </html>

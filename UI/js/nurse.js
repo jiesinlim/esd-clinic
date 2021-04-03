@@ -1,243 +1,72 @@
-//var get_all_URL = "http://localhost:8000/api/v1/doctor";
-var get_all_URL = "http://localhost:5001/match";
+var get_all_appointments = "http://localhost:5005/appointment/all";
+var doctor_datetime_URL = "http://127.0.0.1:5001/doctor/datetime/";
 
 var app = new Vue({
     el: "#app",
     computed: {
-        hasDoctors: function () {
+        hasAppointments: function () {
+            return this.appointments.length > 0;
+        },
+        doctorsAvail: function() {
             return this.doctors.length > 0;
-        }
+        },
     },
     data: {
-        aid: "",
-        "doctors": [],
-        message: "There is a problem retrieving doctors data, please try again later.",
-        statusMessage: "",
-
-        searchError: "",
-
-        newAid: "",
-        newDid: "",
-        newName: "",
-        newDate: "",
-        newAvailability: "",
-        doctorAdded: false,
-        addDoctorError: "",
-        
-        availDeleted: false,
-
-        edit: false,
-        editCurrentDoctor: "",
-        editSuccessful: false,
-        editDoctorError: "",
-        editAid: "",
-        editDid: "",
-        editName: "",
-        editDate: "",
-        editAvailability: "",
-        editDoctorError: "",
+        message: "There is a problem retrieving appointment data, please try again later.",
+        "appointments": [],
+        noDrs: "There are currently no doctors available.",
+        "availableDoctors": []
     },
     methods: {
-        getAllDoctors: function () {
-            // on Vue instance created, load the book list
+        getAllAppointments: function () {
+            // on Vue instance created, load the appointment list
             const response =
-                fetch(get_all_URL)
-                .then(response => response.json())
-                .then(data => {
-                    console.log(response);
-                    if (data.code === 404) {
-                        // no doctors in db
-                        this.message = data.message;
-                    } else {
-                        this.doctors = data.data.doctoravail;
-                    }
-                })
-                .catch(error => {
-                    // Errors when calling the service; such as network error, 
-                    // service offline, etc
-                    console.log(this.message + error);
+                fetch(get_all_appointments)
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(response);
+                        if (data.code === 404) {
+                            // no appointment in db
+                            this.message = data.message;
+                        } else {
+                            console.log(this.appointments);
+                            this.appointments = data.data.appointments;
+                        }
+                    })
+                    .catch(error => {
+                        // Errors when calling the service; such as network error, 
+                        // service offline, etc
+                        console.log(this.message + error);
 
-                });
-
-        },
-        findDoctor: function () {
-            console.log(this.aid);
+                    });
+                },
+        getAvailDoctors: function() {
+            //on Vue instance created, load the avail doctors list
             const response =
-                fetch(`${get_all_URL}/${this.aid}`)
-                .then(response => response.json())
-                .then(data => {
-                    console.log(response);
-                    if (data.code === 404) {
-                        // no doctor found in db
-                        this.searchError = data.message;
-                    } else {
-                        this.doctors = [data.data];
-                        this.searchError = "";
-                    }
-                })
-                .catch(error => {
-                    // Errors when calling the service; such as network error, 
-                    // service offline, etc
-                    console.log(this.searchError + error);
+                fetch(findByDatetime)
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(response);
+                        if (data.code === 404) {
+                            // no doctor available in db
+                            this.message = data.message;
+                        } else {
+                            console.log(availableDoctors);
+                            this.availableDoctors = data.data.available_doctors;
+                        }
+                    })
+                    .catch(error => {
+                        // Errors when calling the service; such as network error, 
+                        // service offline, etc
+                        console.log(this.message + error);
 
-                });
+                    });
 
+            },
         },
-        addDoctor: function () {
-            // reset data to original setting
-            this.doctorAdded = false;
-            this.addDoctorError = "";
-            this.statusMessage = "";
-            this.availDeleted = false;
-
-            let jsonData = JSON.stringify({
-                aid: this.newAid,
-                did: this.newDid,
-                name: this.newName,
-                date: this.newDate,
-                availability: this.newAvailability
-            });
-
-            fetch(`${get_all_URL}`, {
-                    method: "POST",
-                    headers: {
-                        "Content-type": "application/json"
-                    },
-                    body: jsonData
-                })
-                .then(response => response.json())
-                .then(data => {
-                    console.log(data);
-                    result = data.data;
-                    console.log(result);
-                    // 3 cases
-                    switch (data.code) {
-                        case 201:
-                            this.doctorAdded = true;
-                            this.statusMessage = "The doctor availability has been successfully added!"
-
-                            // refresh page
-                            this.pageRefresh();
-
-                            break;
-                        case 400:
-                        case 500:
-                            this.addDoctorError = data.message;
-                            this.statusMessage = "There is a problem adding this new availability:"
-                            break;
-                        default:
-                            throw `${data.code}: ${data.message}`;
-                    }
-                })
-        },
-        editDoctorForm: function (doctor) {
-            //resets the data setting
-            this.editSuccessful = false
-            this.editCurrentDoctor = doctor;
-            this.edit = true;
-
-            this.editAid = ""
-            this.editDid = ""
-            this.editName = ""
-            this.editDate = ""
-            this.editAvailability = ""
-        },
-        editDoctor: function (doctor) {
-            // reset data
-
-            this.editDoctorError = "";
-
-            let jsonData = JSON.stringify({
-                aid: this.editCurrentDoctor.aid,
-                did: this.editDid,
-                name: this.editName,
-                date: this.editDate,
-                availability: this.editAvailability
-            });
-
-            fetch(`${get_all_URL}`, {
-                    method: "PUT",
-                    headers: {
-                        "Content-type": "application/json"
-                    },
-                    body: jsonData
-                })
-                .then(response => response.json())
-                .then(data => {
-                    console.log(data);
-                    result = data.data;
-                    console.log(result);
-                    // 3 cases
-                    switch (data.code) {
-                        case 200:
-                            this.editSuccessful = true;
-
-                            this.getAllDoctors();
-
-                            this.editDoctorError = 'Edit successfully changed';
-
-                            break;
-                        case 404:
-                            this.editDoctorError = data.message;
-                        case 500:
-                            this.editDoctorError = data.message;
-                            break;
-                        default:
-                            throw `${data.code}: ${data.message}`;
-                    }
-                })
-        },
-        del: function (aid) {
-            //reset all data to original setting
-            this.aid = aid;
-            this.availDeleted = false;
-            
-            this.doctorAdded = false;
-            this.addDoctorError = "";
-            this.statusMessage = "";
-
-            const response =
-                fetch(`${get_all_URL}/${this.aid}`, {
-                    method: "DELETE",
-                })
-                .then(response => response.json())
-                .then(data => {
-                    console.log(response);
-                    if (data.code === 404) {
-                        // no book in db
-                        this.message = data.message;
-                        this.doctors = [];
-                    } else {
-                        this.availDeleted = true;
-                        this.statusMessage = "The doctor availability has been successfully deleted!";
-                    }
-                })
-                .catch(error => {
-                    // Errors when calling the service; such as network error,
-                    // service offline, etc
-                    console.log(this.message + error);
-
-                });
-
-            //Front end Vue
-            var idx = 0
-            for (doctor of this.doctors) {
-                if (doctor.aid == aid) {
-                    this.doctors.splice(idx, 1) // remove this element
-                    break
-                }
-                idx++
-            }
-        },
-        pageRefresh: function () {
-            this.getAllDoctors();
-            this.edit = false;
-            this.searchError = "";
-            this.aid = "";
+            created: function () {
+            // on Vue instance created, load the appt list
+            this.getAllAppointments();
         }
-    },
-    created: function () {
-        // on Vue instance created, load the book list
-        this.getAllDoctors();
-    }
-});
+    });
+    
