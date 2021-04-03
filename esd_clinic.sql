@@ -105,9 +105,9 @@ CREATE TABLE IF NOT EXISTS `appointment` (
 --
 
 INSERT INTO `appointment` (`appointment_id`, `aid`, `NRIC`, `appointment_date`, `appointment_time`, `did`, `doctor_name`, `status`, `room_no`) VALUES
-(1, 1, 'T0123456U', '2021-03-22', '1000', NULL, NULL, 'booked', NULL),
+(1, 1, 'T0123456U', '2021-03-22', '1200', NULL, NULL, 'booked', NULL),
 (2, 2, 'T1234567I', '2021-03-21', '1300', NULL, NULL, 'booked', NULL),
-(3, 3, 'S1234567J', '2021-03-23', '1500', NULL, NULL, 'booked', NULL),
+(3, 3, 'S1234567J', '2021-03-25', '1900', NULL, NULL, 'booked', NULL),
 (4, 4, 'J1234567I', '2021-03-23', '1900', NULL, NULL, 'booked', NULL),
 (5, 5, 'P1234567I', '2021-03-22', '1400', NULL, NULL, 'booked', NULL);
 COMMIT;

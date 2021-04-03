@@ -92,15 +92,16 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="record in appointments" class="table-light">
+            <tr v-for="(record, index) in appointments" class="table-light">
               <th scope="row"> {{ record.appointment_id }} </th>
               <td>{{ record.NRIC }}</td>
               <td> {{ record.appointment_date }} </td>
               <td> {{ record.appointment_time }} </td>
               <td v-if="doctorsAvail"> 
+              <!-- <td> -->
                 <select v-model="selected" > 
                   <option disabled value="">Please select a doctor</option>
-                  <option v-for="doctor in availableDoctors" :key='doctor.name'>
+                  <option v-for="doctor in available_doctors[index]" :key='doctor.name'>  
                       {{ doctor.name }}
                   </option>
                 </select> 
@@ -132,7 +133,7 @@
             <p class="font-weight-bold mt-8 ml-4"> Patient: {{ record.name }}</p>
             <p class="font-weight-bold mt-8 ml-4"> Date: {{record.appointment_date}} </p>
             <p class="font-weight-bold mt-8 ml-4"> Time: {{record.appointment_time}} </p>
-            <p class="font-weight-bold mt-8 ml-4"> Doctor: </p>
+            <p class="font-weight-bold mt-8 ml-4"> Doctor: {{ doctor.name }}</p>
            
           </div>
         </div>
@@ -145,9 +146,9 @@
 
     
 
-  <!--==========================
-    // Footer
-  // ============================-->
+ <!--==========================
+ Footer
+ ============================-->
   <footer id="footer">
     <div class="container">
       <div class="copyright">
@@ -168,7 +169,7 @@
 
   <a href="#" class="back-to-top"><i class="fa fa-chevron-up"></i></a>
 
-  <!-- JavaScript Libraries -->
+ <!-- JavaScript Libraries -->
   <script src="lib/jquery/jquery.min.js"></script>
   <script src="lib/jquery/jquery-migrate.min.js"></script>
   <script src="lib/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -180,8 +181,8 @@
   <script src="lib/magnific-popup/magnific-popup.min.js"></script>
   <script src="lib/sticky/sticky.js"></script>
 
-  <!-- Contact Form JavaScript File -->
-  <script src="contactform/contactform.js"></script>
+ <!-- Contact Form JavaScript File -->
+  <!-- <script src="contactform/contactform.js"></script> -->
 
   <!-- Template Main Javascript File -->
   <script src="js/main.js"></script>
