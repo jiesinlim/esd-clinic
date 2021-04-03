@@ -85,12 +85,12 @@
   <form>
     <div class="form-group">
       <label>Full Name (As per NRIC)</label><br>
-      <input class="form-control col-md-6" type="text" id="my_details_fullname" >
+      <input class="form-control col-md-6" type="text" id="patient_fullname" >
       </div>
 
     <div class="form-group">
       <label>NRIC</label><br>
-      <input class="form-control col-md-6" type="text" id="my_details_NRIC">
+      <input class="form-control col-md-6" type="text" id="patient_nric">
     </div>  
 
     <div class="form-group">
@@ -107,32 +107,39 @@
     
     <div class="form-group">
       <label>Contact Number</label><br>
-      <input class="form-control col-md-6" type="text" id="my_details_contact_number">
+      <input class="form-control col-md-6" type="text" id="patient_contact_number">
     </div>
 
     <div class="form-group">
       <label>Email Address</label><br>
-      <input class="form-control col-md-6" type="text" id="my_details_email">
+      <input class="form-control col-md-6" type="text" id="patient_email">
     </div>
 
     <div class="form-group">
       <label for="selected_date">Appointment Date</label>
-      <input type="date" class="form-control col-md-6" id="selected_date" @keyup.enter="get_all_available_time()" v-model="selected_date">
+      <input type="date" class="form-control col-md-6" id="selected_date" onchange="display_available_time()">
+      <!-- <input type="date" class="form-control col-md-6" id="selected_date" @keyup.enter="get_all_available_time()" v-model="selected_date"> -->
     </div>
-
+    
+    <span id="no_results"></span>
     <div class="form-group">
       <label for="available_time">Appointment Time</label>
       <select class="form-control col-md-6" id="available_time">
-        <option v-for="each_time in time">{{ each_time }}</option>
+        <option></option>
+        <!-- <option v-for="each_time in time">{{ each_time }}</option> -->
       </select>
+
     </div>
     
     <div class="form-group center">
-    <button type="submit" class="btn btn-blue">Book Appointment</button>
+    <button type="submit" class="btn btn-blue" onclick="post_new_booking()">Book Appointment</button>
     </div>
 
-  
+    <div id="booking_status">
+      this text should changed if booking is successfully posted to db
+    </div>
 </div>
+
 <!-- end of book appointment form -->
 
   <!--==========================
