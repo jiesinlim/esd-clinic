@@ -1,7 +1,7 @@
 //var get_all_URL = "http://localhost:8000/api/v1/doctor";
 // var get_all_URL = "http://localhost:5001/match";
-var get_booked_URL = "http://127.0.0.1:5005/appointment/booked";
-var get_avail_doctors_URL = "http://localhost:5002/availdoctors";
+var get_all_appts_URL = "http://127.0.0.1:5005/appointment/all";
+var get_avail_doctors_URL = "http://localhost:5001/availability";
 var match_URL = "http://localhost:5002/match";
 
 
