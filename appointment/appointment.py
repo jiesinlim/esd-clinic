@@ -216,26 +216,26 @@ def delete_appointment_details(appointment_id):
 #     def get_all_appointments():
 #         pass
 
-# Get all appointments
+# Get booked/matched appointments
 
-# @app.route("/appointment/<string:status>")
-# def get_all_appointments():
-#     appointments = Appointments.query.filter_by(status=status)
-#     if len(appointments):
-#         return jsonify(
-#             {
-#                 "code": 200,
-#                 "data": {
-#                     "appointments": [record.json() for record in appointments]
-#                 }
-#             }
-#         )
-#     return jsonify(
-#         {
-#             "code": 404,
-#             "message": "There are no appointments."
-#         }
-#     ), 404
+@app.route("/appointment/all/<string:status>")
+def get_appointments(status):
+    appointments = Appointments.query.filter_by(status=status).all()
+    if appointments:
+        return jsonify(
+            {
+                "code": 200,
+                "data": {
+                    "appointments": [record.json() for record in appointments]
+                }
+            }
+        )
+    return jsonify(
+        {
+            "code": 404,
+            "message": "There are no appointments."
+        }
+    ), 404
 
 # OR
 

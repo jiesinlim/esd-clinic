@@ -44,7 +44,7 @@ def updateMatchDetails(appt_id,avail_id,doc_id,doc_name,time,doc_currentavail):
             appointment_time: "",
             did: doc_id,
             doctor_name: doc_name,
-            status: "Matched",
+            status: "matched",
             room_no: ""
         }
     )
