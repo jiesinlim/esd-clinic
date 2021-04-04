@@ -74,9 +74,8 @@
   <!--==========================
     Intro Section
   ============================-->
-
   <section id="intro">
-    <div  id="app" class="intro-content">
+    <div class="intro-content" id='app'>
       <h2 style="font-size:xx-large;"><span>Match </span>Patient Appointments</h2>
       <div class="table-responsive">
         <table class="table table-hover table-bordered" v-if="hasAppointments">
@@ -95,7 +94,7 @@
             <tr v-for="(record, index) in appointments" class="table-light">
               <th scope="row"> {{ record.appointment_id }} </th>
               <td>{{ record.NRIC }}</td>
-              <td> {{ record.appointment_date }} </td>
+              <td> {{ date[index] }} </td>
               <td> {{ record.appointment_time }} </td>
               <td v-if="doctorsAvail"> 
               <!-- <td> -->
@@ -108,12 +107,40 @@
                </td>
                <td class='text-danger' v-else>{{ noDrs }}</td>
               <td> {{ record.status }} </td>
-              <td><button class="btn btn-success" data-toggle="modal" data-target="#matchedModal" @click="deleteDrAvail()">Match</button> </td>
+              <td><button class="btn btn-success" @click="successfulMatch(index)" data-toggle="modal" data-target="#matchedModal">Match</button> </td>
             </tr>
             
           </tbody>
         </table>
+
         <div class="text-danger" v-else>{{ message }}</div> <!-- Error message if can't get data from microservice-->
+      </div>
+
+      <div  v-if='showModal' id="matchedModal" class="modal" tabindex="-1" role="dialog">
+        <transition name='modal'>
+          <div class='modal-mask'>
+            <div class="modal-wrapper">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <button type="button" class="close"  @close='updateMatchDetails' data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden='true'>&times;</span>
+                    </button>
+                    <h4 class="modal-title">{{ modalTitle }}</h4>
+                  </div>
+                  <div class="modal-body mt-4">
+                    <br>
+                    Patient's NRIC: {{ selectedAppt[0] }} <br>
+                    Appointed Doctor: {{ selected }} <br>
+                    Appointment Date: {{ selectedAppt[1] }} <br>
+                    Appointment Time: {{ selectedAppt[2] }} <br><br><br>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </transition>
       </div>
     </div>
 
@@ -125,26 +152,8 @@
       <div class="item" style="background-image: url('img/intro-carousel/5.jpg');"></div>
     </div>
 
-     <div class="modal fade" id="matchedModal" tabindex="-1" role="dialog" aria-labelledby="matchModalLabel" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content" style="background-color:rgb(234, 243, 238);">
-          <div class="modal-body mt-4">
-            <h5 class="font-weight-bold text-center"> Matched Appointment </h5>
-            <p class="font-weight-bold mt-8 ml-4"> Patient: {{ record.NRIC }}</p>
-            <p class="font-weight-bold mt-8 ml-4"> Date: {{record.appointment_date}} </p>
-            <p class="font-weight-bold mt-8 ml-4"> Time: {{record.appointment_time}} </p>
-            <p class="font-weight-bold mt-8 ml-4"> Doctor: {{ doctor.name }}</p>
-           
-          </div>
-        </div>
-      </div>
-    </div>
-    
-
   </section>
   <!-- #intro -->
-
-    
 
  <!--==========================
  Footer
