@@ -10,8 +10,11 @@ from os import environ
 
 app = Flask(__name__)
 # REMEMBER TO CHANGE WINDOWS OR MAC ROOT or ROOT:ROOT
-app.config["SQLALCHEMY_DATABASE_URI"] = environ.get(
-    'dbURL') or 'mysql+mysqlconnector://root@localhost:3306/availability' or 'mysql+mysqlconnector://root:root@localhost:3306/availability'
+#app.config["SQLALCHEMY_DATABASE_URI"] = environ.get(
+    #'dbURL') or 'mysql+mysqlconnector://root@localhost:3306/availability' or 'mysql+mysqlconnector://root:root@localhost:3306/availability'
+
+app.config["SQLALCHEMY_DATABASE_URI"] = environ.get('dbURL') or 'mysql+mysqlconnector://root@localhost:3306/esd_clinic' or 'mysql+mysqlconnector://root:root@localhost:3306/esd_clinic'
+
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_recycle': 299}
 
@@ -29,75 +32,78 @@ class Availability(db.Model):
     date = db.Column(db.Date, nullable=False)
     availability = db.Column(db.VARCHAR(1000), nullable=True)
 
-    def __init__(self, aid, did, name, date, availability):
-        self.aid = aid
+    def __init__(self, did, doctor_name, date, availability): #Should not add self.aid = aid has it is set as AUTO-INCREMENT. Adding it in init, will require users to pass aid data every single time
         self.did = did
-        self.doctor_name = name
+        self.doctor_name = doctor_name
         self.date = date
         self.availability = availability
 
     def json(self):
-        return {"aid": self.aid, "did": self.did, "name": self.doctor_name, "date": self.date, "availability": self.availability}
+        return {"aid": self.aid, "did": self.did, "doctor_name": self.doctor_name, "date": self.date, "availability": self.availability}
 
 
-@app.route("/doctor")
+@app.route("/availability")
 def get_all():
-    doctorlist = Availability.query.all()
-    if len(doctorlist):
+    availability_list = Availability.query.all()
+    if len(availability_list):
         return jsonify(
             {
                 "code": 200,
                 "data": {
-                    "doctor_availability": [doctor.json() for doctor in doctorlist]
+                    "doctor_availability": [availability.json() for availability in availability_list]
                 }
             }
         )
     return jsonify(
         {
             "code": 404,
-            "message": "There are no doctors."
+            "message": "There are no doctor availabilities."
         }
     ), 404
 
 
-@app.route("/doctor/<string:aid>")
+@app.route("/availability/<string:aid>")
 def find_by_aid(aid):
-    doctor = Availability.query.filter_by(aid=aid).first()
-    if doctor:
+    availability = Availability.query.filter_by(aid=aid).first()
+    if availability:
         return jsonify(
             {
                 "code": 200,
-                "data": doctor.json()
+                "data": availability.json()
             }
         )
     return jsonify(
         {
             "code": 404,
-            "message": "Doctor not found."
+            "message": "Doctor availability not found."
         }
     ), 404
 
 
-@app.route("/doctor", methods=['POST'])
+@app.route("/availability", methods=['POST'])
 def add_doctor():
-    aid = request.json.get('aid', None)
+    add_did = request.json.get('did', None)
+    add_doctor_name = request.json.get('doctor_name', None)
+    add_date = request.json.get('date', None)
+    add_availability = request.json.get('availability', None)
 
-    if (Availability.query.filter_by(aid=aid).first()):
+    #Checks if the current entry is already inside the availability database: Checks by DID, Doctor Name, Date, Availability
+    availability_check = Availability.query.filter(Availability.did.like(add_did), Availability.date.like(add_date), Availability.doctor_name.like(add_doctor_name), Availability.availability.like("%" + add_availability + "%")).first()
+
+    if (availability_check):
         return jsonify(
             {
                 "code": 400,
-                "data": {
-                    "aid": aid
-                },
-                "message": "Doctor availability ID already exists in database."
+                "data": availability_check.json(),
+                "message": "Doctor availability seems to be already in the database."
             }
         ), 400
 
     data = request.get_json()
-    doctor = Availability(**data)
+    availability = Availability(**data)
 
     try:
-        db.session.add(doctor)
+        db.session.add(availability)
         db.session.commit()
     except:
         return jsonify(
@@ -110,30 +116,30 @@ def add_doctor():
     return jsonify(
         {
             "code": 201,
-            "data": doctor.json()
+            "data": availability.json()
         }
     ), 201
 
 
-@app.route("/doctor", methods=['PATCH'])
+@app.route("/availability", methods=['PATCH'])
 def update_doctor():
     aid = request.json.get('aid', None)
-    doctor = Availability.query.filter_by(aid=aid).first()
-    if doctor:
+    availability = Availability.query.filter_by(aid=aid).first()
+    if availability:
         data = request.get_json()
         if data['did']:
-            doctor.did = data['did']
-        if data['name']:
-            doctor.name = data['name']
+            availability.did = data['did']
+        if data['doctor_name']:
+            availability.doctor_name = data['doctor_name']
         if data['date']:
-            doctor.date = data['date']
+            availability.date = data['date']
         if data['availability']:
-            doctor.availability = data['availability']
+            availability.availability = data['availability']
         db.session.commit()
         return jsonify(
             {
                 "code": 200,
-                "data": doctor.json()
+                "data": availability.json()
             }
         )
     return jsonify(
@@ -147,17 +153,18 @@ def update_doctor():
     ), 404
 
 
-@app.route("/doctor/<string:aid>", methods=['DELETE'])
+@app.route("/availability/<string:aid>", methods=['DELETE'])
 def delete_doctor_avail(aid):
-    doctor = Availability.query.filter_by(aid=aid).first()
-    if doctor:
-        db.session.delete(doctor)
+    availability = Availability.query.filter_by(aid=aid).first()
+    if availability:
+        db.session.delete(availability)
         db.session.commit()
         return jsonify(
             {
                 "code": 200,
                 "data": {
-                    "aid": aid
+                    "aid": aid,
+                    "message": "Doctor availability deleted successfully"
                 }
             }
         )
@@ -177,7 +184,7 @@ def delete_doctor_avail(aid):
 # SELECT * FROM doctor WHERE availability LIKE '%1500%' AND date LIKE '2021-03-21'
 # Guide how to use LIKE https://stackoverflow.com/questions/39384923/how-to-use-like-operator-in-sqlalchemy
 
-@app.route("/doctor/datetime/<string:appointment>")
+@app.route("/availability/datetime/<string:appointment>")
 def find_by_appointmentslot(appointment):
     appointment_date = appointment[0:10]
     appointment_time = appointment[11:]
@@ -198,7 +205,7 @@ def find_by_appointmentslot(appointment):
     return jsonify(
         {
             "code": 404,
-            "message": "There are currently no doctors available at this appointment timeslot."
+            "message": "There are currently no doctors available at this date/time."
         }
     ), 404
 

@@ -1,5 +1,5 @@
 //var get_all_URL = "http://localhost:8000/api/v1/doctor";
-var get_all_URL = "http://localhost:5001/doctor";
+var get_all_URL = "http://localhost:5001/availability";
 
 var app = new Vue({
     el: "#app",
@@ -10,27 +10,27 @@ var app = new Vue({
     },
     data: {
         aid: "",
+        searchStr: "",
         "doctors": [],
         message: "There is a problem retrieving doctors data, please try again later.",
         statusMessage: "",
 
         searchError: "",
 
-        newAid: "",
         newDid: "",
         newName: "",
         newDate: "",
         newAvailability: "",
         doctorAdded: false,
         addDoctorError: "",
-        
+
         availDeleted: false,
 
         edit: false,
         editCurrentDoctor: "",
         editSuccessful: false,
         editDoctorError: "",
-        editAid: "",
+        
         editDid: "",
         editName: "",
         editDate: "",
@@ -61,26 +61,49 @@ var app = new Vue({
 
         },
         findDoctor: function () {
-            console.log(this.aid);
-            const response =
-                fetch(`${get_all_URL}/${this.aid}`)
-                .then(response => response.json())
-                .then(data => {
-                    console.log(response);
-                    if (data.code === 404) {
-                        // no doctor found in db
-                        this.searchError = data.message;
-                    } else {
-                        this.doctors = [data.data];
-                        this.searchError = "";
-                    }
-                })
-                .catch(error => {
-                    // Errors when calling the service; such as network error, 
-                    // service offline, etc
-                    console.log(this.searchError + error);
+            if (this.searchStr.length == 10 || this.searchStr.length == 15) { //Find by Date (2021-03-25 is length 10), DateTime (2021-03-25+1100 is length 15)
+                const response =
+                    fetch(`${get_all_URL}/datetime/${this.searchStr}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(response);
+                        if (data.code === 404) {
+                            // no doctor found in db
+                            this.searchError = data.message;
+                        } else {
+                            this.doctors = data.data.available_doctors;
+                            console.log(this.doctors)
+                            this.searchError = "";
+                        }
+                    })
+                    .catch(error => {
+                        // Errors when calling the service; such as network error, 
+                        // service offline, etc
+                        console.log(this.searchError + error);
 
-                });
+                    });
+            } else { //Find by AID
+                const response =
+                    fetch(`${get_all_URL}/${this.searchStr}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(response);
+                        if (data.code === 404) {
+                            // no doctor found in db
+                            this.searchError = data.message;
+                        } else {
+                            this.doctors = [data.data];
+                            this.searchError = "";
+                        }
+                    })
+                    .catch(error => {
+                        // Errors when calling the service; such as network error, 
+                        // service offline, etc
+                        console.log(this.searchError + error);
+
+                    });
+            }
+
 
         },
         addDoctor: function () {
@@ -91,9 +114,8 @@ var app = new Vue({
             this.availDeleted = false;
 
             let jsonData = JSON.stringify({
-                aid: this.newAid,
                 did: this.newDid,
-                name: this.newName,
+                doctor_name: this.newName,
                 date: this.newDate,
                 availability: this.newAvailability
             });
@@ -150,7 +172,7 @@ var app = new Vue({
             let jsonData = JSON.stringify({
                 aid: this.editCurrentDoctor.aid,
                 did: this.editDid,
-                name: this.editName,
+                doctor_name: this.editName,
                 date: this.editDate,
                 availability: this.editAvailability
             });
@@ -191,7 +213,7 @@ var app = new Vue({
             //reset all data to original setting
             this.aid = aid;
             this.availDeleted = false;
-            
+
             this.doctorAdded = false;
             this.addDoctorError = "";
             this.statusMessage = "";
@@ -234,6 +256,7 @@ var app = new Vue({
             this.edit = false;
             this.searchError = "";
             this.aid = "";
+            this.searchStr = "";
         }
     },
     created: function () {
