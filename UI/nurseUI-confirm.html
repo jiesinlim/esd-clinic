@@ -80,8 +80,8 @@
         <table class="table table-hover table-bordered">
           <thead class="table-info">
             <tr>
-              <th scope="col">Patient ID</th>
-              <th scope="col">Patient Name</th>
+              <th scope="col">Appointment ID</th>
+              <th scope="col">Patient NRIC</th>
               <th scope="col">Appointment Date</th>
               <th scope="col">Appointment Time</th>
               <th scope="col">Appointed Doctor ID</th>
@@ -93,14 +93,14 @@
           <tbody>
             <!-- create a for loop in javascript after calling microservice api
             to get patient booking with status "matched" -->
-            <tr class="table-light">
-              <th scope="row">1</th>
-              <td>Mark</td>
-              <td>27/03/2021</td>
-              <td>3-4pm</td>
-              <td>3</td>
-              <td>Dr Tan</td>
-              <td>Matched</td>
+            <tr v-for="(record, index) in appointments" class="table-light">
+              <th scope="row"> {{ record.appointment_id }} </th>
+              <td>{{ record.NRIC }}</td>
+              <td>{{ record.appointment_date }}</td>
+              <td>{{ record.appointment_time }}</td>
+              <td> {{ record.did }}</td>
+              <td> {{ record.doctor_name }}</td>
+              <td>{{ record.status }}</td>
               <td><button class="btn btn-success" data-toggle="modal" data-target="#confirmModal">Confirm</button></td>
             </tr>
           </tbody>

@@ -1,6 +1,6 @@
 //var get_all_URL = "http://localhost:8000/api/v1/doctor";
 // var get_all_URL = "http://localhost:5001/match";
-var get_appt_URL = "http://127.0.0.1:5005/appointment/all";
+var get_booked_URL = "http://127.0.0.1:5005/appointment/booked";
 var get_avail_doctors_URL = "http://localhost:5002/availdoctors";
 var match_URL = "http://localhost:5002/match";
 
@@ -26,10 +26,11 @@ var app = new Vue({
         noAvail: "No Availability."
     },
     methods: {
-        getAppointments: function () {
+        getBookedAppointments: function (status) {
             // on Vue instance created, load the appointment list
+            console.log(this.appointments.status);
             const response =
-                fetch(get_appt_URL)
+                fetch(get_booked_URL)
                     .then(response => response.json())
                     .then(data => {
                         console.log(response);
@@ -57,7 +58,8 @@ var app = new Vue({
                         console.log(this.message + error);
 
                     });
-                }
+        
+            }
             },
         getAvailDoctors: function() {
             //on Vue instance created, load the avail doctors list

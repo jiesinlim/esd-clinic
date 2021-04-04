@@ -64,7 +64,7 @@ def updateConfirmDetails(appt_id,avail_id,doc_id,doc_name,time,doc_currentavail)
             room_no: ""
         }
     )
-    updateStatus = invoke_http(appointments_URL, method='PATCH', json=doctor_details)
+    updateStatus = invoke_http(matched_appointments_URL, method='PATCH', json=doctor_details)
     print('Update result:', updateStatus)
 
 def getConfirmedAppointmentDetails(appt_id,email,nric,appointment_date,appointment_time,doc_id,doc_name): 

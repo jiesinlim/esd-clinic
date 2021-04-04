@@ -291,7 +291,7 @@ def delete_appointment_details(appointment_id):
 
 # OR
 
-@app.route("/appointment/all")
+@app.route("/appointment")
 def get_all_appointments():
     appointments = Appointments.query.all()
     if len(appointments):
@@ -311,9 +311,9 @@ def get_all_appointments():
     ), 404
 
 @app.route("/appointment/<string:status>")
-def get_confirmed_appointments():
-    appointments = Appointments.query.filter_by(status=status).first()
-    if len(appointments):
+def getAppointmentsbyStatus(status):
+    appointment = Appointments.query.filter_by(status=status).first()
+    if appointment:
         return jsonify(
             {
                 "code": 200,
