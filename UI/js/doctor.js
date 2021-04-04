@@ -17,7 +17,6 @@ var app = new Vue({
 
         searchError: "",
 
-        newAid: "",
         newDid: "",
         newName: "",
         newDate: "",
@@ -31,7 +30,7 @@ var app = new Vue({
         editCurrentDoctor: "",
         editSuccessful: false,
         editDoctorError: "",
-        editAid: "",
+        
         editDid: "",
         editName: "",
         editDate: "",
@@ -62,7 +61,7 @@ var app = new Vue({
 
         },
         findDoctor: function () {
-            if (this.searchStr.length == 10) { //Find by Date (2021-03-25 is length 10)
+            if (this.searchStr.length == 10 || this.searchStr.length == 15) { //Find by Date (2021-03-25 is length 10), DateTime (2021-03-25+1100 is length 15)
                 const response =
                     fetch(`${get_all_URL}/datetime/${this.searchStr}`)
                     .then(response => response.json())
@@ -115,9 +114,8 @@ var app = new Vue({
             this.availDeleted = false;
 
             let jsonData = JSON.stringify({
-                aid: this.newAid,
                 did: this.newDid,
-                name: this.newName,
+                doctor_name: this.newName,
                 date: this.newDate,
                 availability: this.newAvailability
             });
@@ -174,7 +172,7 @@ var app = new Vue({
             let jsonData = JSON.stringify({
                 aid: this.editCurrentDoctor.aid,
                 did: this.editDid,
-                name: this.editName,
+                doctor_name: this.editName,
                 date: this.editDate,
                 availability: this.editAvailability
             });

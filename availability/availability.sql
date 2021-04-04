@@ -39,7 +39,8 @@ CREATE TABLE IF NOT EXISTS `availability` (
   `date` date NOT NULL,
   `availability` varchar(1000) DEFAULT NULL,
   CONSTRAINT `availability_pk` PRIMARY KEY (`aid`, `did`, `doctor_name`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
 
 --
 -- Dumping data for table `availability`

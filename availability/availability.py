@@ -32,15 +32,14 @@ class Availability(db.Model):
     date = db.Column(db.Date, nullable=False)
     availability = db.Column(db.VARCHAR(1000), nullable=True)
 
-    def __init__(self, aid, did, name, date, availability):
-        self.aid = aid
+    def __init__(self, did, doctor_name, date, availability): #Should not add self.aid = aid has it is set as AUTO-INCREMENT. Adding it in init, will require users to pass aid data every single time
         self.did = did
-        self.doctor_name = name
+        self.doctor_name = doctor_name
         self.date = date
         self.availability = availability
 
     def json(self):
-        return {"aid": self.aid, "did": self.did, "name": self.doctor_name, "date": self.date, "availability": self.availability}
+        return {"aid": self.aid, "did": self.did, "doctor_name": self.doctor_name, "date": self.date, "availability": self.availability}
 
 
 @app.route("/availability")
@@ -83,19 +82,6 @@ def find_by_aid(aid):
 
 @app.route("/availability", methods=['POST'])
 def add_doctor():
-    aid = request.json.get('aid', None)
-
-    if (Availability.query.filter_by(aid=aid).first()):
-        return jsonify(
-            {
-                "code": 400,
-                "data": {
-                    "aid": aid
-                },
-                "message": "Doctor availability ID already exists in database."
-            }
-        ), 400
-
     data = request.get_json()
     availability = Availability(**data)
 
@@ -126,8 +112,8 @@ def update_doctor():
         data = request.get_json()
         if data['did']:
             availability.did = data['did']
-        if data['name']:
-            availability.name = data['name']
+        if data['doctor_name']:
+            availability.doctor_name = data['doctor_name']
         if data['date']:
             availability.date = data['date']
         if data['availability']:
@@ -160,7 +146,8 @@ def delete_doctor_avail(aid):
             {
                 "code": 200,
                 "data": {
-                    "aid": aid
+                    "aid": aid,
+                    "message": "Doctor availability deleted successfully"
                 }
             }
         )

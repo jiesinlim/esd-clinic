@@ -99,11 +99,6 @@
             <thead>
               <tr>
                 <td class="form-group">
-                  <label for="did" class="cta-text">Availability S/N</label>
-                  <input v-model="newAid" type="number" class="form-control" id="aid"
-                    placeholder="Enter Availability S/N">
-                </td>
-                <td class="form-group">
                   <label for="did" class="cta-text">Doctor ID</label>
                   <input v-model="newDid" type="number" class="form-control" id="did" placeholder="Enter Doctor ID">
                 </td>
@@ -187,7 +182,7 @@
               <tr v-for="doctor in doctors">
                 <td>{{ doctor.aid }}</td>
                 <td>{{ doctor.did }}</td>
-                <td>{{ doctor.name }}</td>
+                <td>{{ doctor.doctor_name }}</td>
                 <td>{{ doctor.date }}</td>
                 <td>{{ doctor.availability }}</td>
                 <td><button @click="editDoctorForm(doctor)" type="button" class="btn btn-blue">Edit</button>
@@ -215,7 +210,7 @@
               <tr>
                 <td> {{ editCurrentDoctor.aid }} </td>
                 <td> {{ editCurrentDoctor.did }} </td>
-                <td> {{ editCurrentDoctor.name }} </td>
+                <td> {{ editCurrentDoctor.doctor_name }} </td>
                 <td> {{ editCurrentDoctor.date }} </td>
                 <td> {{ editCurrentDoctor.availability }} </td>
               </tr>
