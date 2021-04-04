@@ -1,6 +1,6 @@
 //var get_all_URL = "http://localhost:8000/api/v1/doctor";
 // var get_all_URL = "http://localhost:5001/match";
-var get_all_appts_URL = "http://127.0.0.1:5005/appointment/all";
+var get_booked_URL = "http://127.0.0.1:5005/appointment/booked";
 var get_avail_doctors_URL = "http://localhost:5001/availability";
 var match_URL = "http://localhost:5002/match";
 
@@ -121,7 +121,7 @@ var app = new Vue({
     },
             created: function () {
             // on Vue instance created, load the appt list
-            this.getAppointments();
+            this.getBookedAppointments();
         }
 });
     

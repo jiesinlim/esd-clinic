@@ -317,9 +317,7 @@ def getAppointmentsbyStatus(status):
         return jsonify(
             {
                 "code": 200,
-                "data": {
-                    "appointments": [record.json() for record in appointments]
-                }
+                "data": record.json()
             }
         )
     return jsonify(
