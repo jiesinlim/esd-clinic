@@ -102,10 +102,11 @@ var app = new Vue({
         successfulMatch: function(appt_index) {
             console.log(appt_index);
             if (this.selected != "" && Number.isInteger(appt_index)) {
-                this.showModal = true;
-                this.selectedAppt.push(this.appointments[appt_index].NRIC);
+
+                this.selectedAppt.push(this.appointments[appt_index].patient_name);
                 this.selectedAppt.push(this.date[appt_index]);
                 this.selectedAppt.push(this.appointments[appt_index].appointment_time);
+                this.selectedAppt.push(this.appointments[appt_index].appointment_id);
 
                 //invoke match microservice (requires avail_id, did, doc_name, appt_id, appt_time, doc_avail)
                 for (var doctor of this.available_doctors[appt_index]) {
@@ -114,9 +115,42 @@ var app = new Vue({
                         this.selectedAppt.push(doctor.aid);
                         this.selectedAppt.push(doctor.did);
                         this.selectedAppt.push(this.selected);
-                        this.selectedAppt.push(appt_index);
                     }
-                }                
+                } 
+                let jsonData = JSON.stringify(
+                    {
+                        appointment_id: this.selectedAppt[3],
+                        aid: this.selectedAppt[5],
+                        did: this.selectedAppt[6],
+                        d_name: this.selectedAppt[7],
+                        appt_time: this.selectedAppt[2],
+                        doc_avail: this.selectedAppt[4]
+                    }
+                )
+                const response =
+                fetch(match_URL, {
+                    method: "PATCH",
+                    headers: {
+                        "Content-type": "application/json"
+                    },
+                    body: jsonData
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(response);
+                        if (data.code === 404) {
+                            // no appointment in db
+                            this.message = data.message;
+                        } else {
+                            this.showModal = true;
+                            console.log("patient and doctor successfully matched!");
+                        }
+                    })
+                    .catch(error => {
+                        // Errors when calling the service; such as network error, 
+                        // service offline, etc
+                        console.log(this.message + error);
+                    });
             } 
             else {
                 console.log("Select a doctor first before matching!");
@@ -124,7 +158,7 @@ var app = new Vue({
         },
         updateMatchDetails: function () {
             this.showModal = false;
-            
+
             //reload page
             location.reload();
             console.log("details successfully updated!");

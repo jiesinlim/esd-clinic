@@ -155,8 +155,8 @@ def add_new_appointment(NRIC):
 
 #----------------------------------------------------------------------------------------------
 # Change Date & Time of appointment 
-# [PUT] 
-@app.route("/appointment/<string:appointment_id>", methods=['PUT'])
+# [PATCH] 
+@app.route("/appointment/<string:appointment_id>", methods=['PATCH'])
 def change_appointment_details(appointment_id):
     appointment = Appointments.query.filter_by(appointment_id=appointment_id).first()
     if appointment:
@@ -165,7 +165,13 @@ def change_appointment_details(appointment_id):
             appointment.appointment_date = data['appointment_date']
         if data['appointment_time']:
             appointment.appointment_time = data['appointment_time']
-        
+        if data['did']:
+            appointment.did = data['did']
+        if data['doctor_name']:
+            appointment.doctor_name = data['doctor_name']
+        if data['status']:
+            appointment.status = data['status']
+
         db.session.commit()
         return jsonify(
             {

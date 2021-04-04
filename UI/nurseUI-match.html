@@ -82,7 +82,7 @@
           <thead class="table-info">
             <tr>
               <th scope="col">Appointment ID</th>
-              <th scope="col">Patient NRIC</th>
+              <th scope="col">Patient Name</th>
               <th scope="col">Appointment Date</th>
               <th scope="col">Appointment Time</th>
               <th scope="col">Available Doctors</th>
@@ -93,7 +93,7 @@
           <tbody>
             <tr v-for="(record, index) in appointments" class="table-light">
               <th scope="row"> {{ record.appointment_id }} </th>
-              <td>{{ record.NRIC }}</td>
+              <td>{{ record.patient_name }}</td>
               <td> {{ date[index] }} </td>
               <td> {{ record.appointment_time }} </td>
               <td v-if='doctorsAvail'> 
@@ -129,7 +129,7 @@
                   </div>
                   <div class="modal-body mt-4">
                     <br>
-                    Patient's NRIC: {{ selectedAppt[0] }} <br>
+                    Patient's Name: {{ selectedAppt[0] }} <br>
                     Appointed Doctor: {{ selected }} <br>
                     Appointment Date: {{ selectedAppt[1] }} <br>
                     Appointment Time: {{ selectedAppt[2] }} <br><br><br>

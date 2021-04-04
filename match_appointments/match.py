@@ -10,7 +10,7 @@ from invokes import invoke_http
 app = Flask(__name__)
 CORS(app)
 
-appointments_URL = "http://localhost:5005/appointment/" # check correct patient url for updating patient record
+appointments_URL = "http://127.0.0.1:5005/appointment/" # check correct patient url for updating patient record
 # add patient booked datetime to doctor_URL
 doctor_datetime_URL = "http://127.0.0.1:5001/availability/datetime/"
 doctor_URL = "http://127.0.0.1:5001/availability" #update doctor availability (remove alr matched timeslot)
@@ -39,16 +39,22 @@ def updateMatchDetails(appt_id,avail_id,doc_id,doc_name,time,doc_currentavail):
     print('\n-----Invoking appointments microservice-----')
     doctor_details = jsonify(
         {
+            NRIC: "",
             aid: "",
-            nric: "",
             appointment_date: "",
+            appointment_id: "",
             appointment_time: "",
+            contact_number: "",
             did: doc_id,
             doctor_name: doc_name,
-            status: "matched",
-            room_no: ""
+            email: "",
+            gender: "",
+            patient_name: "",
+            room_no: "",
+            status: "matched"
         }
     )
+    print(doctor_details)
     assignDoctor = invoke_http(appointments_URL + str(appt_id), method='PATCH', json=doctor_details)
     print('Match result:', assignDoctor)
 
@@ -68,7 +74,7 @@ def updateMatchDetails(appt_id,avail_id,doc_id,doc_name,time,doc_currentavail):
             availability: newAvailability,
             date: "",
             did: "",
-            name: ""
+            doctor_name: ""
         }
     )
 
@@ -78,6 +84,8 @@ def updateMatchDetails(appt_id,avail_id,doc_id,doc_name,time,doc_currentavail):
 
     updateAvailability = invoke_http(doctor_URL + str(avail_id), method='PATCH', json=new_avail)
     print('updated timeslot result:', updateAvailability)
+
+    return assignDoctor, updateAvailability
 
 
 
@@ -90,7 +98,7 @@ def getAvailDoctorsbyDatetime(datetime):
         # data = request.get_json() #pass data of patient's appt time and date
         # date = data.appointment_date
         # time = data.appointment_time
-            print("\nReceived a patient's appointment date & time in JSON:", datetime)
+            print("\nReceived a patient's appointment date & time:", datetime)
 
         # do the actual work
             result = getAvailDoctors(datetime)
@@ -131,14 +139,11 @@ def match_doctor():
 
         except Exception as e:
             # Unexpected error in code
-            exc_type, exc_obj, exc_tb = sys.exc_info()
-            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-            ex_str = str(e) + " at " + str(exc_type) + ": " + fname + ": line " + str(exc_tb.tb_lineno)
-            print(ex_str)
+            pass
 
             return jsonify({
                 "code": 500,
-                "message": "match.py internal error: " + ex_str
+                "message": "match.py internal error"
             }), 500
 
     # if reached here, not a JSON request.
@@ -146,8 +151,6 @@ def match_doctor():
         "code": 400,
         "message": "Invalid JSON input: " + str(request.get_data())
     }), 400
-
-
 
 
 
