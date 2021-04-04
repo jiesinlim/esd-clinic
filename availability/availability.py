@@ -82,6 +82,23 @@ def find_by_aid(aid):
 
 @app.route("/availability", methods=['POST'])
 def add_doctor():
+    add_did = request.json.get('did', None)
+    add_doctor_name = request.json.get('doctor_name', None)
+    add_date = request.json.get('date', None)
+    add_availability = request.json.get('availability', None)
+
+    #Checks if the current entry is already inside the availability database: Checks by DID, Doctor Name, Date, Availability
+    availability_check = Availability.query.filter(Availability.did.like(add_did), Availability.date.like(add_date), Availability.doctor_name.like(add_doctor_name), Availability.availability.like("%" + add_availability + "%")).first()
+
+    if (availability_check):
+        return jsonify(
+            {
+                "code": 400,
+                "data": availability_check.json(),
+                "message": "Doctor availability seems to be already in the database."
+            }
+        ), 400
+
     data = request.get_json()
     availability = Availability(**data)
 
