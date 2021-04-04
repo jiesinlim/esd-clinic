@@ -74,73 +74,180 @@
   <section id="testimonials" class="wow fadeInUp">
     <div class="container">
       <div class="section-header">
-        <h2>Book your appointment</h2>
+        <h2>PATIENT PORTAL</h2>
       </div>
     </div>
 
-<!-- start of book appointment form -->
+  <!--==========================
+    View booking status section
+  ============================-->
 
-<div id="app">
-  <div class="container">
-  <form>
-    <div class="form-group">
-      <label>Full Name (As per NRIC)</label><br>
-      <input class="form-control col-md-6" type="text" id="patient_fullname" >
-      </div>
+<section class="wow fadeInUp mt-4"> <!-- Availability search bar and tables START-->
+      <div class="container"> <!-- container START-->
+        <div v-show="!edit"> <!-- v-show: !edit START-->
+          <h3 class="cta-title">Appointment Booked</h3>
+          <table class="table table-striped mt-4" v-if="hasAppointment">
+            <thead>
+              <tr>
+                <th>Appointment ID</th>
+                <th>Appointment Date</th>
+                <th>Appointment Time</th>
+                <th>Doctor_name</th>
+                <th>Room_No</th>
+                <th>Status</th>
+                <th>Edit</th>
+                <th>Del</th>
+              </tr>
+              <tr v-for="doctor in doctors">
+                <td>{{ doctor.aid }}</td>
+                <td>{{ doctor.did }}</td>
+                <td>{{ doctor.doctor_name }}</td>
+                <td>{{ doctor.date }}</td>
+                <td>{{ doctor.availability }}</td>
+                <td>{{ doctor.status }}</td>
+                <td><button @click="editDoctorForm(doctor)" type="button" class="btn btn-blue">Edit</button>
+                </td>
+                <td><button @click="del(doctor.aid)" type="button" class="btn btn-blue">Del</button></td>
+              </tr>
+            </thead>
+          </table>
+          <div class="text-danger" v-if="!hasDoctors">{{ message }}</div> <!-- Error message if can't get data from microservice-->
+        </div> <!-- row v-show: !edit END-->
+      </div> <!-- container END-->
 
-    <div class="form-group">
-      <label>NRIC</label><br>
-      <input class="form-control col-md-6" type="text" id="patient_nric">
-    </div>  
+      <div class = "container"> <!-- container START-->
+        <div v-show="edit"> <!-- v-show edit START-->
+          <h3>Current Availability</h3>
+          <table class="table table-striped" v-if="hasDoctors">
+            <thead>
+              <tr>
+                <th>Availability S/N</th>
+                <th>Doctor ID</th>
+                <th>Name</th>
+                <th>Date</th>
+                <th>Availability</th>
+              </tr>
+              <tr>
+                <td> {{ editCurrentDoctor.aid }} </td>
+                <td> {{ editCurrentDoctor.did }} </td>
+                <td> {{ editCurrentDoctor.doctor_name }} </td>
+                <td> {{ editCurrentDoctor.date }} </td>
+                <td> {{ editCurrentDoctor.availability }} </td>
+              </tr>
+            </thead>
+          </table>
 
-    <div class="form-group">
-      <label>Gender</label><br>
-      <div class="form-check form-check-inline">
-        <input class="form-check-input" type="radio" name="gender" id="male" value="male">
-        <label class="form-check-label" for="male">Male</label>
-      </div>
-      <div class="form-check form-check-inline">
-        <input class="form-check-input" type="radio" name="gender" id="female" value="female">
-        <label class="form-check-label" for="female">Female</label>
-      </div>
-    </div>
-    
-    <div class="form-group">
-      <label>Contact Number</label><br>
-      <input class="form-control col-md-6" type="text" id="patient_contact_number">
-    </div>
+          <h3>To Edit Availability</h3>
+          <table class="table table-striped" v-if="hasDoctors">
+            <thead>
+              <tr>
+                <th>Availability S/N</th>
+                <th>Doctor ID</th>
+                <th>Name</th>
+                <th>Date</th>
+                <th>Availability</th>
+              </tr>
+              <tr>
+                <td class="form-group">
+                  {{ editCurrentDoctor.aid }}
+                </td>
+                <td class="form-group">
+                  <input type="number" class="form-control" v-model="editDid">
+                </td>
+                <td class="form-group">
+                  <input type="text" class="form-control" v-model="editName">
+                </td>
+                <td class="form-group">
+                  <input type="date" class="form-control" v-model="editDate">
+                </td>
+                <td class="form-group">
+                  <input type="text" class="form-control" v-model="editAvailability">
+                </td>
+              </tr>
+            </thead>
+          </table>
 
-    <div class="form-group">
-      <label>Email Address</label><br>
-      <input class="form-control col-md-6" type="text" id="patient_email">
-    </div>
+          <div class="row mx-auto mb-4">
+            <div class="col">
+              <button @click="pageRefresh" class="btn btn-blue ">Return to home
+                page</button>
+            </div>
+            <div class="col">
+              <button @click="editDoctor" class="btn btn-blue pull-right" v-on:submit.prevent="onSubmit">Confirm
+                Edit</button>
+            </div>
+          </div>
 
-    <div class="form-group">
-      <label for="selected_date">Appointment Date</label>
-      <input type="date" class="form-control col-md-6" id="selected_date" onchange="display_available_time()">
-      <!-- <input type="date" class="form-control col-md-6" id="selected_date" @keyup.enter="get_all_available_time()" v-model="selected_date"> -->
-    </div>
-    
-    <span id="no_results"></span>
-    <div class="form-group">
-      <label for="available_time">Appointment Time</label>
-      <select class="form-control col-md-6" id="available_time">
-        <option></option>
-        <!-- <option v-for="each_time in time">{{ each_time }}</option> -->
-      </select>
+          <!-- Edit status message-->
+          <div class="row justify-content-center">
+            <div class="text-success" v-if="editSuccessful">
+              The edit has been successful! <br>
+              <br>
+            </div>
+          </div> <!-- Edit status message END -->
+          
+        </div> <!-- v-show:edit END -->
+      </div> <!-- Container END-->
+    </section> <!-- Availability search bar and tables END-->
+  </div> <!-- app: container END -->
 
-    </div>
-    
-    <div class="form-group center">
-    <button type="submit" class="btn btn-blue" onclick="post_new_booking()">Book Appointment</button>
-    </div>
+  <!--==========================
+    Book an Appointment section
+  ============================-->
+  <div id="app">
+    <section id="call-to-action" class="wow fadeInUp"> <!-- Book an Appointment section START -->
+      <div class="container">  <!-- Container START-->
+        <div class="row"> <!-- Row START-->
+          <h3 class="cta-title">Book an Appointment</h3>
+          <table class="table borderless">
+            <thead>
+              <tr>
+                <td class="form-group">
+                  <label for="nric" class="cta-text">NRIC</label>
+                  <input v-model="newNRIC" type="text" class="form-control" id="nric" placeholder="Enter NRIC">
+                </td>
+               
+                <td class="form-group">
+                  <label for="selected_date" class="cta-text">Appointment Date</label>
+                  <input v-model="newAppointmentDate" type="date" class="form-control" id="selected_date"
+                    placeholder="Enter Date YYYY-MM-DD">
+                </td>
+                <td class="form-group">
+                  <label for="available_time" class="cta-text">Appointment Time</label>
+                  <select v-model="newAppointmentTime" type="text" class="form-control" id="available_time">
+                    <option v-for="each_time in time">{{each_time}}</option>
+                </td>
+              </tr>
+            </thead>
+          </table>
+        </div> <!-- Row END-->
 
-    <div id="booking_status">
-      this text should changed if booking is successfully posted to db
-    </div>
-</div>
+        <!-- Add Appointment Button-->
+        <div class="row justify-content-center">
+          <button @click="addAppointment" class="btn btn-outline-light" v-on:submit.prevent="onSubmit">Book
+            Appointment</button>
+        </div> 
 
-<!-- end of book appointment form -->
+        <!-- Status messages about adding and deleting-->
+        <div class="row mt-4 justify-content-center">
+          <div class="text-success" v-if="appointmentAdded">
+            {{ statusMessage }} <br>
+          </div>
+        </div>
+        <!-- <div class="row justify-content-center">
+          <div class="text-success" v-if="availDeleted">
+            {{ statusMessage }} <br>
+          </div>
+        </div>
+        <div class="row justify-content-center">
+          <div class="text-danger" v-if="addDoctorError!=''">
+            {{ statusMessage }}<br>
+            {{ addDoctorError}}
+            <br>
+          </div>
+        </div> -->
+      </div> <!-- Container END-->
+    </section> <!-- Add Availability Section END -->
 
   <!--==========================
     Footer
