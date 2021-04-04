@@ -310,22 +310,6 @@ def get_all_appointments():
         }
     ), 404
 
-@app.route("/appointment/<string:status>")
-def getAppointmentsbyStatus(status):
-    appointment = Appointments.query.filter_by(status=status).first()
-    if appointment:
-        return jsonify(
-            {
-                "code": 200,
-                "data": record.json()
-            }
-        )
-    return jsonify(
-        {
-            "code": 404,
-            "message": "There are no appointments."
-        }
-    ), 404
 
 # # Get all next day appointments
 # # [GET] 
