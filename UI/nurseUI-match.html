@@ -97,11 +97,10 @@
               <td> {{ date[index] }} </td>
               <td> {{ record.appointment_time }} </td>
               <td v-if="doctorsAvail"> 
-              <!-- <td> -->
                 <select v-model="selected" > 
                   <option disabled value="">Please select a doctor</option>
-                  <option v-for="doctor in available_doctors[index]" :key='doctor.name'>  
-                      {{ doctor.name }}
+                  <option v-for="doctor in available_doctors[index]" :key='doctor.doctor_name'>  
+                      {{ doctor.doctor_name }}
                   </option>
                 </select> 
                </td>
@@ -116,14 +115,14 @@
         <div class="text-danger" v-else>{{ message }}</div> <!-- Error message if can't get data from microservice-->
       </div>
 
-      <div  v-if='showModal' id="matchedModal" class="modal" tabindex="-1" role="dialog">
+      <div  v-if='showModal' id="matchedModal" class="modal" tabindex="-1" role="dialog" @click='updateMatchDetails'>
         <transition name='modal'>
           <div class='modal-mask'>
             <div class="modal-wrapper">
               <div class="modal-dialog" role="document">
                 <div class="modal-content">
                   <div class="modal-header">
-                    <button type="button" class="close"  @close='updateMatchDetails' data-dismiss="modal" aria-label="Close">
+                    <button type="button" class="close"  @click='updateMatchDetails' data-dismiss="modal" aria-label="Close">
                       <span aria-hidden='true'>&times;</span>
                     </button>
                     <h4 class="modal-title">{{ modalTitle }}</h4>

@@ -109,7 +109,7 @@ var app = new Vue({
 
                 //invoke match microservice (requires avail_id, did, doc_name, appt_id, appt_time, doc_avail)
                 for (var doctor of this.available_doctors[appt_index]) {
-                    if (doctor.name == this.selected) {
+                    if (doctor.doctor_name == this.selected) {
                         this.selectedAppt.push(doctor.availability);
                         this.selectedAppt.push(doctor.aid);
                         this.selectedAppt.push(doctor.did);
@@ -124,9 +124,10 @@ var app = new Vue({
         },
         updateMatchDetails: function () {
             this.showModal = false;
-
             //reload page
+            console.log("details successfully updated!");
             this.getBookedAppointments();
+            location.reload();
         },
     },
             created: function () {
