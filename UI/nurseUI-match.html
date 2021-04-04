@@ -96,15 +96,15 @@
               <td>{{ record.NRIC }}</td>
               <td> {{ date[index] }} </td>
               <td> {{ record.appointment_time }} </td>
-              <td v-if="doctorsAvail"> 
+              <td v-if='doctorsAvail'> 
                 <select v-model="selected" > 
                   <option disabled value="">Please select a doctor</option>
-                  <option v-for="doctor in available_doctors[index]" :key='doctor.doctor_name'>  
+                  <option v-for="doctor in appointments[index].avail_doctors" :key='doctor.doctor_name'>  
                       {{ doctor.doctor_name }}
                   </option>
                 </select> 
                </td>
-               <td class='text-danger' v-else>{{ noDrs }}</td>
+               <td class='text-danger' v-else>there are no doctors {{ noDrs }}</td>
               <td> {{ record.status }} </td>
               <td><button class="btn btn-success" @click="successfulMatch(index)" data-toggle="modal" data-target="#matchedModal">Match</button> </td>
             </tr>
@@ -194,7 +194,7 @@
 
   <!-- Template Main Javascript File -->
   <script src="js/main.js"></script>
-  <script src="js/nurse.js"></script>
+  <script src="js/nurse-match.js"></script>
 
 <!-- Optional JavaScript -->
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->

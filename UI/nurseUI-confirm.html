@@ -27,6 +27,7 @@
 
   <!-- Main Stylesheet File -->
   <link href="css/style.css" rel="stylesheet">
+  
 
   <!-- =======================================================
     Theme Name: Reveal
@@ -35,6 +36,8 @@
     License: https://bootstrapmade.com/license/
   ======================================================= -->
 </head>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
 
 <body id="body">
 
@@ -72,16 +75,16 @@
   <!--==========================
     Intro Section
   ============================-->
-
+<div id="app">
   <section id="intro">
     <div class="intro-content">
       <h2 style="font-size:xx-large;">Patient Appointments <span>Confirmation</span></h2>
       <div class="table-responsive">
-        <table class="table table-hover table-bordered">
+        <table class="table table-hover table-bordered" v-if="hasAppointments">
           <thead class="table-info">
             <tr>
               <th scope="col">Patient ID</th>
-              <th scope="col">Patient Name</th>
+              <th scope="col">Patient NRIC</th>
               <th scope="col">Appointment Date</th>
               <th scope="col">Appointment Time</th>
               <th scope="col">Appointed Doctor ID</th>
@@ -93,19 +96,20 @@
           <tbody>
             <!-- create a for loop in javascript after calling microservice api
             to get patient booking with status "matched" -->
-            <tr class="table-light">
-              <th scope="row">1</th>
-              <td>Mark</td>
-              <td>27/03/2021</td>
-              <td>3-4pm</td>
-              <td>3</td>
-              <td>Dr Tan</td>
-              <td>Matched</td>
+            <tr v-for="(record, index) in appointments" class="table-light">
+              <th scope="row"> {{ record.appointment_id }} </th>
+              <td>{{ record.NRIC }}</td>
+              <td> {{ date[index] }} </td>
+              <td> {{ record.appointment_time }} </td>
+              <td>{{ record.did }}</td>
+              <td>{{ record.doctor_name }}</td>
+              <td>{{ record.status }}</td>
               <td><button class="btn btn-success" data-toggle="modal" data-target="#confirmModal">Confirm</button></td>
             </tr>
           </tbody>
         </table>
-
+        
+        <div class="text-danger" v-else>{{ message }}</div> <!-- Error message if can't get data from microservice-->
       </div>
     </div>
 
@@ -138,10 +142,9 @@
   </div>
 </div>
 
-  </section><!-- #intro -->
+  </section>
 
-
-
+</div>
 
   <!--==========================
     Footer
@@ -177,11 +180,21 @@
   <script src="lib/magnific-popup/magnific-popup.min.js"></script>
   <script src="lib/sticky/sticky.js"></script>
 
-  <!-- Contact Form JavaScript File -->
-  <script src="contactform/contactform.js"></script>
-
   <!-- Template Main Javascript File -->
   <script src="js/main.js"></script>
+  <script src="js/nurse-confirm.js"></script>
+
+  <!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+crossorigin="anonymous"></script>
 
 </body>
 </html>

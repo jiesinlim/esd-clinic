@@ -60,7 +60,6 @@ var app = new Vue({
                         // Errors when calling the service; such as network error, 
                         // service offline, etc
                         console.log(this.message + error);
-
                     });
                 },
         getAvailDoctors: function() {
@@ -68,7 +67,7 @@ var app = new Vue({
             // converting GMT to YYYY-MM-DD format
 
             if (this.datetime.length > 0) {
-                for (var i=0; i<(this.appointments).length; i++) {
+                for (let i=0; i<(this.appointments).length; i++) {
                     // console.log((this.datetime)[i]);
                     const response =
                         fetch(`${get_avail_doctors_URL}/${this.datetime[i]}`)
@@ -78,26 +77,27 @@ var app = new Vue({
                                 if (data.code === 404) {
                                     // no doctor available in db
                                     this.noDrs = data.noDrs;
+                                    this.appointments[i].avail_doctors = [];
+
                                 } else {
                                     var patient_availdoc = [];
                                     for (var doctor of data.data.available_doctors) {
                                         patient_availdoc.push(doctor);  // [Dr Marcus, Dr Hong Seng]
                                     }
-                                    this.available_doctors.push(patient_availdoc);
                                     // console.log(patient_availdoc);
-            
+                                    this.available_doctors.push(patient_availdoc);
+                                    this.appointments[i].avail_doctors = patient_availdoc;
                                 }
                             })
                             .catch(error => {
                                 // Errors when calling the service; such as network error, 
                                 // service offline, etc
                                 console.log(this.noDrs + error);
-
                             });
-            
                 }
-                console.log(this.available_doctors);  // [[Dr Marcus, Dr Hong Seng],[Dr Alan, Dr Marcus]]
             }
+            // console.log(this.available_doctors); //[[Dr Marcus, Dr Hong Seng],[Dr Alan, Dr Marcus]]
+            console.log(this.appointments); 
         },
         successfulMatch: function(appt_index) {
             console.log(appt_index);
@@ -124,15 +124,15 @@ var app = new Vue({
         },
         updateMatchDetails: function () {
             this.showModal = false;
+            
             //reload page
-            console.log("details successfully updated!");
-            this.getBookedAppointments();
             location.reload();
+            console.log("details successfully updated!");
         },
     },
-            created: function () {
-            // on Vue instance created, load the appt list
-            this.getBookedAppointments();
-        }
-    });
+    mounted: function () {
+        // on Vue instance created, load the appt list
+        this.getBookedAppointments();
+    }
+});
 
