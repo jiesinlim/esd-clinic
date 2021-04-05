@@ -15,7 +15,8 @@ var app1 = new Vue({
         "appointments": [],
         message: "There is a problem retrieving appointment data, please try again later.",
         statusMessage: "",
-        appointment_id= "",
+        appointment_id: "",
+        searchStr: "",
 
         newFullname: "",
         newNRIC: "",
@@ -53,7 +54,8 @@ var app1 = new Vue({
         editDate: "",
         editTime: "",
 
-        appointment_deleted: false
+        appointment_deleted: false,
+        hasAppointment: true
     },
     methods:{
         getAllAppointments: function(){
@@ -197,9 +199,18 @@ var app1 = new Vue({
             this.editAppointmentError = "";
 
             let jsonData = JSON.stringify({
-                appointment_id: this.editCurrentAppointment.appointment_id,
-                appointment_date: this.editDate,
-                appointment_time: this.editTime,
+                NRIC: this.editCurrentAppointment.NRIC,
+                aid: this.editCurrentAppointment.aid,
+                appointment_date: this.editDate, //Edited Date
+                appointment_time: this.editTime, //Edited Time
+                contact_number: this.editCurrentAppointment.contact_number,
+                did: this.editCurrentAppointment.did,
+                doctor_name: this.editCurrentAppointment.doctor_name,
+                email: this.editCurrentAppointment.email,
+                gender: this.editCurrentAppointment.gender,
+                patient_name: this.editCurrentAppointment.patient_name,
+                room_no: this.editCurrentAppointment.room_no,
+                status: this.editCurrentAppointment.status
             });
 
             fetch(`${get_all_URL_5005}/${this.editCurrentAppointment.appointment_id}`, {

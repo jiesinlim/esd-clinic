@@ -30,7 +30,6 @@
 
   <!-- Main Stylesheet File -->
   <link href="css/style.css" rel="stylesheet">
-  <link href="css/patient.css" rel="stylesheet">
 
   <style>
     .btn-blue {
@@ -104,7 +103,7 @@
             <!-- Search bar END-->
 
             <!-- Appointment booked table START -->
-            <div v-show="hasAppointment"> <!-- v-show: hasAppointment START--> 
+            <div v-show="!edit"> <!-- v-show: hasAppointment START--> 
             <h3 class="cta-title text-center">Appointment Booked</h3>
             <table class="table table-striped mt-4">
               <thead>
@@ -118,7 +117,7 @@
                   <th>Edit</th>
                   <th>Del</th>
                 </tr>
-                <tr>
+                <tr v-for="appointment in appointments">
                   <td>{{ appointment.appointment_id }}</td>
                   <td>{{ appointment.appointment_date }}</td>
                   <td>{{ appointment.appointment_time }}</td>
@@ -184,7 +183,7 @@
                   page</button>
               </div>
               <div class="col">
-                <button @click="editAppointment" class="btn btn-blue pull-right" v-on:submit.prevent="onSubmit">Confirm
+                <button @click="editAppointmentDateTime" class="btn btn-blue pull-right" v-on:submit.prevent="onSubmit">Confirm
                   Edit</button>
               </div>
             </div>
