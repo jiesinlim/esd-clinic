@@ -10,7 +10,7 @@ from invokes import invoke_http
 app = Flask(__name__)
 CORS(app)
 
-appointments_URL = "http://127.0.0.1:5005/appointment/" # check correct patient url for updating patient record
+appointments_URL = "http://127.0.0.1:5005/appointment/all/booked" # check correct patient url for updating patient record
 # add patient booked datetime to doctor_URL
 doctor_datetime_URL = "http://127.0.0.1:5001/availability/datetime/"
 doctor_URL = "http://127.0.0.1:5001/availability" #update doctor availability (remove alr matched timeslot)
@@ -27,6 +27,7 @@ def getAvailDoctors(datetime):
     # for i in range(len(availDoctors)):
     #     print(availDoctors[i])
 
+
 def updateMatchDetails(appt_id,avail_id,doc_id,doc_name,time,doc_currentavail):
     #get patient appointment by appt id
     # print('\n-----Invoking appointment microservice-----')
@@ -37,6 +38,7 @@ def updateMatchDetails(appt_id,avail_id,doc_id,doc_name,time,doc_currentavail):
     #update patient appointment with assigned doctor id and name
     # Invoke the appointment microservice
     print('\n-----Invoking appointments microservice-----')
+    
     doctor_details = jsonify(
         {
             NRIC: "",
@@ -131,7 +133,7 @@ def match_doctor():
             time = match.appt_time
             doc_currentavail = match.doc_avail  #get this info by getting doctor's full availability by avail_id
 
-
+            
             result = updateMatchDetails(appt_id,avail_id,doc_id,doc_name,time, doc_currentavail)
             print('\n------------------------')
             print('\nresult: ', result)

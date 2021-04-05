@@ -131,7 +131,7 @@ var app = new Vue({
                     }
                 )
                 const response =
-                fetch(match_URL, {
+                fetch(`${match_URL}`, {
                     method: "PATCH",
                     headers: {
                         "Content-type": "application/json"

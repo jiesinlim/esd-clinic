@@ -67,7 +67,7 @@ def updateConfirmDetails(appt_id,avail_id,doc_id,doc_name,time,doc_currentavail)
     updateStatus = invoke_http(matched_appointments_URL, method='PATCH', json=doctor_details)
     print('Update result:', updateStatus)
 
-def getConfirmedAppointmentDetails(appt_id,email,nric,appointment_date,appointment_time,doc_id,doc_name): 
+def getConfirmedAppointmentDetails(patient_name,email,appointment_time): 
     #update patient appointment with confirmed status
     # Invoke the appointment microservice
     
