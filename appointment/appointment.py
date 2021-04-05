@@ -236,7 +236,7 @@ def delete_appointment_details(appointment_id):
 
 
 
-# # -----------NURSE below-------------------------
+# #
 # # Get all new appointments made
 # # [GET] 
 # # /appointment/{booked}
@@ -266,8 +266,6 @@ def get_appointments_by_status(status):
         }
     ), 404
 
-# OR
-
 
 # # Get all next day appointments
 # # [GET] 
@@ -283,9 +281,26 @@ def get_appointments_by_status(status):
 #     def update_appointment():
 #         pass
 # # -------------------------------------------------
+@app.route("/appointment/nextday/<string:date>")
+def get_appointments_by_next_day(date):
+    appointments = Appointments.query.filter(Appointments.appointment_date.like(date)).all()
 
-# if __name__ == '__main__':
-#     app.run(port=5002, debug=True)
+    if appointments:
+        return jsonify(
+            {
+                "code": 200,
+                "data": {
+                    "appointments": [record.json() for record in appointments]
+                }
+            }
+        )
+    return jsonify(
+        {
+            "code": 404,
+            "message": "There are no appointments."
+        }
+    ), 404
+
 
 if __name__ == '__main__':
     print("This is flask for " + os.path.basename(__file__) +
