@@ -114,14 +114,17 @@ def get_appointment_details(appointment_id):
 #----------------------------------------------------------------------------------------------------------------
 # Get appointment details using NRIC
 # [GET] 
-@app.route("/appointment/all/<string:NRIC>")
+@app.route("/appointment/nric/<string:NRIC>")
 def get_appointment_details_by_nric(NRIC):
-    appointment = Appointments.query.filter_by(NRIC=NRIC).first()
-    if appointment:
+    appointments = Appointments.query.filter(Appointments.NRIC.like(NRIC)).all()
+
+    if appointments:
         return jsonify(
             {
                 "code": 200,
-                "data": appointment.json()
+                "data": {
+                    "appointments": [record.json() for record in appointments]
+                }
             }
         )
     return jsonify(

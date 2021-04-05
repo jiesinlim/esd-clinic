@@ -158,7 +158,7 @@ var app1 = new Vue({
 
         findAppointmentByNRIC: function(){
             const response =
-                fetch(`${get_all_URL_5005}/all/${this.searchStr}`)
+                fetch(`${get_all_URL_5005}/nric/${this.searchStr}`)
                 .then(response => response.json())
                     .then(data => {
                         console.log(response);
@@ -166,7 +166,7 @@ var app1 = new Vue({
                             // no appointment details found in db
                             this.searchError = data.message;
                         } else {
-                            this.appointments = [data.data];
+                            this.appointments = data.data.appointments;
                             console.log(this.appointments);
                             this.searchError = "";
 
