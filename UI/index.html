@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
   <title>ESD G7T6</title>
@@ -16,6 +17,8 @@
 
   <!-- Bootstrap CSS File -->
   <link href="lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
   <!-- Libraries CSS Files -->
   <link href="lib/font-awesome/css/font-awesome.min.css" rel="stylesheet">
@@ -36,6 +39,9 @@
   ======================================================= -->
 </head>
 
+<!-- Vue JS-->
+<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+
 <body id="body">
 
   <!--==========================
@@ -52,7 +58,7 @@
 
       <nav id="nav-menu-container">
         <ul class="nav-menu">
-          <li><a href="./patientLogin.html">Patient</a></li>
+          <li><a href="./patientUI.html">Patient</a></li>
           <li><a href="./nurseLogin.html">Nurse</a></li>
           <li><a href="./doctorLogin.html">Doctor</a></li>
         </ul>
@@ -71,7 +77,11 @@
     <div class="intro-content">
       <h2>Clinic <span>Appointment</span><br>Booking System</h2>
       <div>
-        <a href="./patientLogin.html" class="btn-get-started scrollto">Book an Appointment</a>
+       
+        <a href="#app1" class="btn-get-started scrollto">Book an Appointment</a>
+        <br>
+        <a href="./patientUI.html" class="btn-get-started scrollto">Check Appointment Details</a>
+        <br><br>
       </div>
     </div>
 
@@ -85,12 +95,10 @@
 
   </section><!-- #intro -->
 
-  <main id="main">
-  
   <!--==========================
-    Book an Appointment section
+    Book an Appointment Form section
   ============================-->
-  <div id="app">
+  <div id="app1">
     <section id="call-to-action" class="wow fadeInUp"> <!-- Book an Appointment section START -->
       <div class="container px-5 mx-5">  <!-- Container START-->
         <div class="row justify-content-center"> <!-- Row START-->
@@ -100,7 +108,7 @@
               <tr>
                 <td class="form-group justify-content-center">
                   <label for="fullname" class="cta-text">Full Name (As per NRIC)</label>
-                  <input v-model="newFullname" type="number" class="form-control" id="fullname" placeholder="Enter Full Name">
+                  <input v-model="newFullname" type="text" class="form-control" id="fullname" placeholder="Enter Full Name">
                 </td>
               </tr>
               <tr>
@@ -113,11 +121,11 @@
                 <td class="form-group">
                   <label for="gender" class="cta-text">Gender</label>
                     <div class="form-check form-check-inline">
-                      <input class="cta-text form-check-input" type="radio" name="gender" id="male" value="male">
+                      <input v-model="selected_gender" class="cta-text form-check-input" type="radio" name="gender" id="male" value="male">
                       <label class="cta-text form-check-label" for="male">Male</label>
                     </div>
                     <div class="form-check form-check-inline">
-                      <input class="cta-text form-check-input" type="radio" name="gender" id="female" value="female">
+                      <input v-model="selected_gender" class="cta-text form-check-input" type="radio" name="gender" id="female" value="female">
                       <label class="cta-text form-check-label" for="female">Female</label>
                     </div>
                 </td>
@@ -137,15 +145,15 @@
               <tr>
                 <td class="form-group">
                   <label for="selected_date" class="cta-text">Appointment Date</label>
-                  <input v-model="newAppointmentDate" type="date" class="form-control" id="selected_date"
-                    placeholder="Enter Date YYYY-MM-DD">
+                  <input v-model="newAppointmentDate" @change="get_avail_time_by_date" type="date" class="form-control" id="selected_date">
                 </td>
+                <span v-if="no_avail_time">There is no available time for this date</span>
               </tr>
               <tr>
                 <td class="form-group">
                   <label for="available_time" class="cta-text">Appointment Time</label>
                   <select v-model="newAppointmentTime" type="text" class="form-control" id="available_time">
-                    <option v-for="each_time in time">{{each_time}}</option>
+                    <option v-for="each_time in all_available_time_array">{{each_time}}</option>
                 </td>
               </tr>
             </thead>
@@ -158,27 +166,25 @@
             Appointment</button>
         </div> 
 
-        <!-- Status messages about adding and deleting-->
+        <!-- Status messages about adding appointment -->
         <div class="row mt-4 justify-content-center">
           <div class="text-success" v-if="appointmentAdded">
             {{ statusMessage }} <br>
           </div>
         </div>
-        <!-- <div class="row justify-content-center">
-          <div class="text-success" v-if="availDeleted">
-            {{ statusMessage }} <br>
-          </div>
-        </div>
-        <div class="row justify-content-center">
-          <div class="text-danger" v-if="addDoctorError!=''">
+
+        <!-- Status messages about adding appointment ERROR-->
+        <div class="row mt-4 justify-content-center">
+          <div class="text-danger" v-if="addAppointmentError!=''">
             {{ statusMessage }}<br>
-            {{ addDoctorError}}
+            {{ addAppointmentError}}
             <br>
           </div>
-        </div> -->
+        </div>
+
       </div> <!-- Container END-->
     </section> <!-- Add Availability Section END -->
-
+</div><!-- app1: container END -->
 
     <!--==========================
       Services Section
@@ -229,8 +235,6 @@
       </div>
     </section><!-- #services -->
 
-  </main>
-
   <!--==========================
     Footer
   ============================-->
@@ -265,11 +269,21 @@
   <script src="lib/magnific-popup/magnific-popup.min.js"></script>
   <script src="lib/sticky/sticky.js"></script>
 
-  <!-- Contact Form JavaScript File -->
-  <script src="contactform/contactform.js"></script>
-
   <!-- Template Main Javascript File -->
   <script src="js/main.js"></script>
+  <script src="js/patient.js"></script>
+
+  <!-- Optional JavaScript -->
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+    integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
+  </script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
+  </script>
 
 </body>
 </html>

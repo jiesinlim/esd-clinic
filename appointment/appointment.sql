@@ -1,22 +1,7 @@
--- phpMyAdmin SQL Dump
--- version 4.9.2
--- https://www.phpmyadmin.net/
---
--- Host: 127.0.0.1:3306
--- Generation Time: Mar 18, 2021 at 05:18 PM
--- Server version: 8.0.18
--- PHP Version: 7.4.0
-
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
 START TRANSACTION;
-SET time_zone = "+00:00";
-
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
+SET time_zone = "+08:00";
 
 --
 -- Database: `esd_clinic`
@@ -27,32 +12,6 @@ USE `appointment`;
 
 
 -- --------------------------------------------------------
-
---
--- Table structure for table `patient`
---
-
--- DROP TABLE IF EXISTS `patient`;
--- CREATE TABLE IF NOT EXISTS `patient` (
---   `NRIC` varchar(9) NOT NULL,
---   `patient_name` varchar(15) NOT NULL,
---   `gender` varchar(15) NOT NULL,
---   `contact_number` int(8) NOT NULL,
---   `email` varchar(50) NOT NULL,
---   PRIMARY KEY (`NRIC`)
--- ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
-
--- --
--- -- Dumping data for table `patient`
--- --
-
--- INSERT INTO `patient` (`NRIC`, `patient_name`, `gender`, `contact_number`, `email`) VALUES
--- ('T0123456U', 'Leslie', 'M', '82873618', 'leslie123@gmail.com'),
--- ('T1234567I', 'Reuben', 'M', '83476123', 'reuben234@yahoo.com'),
--- ('S1234567J', 'Jasmine', 'F', '98374986', 'jasmine345@hotmail.com'),
--- ('J1234567I', 'Amelia', 'F', '81097192', 'amelia456@abc.com'),
--- ('P1234567I', 'Jack', 'M', '98683274', 'jack567@xyz.com');
-
 --
 -- Table structure for table `appointment`
 --
@@ -65,7 +24,7 @@ CREATE TABLE IF NOT EXISTS `appointment` (
   `gender` varchar(15) NOT NULL,
   `contact_number` int(8) NOT NULL,
   `email` varchar(50) NOT NULL,
-  `appointment_date` date NOT NULL,
+  `appointment_date` varchar(20) NOT NULL,
   `appointment_time` varchar(9) NOT NULL,
   `did` int(5) DEFAULT NULL,
   `aid` int(11) DEFAULT NULL,
@@ -73,7 +32,7 @@ CREATE TABLE IF NOT EXISTS `appointment` (
   `status` varchar(10) NOT NULL DEFAULT 'booked',
   `room_no` varchar(10) NULL,
   PRIMARY KEY (`appointment_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `appointment`
@@ -88,9 +47,6 @@ INSERT INTO `appointment` (`appointment_id`,`NRIC`, `patient_name`,`gender`,`con
 
 COMMIT;
 
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 
 
 

@@ -1,110 +1,307 @@
-var get_all_URL = "http://localhost:5001/availability";
+var get_all_URL_5001 = "http://localhost:5001/availability";
+var get_all_URL_5005 = "http://localhost:5005/appointment";
 
 // =====================
-// Vue KIV
+// Vue
 // =====================
-// var app = new Vue({
-//     el: "#app",
-//     data: {
-//         new_appointment_date: "",
-//         selected_date: "",
-//         time: ['1000','1100','1200','1300','1400','1500'],
-//         message: "There is a problem retrieving doctors data, please try again later.",
-//         doctor_date: "",
-//         doctor_time_array: []
-//     },
-//     methods:{
-//         get_all_available_time: function(){
-//             console.log("in get_all_available_time function");
-//             const response =
-//                 fetch(get_all_URL)
-//                 .then(response => response.json())
-//                 .then(data => {
-//                     console.log(response);
-//                     if (data.code === 404) {
-//                         // no doctors in db
-//                         this.message = data.message;
-//                     } else {
-//                         this.doctors = data.data.doctor_availability;
-//                     }
-//                 })
-//                 .catch(error => {
-//                     // Errors when calling the service; such as network error, 
-//                     // service offline, etc
-//                     console.log(this.message + error);
-
-//                 });
-//         }
-//     }
-// })
-// ================================================
-
-
-//get available time by selected date
-function display_available_time(){
-    var selected_date = document.getElementById("selected_date").value;
-
-    fetch("http://127.0.0.1:5001/availability/datetime/"+ selected_date)
-    .then(response => response.json())
-    .then(json => {
-        console.log(json);
-        if (json.length === 0){
-            document.getElementById("no_results").innerHTML = `
-            <br>
-                No available time today, please choose another date.
-            <br>
-            `;
-        } else {
-            console.log("inside else function");
-            console.log(json);
-            //display the available time as a dropdown
-            //need to see what is json first before continuing
+var app1 = new Vue({
+    el: "#app1",
+    computed: {
+        hasAppointments: function(){
+            return this.appointments.length >0;
         }
-    })
-}
+    },
+    data: {
+        "appointments": [],
+        all_appointments: [],
+        
+        message: "There is a problem retrieving appointment data, please try again later.",
+        statusMessage: "",
+        appointment_id: "",
+        searchStr: "",
 
-//post new booking appointment to appointment DB
-function post_new_booking(){
-    console.log("inside post_new_booking function");
+        newFullname: "",
+        newNRIC: "",
+        selected_gender: null,
+        newContactNumber: "",
+        newEmail: "",
+        newAppointmentDate: "",
+        newAppointmentTime: "",
 
-    var patient_name = document.getElementById("patient_fullname").value;    
-    var patient_nric = document.getElementById("patient_nric").value;
-    var patient_gender = getGenderValue();
-    var patient_contact_number = document.getElementById("patient_contact_number").value;
-    var patient_email_address = document.getElementById("patient_email").value;
-    var appointment_date = document.getElementById("appointment_date").value;
-    var appointment_time = document.getElementById("appointment_time").value;
-    
-    fetch("http://127.0.0.1:5005/appointment", { 
-        method:'POST',
-        headers: {
-            'Accept': 'application/json',
-            'Content-type':'application/json'
-            },
-        body:JSON.stringify({
-            "patient_name" : patient_name,
-            "patient_nric" : patient_nric,
-            "patient_gender" : patient_gender,
-            "patient_contact_number": patient_contact_number,
-            "patient_email_address": patient_email_address,
-            "appointment_date": appointment_date,
-            "appointment_time": appointment_time
-        })
-    })
+        selected_date: "",
+        all_available_time_string: "",
+        all_available_time_array: [],
 
-    .then(response => {
-        if(response.status == '200'){
-            console.log((json));
-            document.getElementById("booking_status").innerHTML = 'Your appointment has been booked successfully';
+        appointmentAdded: false,
+        addAppointmentError: "",
+
+        searchStr: "",
+        searchError: "",
+
+        // booked_appointment_id: "",
+        // booked_appointment_date: "", 
+        // booked_appointment_time: "", 
+        // booked_doctor_name: "", 
+        // booked_room_no: "", 
+        // booked_status: "",
+
+        edit: false,
+        editSuccessful: false,
+        editAppointmentError: "",
+
+        editCurrentAppointment: "",
+        editCurrentDate: "",
+        editCurrentTime: "",
+
+        editDate: "",
+        editTime: "",
+
+        appointment_deleted: false,
+        hasAppointment: true,
+
+        no_avail_time: false
+    },
+    methods:{
+        getAllAppointments: function(){
+            const response =
+                fetch(`${get_all_URL_5005}/all`)
+                .then(response => response.json())
+                .then(data => {
+                    console.log(response);
+                    if (data.code === 404) {
+                        // no appointments in db
+                        this.message = data.message;
+                    } else {
+                        this.all_appointments = data.data.appointments;
+                    }
+                })
+                .catch(error => {
+                    // Errors when calling the service; such as network error, 
+                    // service offline, etc
+                    console.log(this.message + error);
+
+                });
+        },
+
+        get_avail_time_by_date: function(){
+            console.log("in get_avail_time_by_date function");
+            console.log(this.newAppointmentDate);
+
+            const response =
+                fetch(`${get_all_URL_5001}/datetime/${this.newAppointmentDate}`)
+                .then(response => response.json())
+                .then(data => {
+                    console.log(response);
+                    if (data.code === 404) {
+                        // no available time for this selected date
+                        this.message = data.message;
+                        this.no_avail_time = true;
+                    } else {
+                        this.all_available_time_string = data.data.available_doctors.availability;
+                        console.log(this.all_available_time_string);
+                        this.all_available_time_array = this.all_available_time_string.split(",");
+                        console.log(this.all_available_time_array);
+                    }
+                })
+                .catch(error => {
+                    // Errors when calling the service; such as network error, 
+                    // service offline, etc
+                    console.log(this.message + error);
+
+                });
+        },
+
+        addAppointment: function(){
+            //reset data to original setting
+            this.appointmentAdded = false;
+            this.addAppointmentError = "";
+            this.statusMessage = "";
+            this.appointment_deleted = false;
+
+            let jsonData = JSON.stringify({
+                NRIC: this.newNRIC,
+                patient_name: this.newFullname,
+                gender: this.selected_gender,
+                contact_number: this.newContactNumber,
+                email: this.newEmail,
+                appointment_date: this.newAppointmentDate,
+                appointment_time: this.newAppointmentTime,
+            });
+
+            fetch(`${get_all_URL_5005}`,{
+                method: "POST",
+                headers: {
+                    "Content-type": "application/json"
+                },
+                body: jsonData
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                result = data.data;
+                console.log(result);
+                // 3 cases
+                switch (data.code) {
+                    case 201:
+                        this.appointmentAdded = true;
+                        this.statusMessage = "Your appointment has been successfully booked!"
+
+                        // refresh page
+                        this.pageRefresh();
+
+                        break;
+                    case 400:
+                    case 500:
+                        this.addAppointmentError = data.message;
+                        this.statusMessage = "There is a problem booking this new appointment:"
+                        break;
+                    default:
+                        throw `${data.code}: ${data.message}`;
+                }
+            })
+        },
+
+        findAppointmentByNRIC: function(){
+            const response =
+                fetch(`${get_all_URL_5005}/nric/${this.searchStr}`)
+                .then(response => response.json())
+                    .then(data => {
+                        console.log(response);
+                        if (data.code === 404) {
+                            // no appointment details found in db
+                            this.searchError = data.message;
+                        } else {
+                            this.appointments = data.data.appointments;
+                            console.log(this.appointments);
+                            this.searchError = "";
+
+                            // this.booked_appointment_id = data.data.aid;
+                            // this.booked_appointment_date = data.data.appointment_date;
+                            // this.booked_appointment_time = data.data.appointment_time;
+                            // this.booked_doctor_name = data.data.doctor_name;
+                            // this.booked_room_no = data.data.room_no;
+                            // this.booked_status = data.data.status;
+                        }
+                    })
+                    .catch(error => {
+                        // Errors when calling the service; such as network error, 
+                        // service offline, etc
+                        console.log(this.searchError + error);
+
+                    });
+        },
+        editAppointmentForm: function(appointment){
+            //resets the data setting
+            this.editSuccessful = false;
+            this.editCurrentAppointment = appointment;
+            this.edit = true;
+
+            this.editDate ="";
+            this.editTime ="";
+        },
+        editAppointmentDateTime: function(appointment){
+            //reset data
+            this.editAppointmentError = "";
+
+            let jsonData = JSON.stringify({
+                NRIC: this.editCurrentAppointment.NRIC,
+                aid: this.editCurrentAppointment.aid,
+                appointment_date: this.editDate, //Edited Date
+                appointment_time: this.editTime, //Edited Time
+                contact_number: this.editCurrentAppointment.contact_number,
+                did: this.editCurrentAppointment.did,
+                doctor_name: this.editCurrentAppointment.doctor_name,
+                email: this.editCurrentAppointment.email,
+                gender: this.editCurrentAppointment.gender,
+                patient_name: this.editCurrentAppointment.patient_name,
+                room_no: this.editCurrentAppointment.room_no,
+                status: this.editCurrentAppointment.status
+            });
+
+            fetch(`${get_all_URL_5005}/${this.editCurrentAppointment.appointment_id}`, {
+                    method: "PATCH",
+                    headers: {
+                        "Content-type": "application/json"
+                    },
+                    body: jsonData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    result = data.data;
+                    console.log(result);
+                    // 3 cases
+                    switch (data.code) {
+                        case 200:
+                            this.editSuccessful = true;
+
+                            this.getAllAppointments();
+
+                            this.editAppointmentError = 'Edit successfully changed';
+
+                            break;
+                        case 404:
+                            this.editAppointmentError = data.message;
+                        case 500:
+                            this.editAppointmentError = data.message;
+                            break;
+                        default:
+                            throw `${data.code}: ${data.message}`;
+                    }
+                })
+        },
+        delAppointmentBooked: function(appointment_id){
+            //reset all data to original setting
+            this.appointment_id = appointment_id;
+            this.appointment_deleted = false;
+
+            this.appointmentAdded = false;
+            this.addAppointmentError= "";
+            this.statusMessage = "";
+
+            const response =
+                fetch(`${get_all_URL_5005}/${this.appointment_id}`, {
+                    method: "DELETE",
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(response);
+                    if (data.code === 404) {
+                        // no appointment in db
+                        this.message = data.message;
+                        this.appointments = [];
+                    } else {
+                        this.appointment_deleted = true;
+                        this.statusMessage = "The appointment booked has been successfully deleted!";
+                    }
+                })
+                .catch(error => {
+                    // Errors when calling the service; such as network error,
+                    // service offline, etc
+                    console.log(this.message + error);
+
+                });
+
+            // Front end Vue
+            var idx = 0
+            for (appointment of this.appointments) {
+                if (appointment.appointment_id == appointment_id) {
+                    this.appointments.splice(idx, 1) // remove this element
+                    break
+                }
+                idx++
+            }
+        },
+        pageRefresh: function () {
+            this.getAllAppointments(); //?
+            this.edit = false;
+            this.searchError = "";
+            this.appointment_id = "";
+            this.searchStr = "";
         }
+    },
+    created: function () {
+        // on Vue instance created, load the list
+        this.getAllAppointments(); //?
     }
-    );
-}
-
-function getGenderValue(){
-    var selected = document.getElementsByName('gender');
-    for(i=0; i<selected.length; i++){
-        if(selected[i].checked)
-            return selected[i].value;
-    }
-}
+});
