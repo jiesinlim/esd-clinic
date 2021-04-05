@@ -11,6 +11,7 @@
 import os
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import *
 from flask_cors import CORS
 from datetime import datetime
 import json
@@ -46,8 +47,7 @@ class Appointments(db.Model):
     status = db.Column(db.VARCHAR(10), nullable=False)
     room_no = db.Column(db.VARCHAR(10), nullable=True)
 
-    def __init__(self, appointment_id, NRIC, patient_name, gender, contact_number, email, appointment_date, appointment_time, did, aid, doctor_name, status, room_no):
-        self.appointment_id = appointment_id
+    def __init__(self, NRIC, patient_name, gender, contact_number, email, appointment_date, appointment_time, did, aid, doctor_name, status, room_no):
         self.NRIC = NRIC
         self.patient_name = patient_name
         self.gender = gender
@@ -134,21 +134,22 @@ def get_appointment_details_by_nric(NRIC):
 #----------------------------------------------------------------------------------------------------------------
 # Add a new appointment
 # [POST] 
-@app.route("/appointment/<string:NRIC>", methods=['POST'])
-def add_new_appointment(NRIC):
-    if (Appointments.query.filter_by(NRIC=NRIC).first()):
+@app.route("/appointment", methods=['POST'])
+def add_new_appointment():
+    add_NRIC = request.json.get('NRIC', None)
+
+    appointment_check = Appointments.query.filter(Appointments.NRIC.like(add_NRIC)).first()
+    if (appointment_check):
         return jsonify(
             {
                 "code": 400,
-                "data": {
-                    "NRIC": NRIC,
-                },
+                "data": appointment_check.json(),
                 "message": "Appointment already exists."
             }
         ), 400
 
     data = request.get_json()
-    appointment = Appointments(NRIC, **data)
+    appointment = Appointments(**data)
 
     try:
         db.session.add(appointment)
@@ -158,9 +159,6 @@ def add_new_appointment(NRIC):
         return jsonify(
             {
                 "code": 500,
-                "data": {
-                    "NRIC": NRIC
-                },
                 "message": "An error occurred adding the new appointment"
             }
         ), 500 
@@ -248,9 +246,10 @@ def delete_appointment_details(appointment_id):
 
 # Get booked/matched appointments
 
-@app.route("/appointment/all/<string:status>")
-def get_appointments(status):
-    appointments = Appointments.query.filter_by(status=status).all()
+@app.route("/appointment/status/<string:status>")
+def get_appointments_by_status(status):
+    appointments = Appointments.query.filter(Appointments.status.like(status)).all()
+
     if appointments:
         return jsonify(
             {
