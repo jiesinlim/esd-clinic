@@ -9,8 +9,8 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)
 
-matched_appointments_URL = "http://localhost:5005/appointment/matched"
-confirmed_appointments_URL = "http://localhost:5005/appointment/confirmed"
+matched_appointments_URL = "http://localhost:5005/appointment/all/matched"
+confirmed_appointments_URL = "http://localhost:5005/appointment/all/confirmed"
 
 #retrieve name, email address & date\time of appt
 @app.route("/notification", methods=['POST'])
