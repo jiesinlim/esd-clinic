@@ -72,7 +72,7 @@ var app = new Vue({
                             this.searchError = data.message;
                         } else {
                             this.doctors = data.data.available_doctors;
-                            console.log(this.doctors)
+                            console.log(this.doctors);
                             this.searchError = "";
                         }
                     })
@@ -154,15 +154,15 @@ var app = new Vue({
         },
         editDoctorForm: function (doctor) {
             //resets the data setting
-            this.editSuccessful = false
+            this.editSuccessful = false;
             this.editCurrentDoctor = doctor;
             this.edit = true;
 
-            this.editAid = ""
-            this.editDid = ""
-            this.editName = ""
-            this.editDate = ""
-            this.editAvailability = ""
+            this.editAid = "";
+            this.editDid = "";
+            this.editName = "";
+            this.editDate = "";
+            this.editAvailability = "";
         },
         editDoctor: function (doctor) {
             // reset data
