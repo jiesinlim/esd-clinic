@@ -13,6 +13,8 @@ var app1 = new Vue({
     },
     data: {
         "appointments": [],
+        all_appointments: [],
+        
         message: "There is a problem retrieving appointment data, please try again later.",
         statusMessage: "",
         appointment_id: "",
@@ -70,7 +72,7 @@ var app1 = new Vue({
                         // no appointments in db
                         this.message = data.message;
                     } else {
-                        this.appointments = data.data.appointments;
+                        this.all_appointments = data.data.appointments;
                     }
                 })
                 .catch(error => {
