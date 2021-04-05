@@ -108,7 +108,7 @@
               <tr>
                 <td class="form-group justify-content-center">
                   <label for="fullname" class="cta-text">Full Name (As per NRIC)</label>
-                  <input v-model="newFullname" type="number" class="form-control" id="fullname" placeholder="Enter Full Name">
+                  <input v-model="newFullname" type="text" class="form-control" id="fullname" placeholder="Enter Full Name">
                 </td>
               </tr>
               <tr>
@@ -147,6 +147,7 @@
                   <label for="selected_date" class="cta-text">Appointment Date</label>
                   <input v-model="newAppointmentDate" @change="get_avail_time_by_date" type="date" class="form-control" id="selected_date">
                 </td>
+                <span v-if="no_avail_time">There is no available time for this date</span>
               </tr>
               <tr>
                 <td class="form-group">

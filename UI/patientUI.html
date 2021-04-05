@@ -109,6 +109,8 @@
               <thead>
                 <tr>
                   <th>S/N</th>
+                  <th>Name</th>
+                  <th>NRIC</th>
                   <th>Date</th>
                   <th>Time</th>
                   <th>Doctor_name</th>
@@ -119,6 +121,8 @@
                 </tr>
                 <tr v-for="appointment in appointments">
                   <td>{{ appointment.appointment_id }}</td>
+                  <td>{{ appointment.patient_name }}</td>
+                  <td>{{ appointment.NRIC }}</td>
                   <td>{{ appointment.appointment_date }}</td>
                   <td>{{ appointment.appointment_time }}</td>
                   <td>{{ appointment.doctor_name }}</td>
@@ -144,11 +148,15 @@
               <thead>
                 <tr>
                   <th>S/N</th>
+                  <th>Name</th>
+                  <th>NRIC</th>
                   <th>Date</th>
                   <th>Time</th>
                 </tr>
                 <tr>
                   <td> {{ editCurrentAppointment.appointment_id }} </td>
+                  <td> {{ editCurrentAppointment.patient_name }} </td>
+                  <td> {{ editCurrentAppointment.NRIC }} </td>
                   <td> {{ editCurrentAppointment.appointment_date }} </td>
                   <td> {{ editCurrentAppointment.appointment_time }} </td>
                 </tr>
@@ -160,12 +168,20 @@
               <thead>
                 <tr>
                   <th>S/N</th>
+                  <th>Name</th>
+                  <th>NRIC</th>
                   <th>Date</th>
                   <th>Time</th>
                 </tr>
                 <tr>
                   <td class="form-group">
                     {{ editCurrentAppointment.appointment_id }}
+                  </td>
+                  <td class="form-group">
+                    {{ editCurrentAppointment.patient_name }}
+                  </td>
+                  <td class="form-group">
+                    {{ editCurrentAppointment.NRIC }}
                   </td>
                   <td class="form-group">
                     <input type="date" class="form-control" v-model="editDate">

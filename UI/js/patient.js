@@ -55,7 +55,9 @@ var app1 = new Vue({
         editTime: "",
 
         appointment_deleted: false,
-        hasAppointment: true
+        hasAppointment: true,
+
+        no_avail_time: false
     },
     methods:{
         getAllAppointments: function(){
@@ -91,9 +93,10 @@ var app1 = new Vue({
                     if (data.code === 404) {
                         // no available time for this selected date
                         this.message = data.message;
+                        this.no_avail_time = true;
                     } else {
-                        this.all_available_time_string = data.data.doctor_availability.availability;
-                        console.log(this.all_available_time);
+                        this.all_available_time_string = data.data.available_doctors.availability;
+                        console.log(this.all_available_time_string);
                         this.all_available_time_array = this.all_available_time_string.split(",");
                         console.log(this.all_available_time_array);
                     }
