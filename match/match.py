@@ -1,6 +1,8 @@
 from flask import Flask, request, jsonify, make_response
 from flask_cors import CORS
 import json
+import amqp_setup
+import pika
 
 import os
 
@@ -89,6 +91,18 @@ def updateMatchDetails(appt_id,avail_id,doc_id,doc_name,time,doc_currentavail):
     print('updated timeslot result:', updateAvailability)
     # result = f"Successfully assigned doctor: {assignDoctor}, Successfully updated doctor's availability: {updateAvailability}"
     return assignDoctor, updateAvailability
+
+    #AMQP setup for notification.py
+    message = json.dumps({
+        "appointment_time": "", 
+        "email": "",
+        "patient_name": ""
+    })
+
+    if(assignDoctor["code"] && updateAvailability["code"] in range(200, 300)):
+        amqp_setup.channel.basic_publish(exchange=amqp_setup.notification, routing_key="send.email", 
+            body=message, properties=pika.BasicProperties(delivery_mode = 2)) 
+        
 
 
 
