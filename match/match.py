@@ -1,6 +1,8 @@
 from flask import Flask, request, jsonify, make_response
 from flask_cors import CORS
 import json
+import amqp_setup
+import pika
 
 import os
 
@@ -89,6 +91,7 @@ def updateMatchDetails(appt_id,avail_id,doc_id,doc_name,time,doc_currentavail):
     print('updated timeslot result:', updateAvailability)
     # result = f"Successfully assigned doctor: {assignDoctor}, Successfully updated doctor's availability: {updateAvailability}"
     return assignDoctor, updateAvailability
+        
 
 
 
