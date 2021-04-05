@@ -112,6 +112,26 @@ def get_appointment_details(appointment_id):
     ), 404
 
 #----------------------------------------------------------------------------------------------------------------
+# Get appointment details using NRIC
+# [GET] 
+@app.route("/appointment/all/<string:NRIC>")
+def get_appointment_details_by_nric(NRIC):
+    appointment = Appointments.query.filter_by(NRIC=NRIC).first()
+    if appointment:
+        return jsonify(
+            {
+                "code": 200,
+                "data": appointment.json()
+            }
+        )
+    return jsonify(
+        {
+            "code": 404,
+            "message": "Appointment not found."
+        }
+    ), 404
+
+#----------------------------------------------------------------------------------------------------------------
 # Add a new appointment
 # [POST] 
 @app.route("/appointment/<string:NRIC>", methods=['POST'])
