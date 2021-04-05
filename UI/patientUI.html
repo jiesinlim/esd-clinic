@@ -30,7 +30,6 @@
 
   <!-- Main Stylesheet File -->
   <link href="css/style.css" rel="stylesheet">
-  <link href="css/patient.css" rel="stylesheet">
 
   <style>
     .btn-blue {
@@ -60,7 +59,7 @@
 
       <nav id="nav-menu-container">
         <ul class="nav-menu">
-          <li><a href="./patientLogin.html">Patient</a></li>
+          <li><a href="./patientUI.html">Patient</a></li>
           <li><a href="./nurseLogin.html">Nurse</a></li>
           <li><a href="./doctorLogin.html">Doctor</a></li>
         </ul>
@@ -74,7 +73,7 @@
   <section id="testimonials" class="wow fadeInUp">
     <div class="container">
       <div class="section-header">
-        <h2>PATIENT PORTAL</h2>
+        <h2>Patient Portal</h2>
       </div>
     </div>
 
@@ -102,14 +101,16 @@
               <br>
             </span>
             <!-- Search bar END-->
-
+            <br>
             <!-- Appointment booked table START -->
-            <div v-show="hasAppointment"> <!-- v-show: hasAppointment START--> 
+            <div v-show="!edit"> <!-- v-show: hasAppointment START--> 
             <h3 class="cta-title text-center">Appointment Booked</h3>
             <table class="table table-striped mt-4">
               <thead>
                 <tr>
                   <th>S/N</th>
+                  <th>Name</th>
+                  <th>NRIC</th>
                   <th>Date</th>
                   <th>Time</th>
                   <th>Doctor_name</th>
@@ -118,8 +119,10 @@
                   <th>Edit</th>
                   <th>Del</th>
                 </tr>
-                <tr>
+                <tr v-for="appointment in appointments">
                   <td>{{ appointment.appointment_id }}</td>
+                  <td>{{ appointment.patient_name }}</td>
+                  <td>{{ appointment.NRIC }}</td>
                   <td>{{ appointment.appointment_date }}</td>
                   <td>{{ appointment.appointment_time }}</td>
                   <td>{{ appointment.doctor_name }}</td>
@@ -145,11 +148,15 @@
               <thead>
                 <tr>
                   <th>S/N</th>
+                  <th>Name</th>
+                  <th>NRIC</th>
                   <th>Date</th>
                   <th>Time</th>
                 </tr>
                 <tr>
                   <td> {{ editCurrentAppointment.appointment_id }} </td>
+                  <td> {{ editCurrentAppointment.patient_name }} </td>
+                  <td> {{ editCurrentAppointment.NRIC }} </td>
                   <td> {{ editCurrentAppointment.appointment_date }} </td>
                   <td> {{ editCurrentAppointment.appointment_time }} </td>
                 </tr>
@@ -161,12 +168,20 @@
               <thead>
                 <tr>
                   <th>S/N</th>
+                  <th>Name</th>
+                  <th>NRIC</th>
                   <th>Date</th>
                   <th>Time</th>
                 </tr>
                 <tr>
                   <td class="form-group">
                     {{ editCurrentAppointment.appointment_id }}
+                  </td>
+                  <td class="form-group">
+                    {{ editCurrentAppointment.patient_name }}
+                  </td>
+                  <td class="form-group">
+                    {{ editCurrentAppointment.NRIC }}
                   </td>
                   <td class="form-group">
                     <input type="date" class="form-control" v-model="editDate">
@@ -184,7 +199,7 @@
                   page</button>
               </div>
               <div class="col">
-                <button @click="editAppointment" class="btn btn-blue pull-right" v-on:submit.prevent="onSubmit">Confirm
+                <button @click="editAppointmentDateTime" class="btn btn-blue pull-right" v-on:submit.prevent="onSubmit">Confirm
                   Edit</button>
               </div>
             </div>

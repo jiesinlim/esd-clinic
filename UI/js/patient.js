@@ -13,9 +13,12 @@ var app1 = new Vue({
     },
     data: {
         "appointments": [],
+        all_appointments: [],
+        
         message: "There is a problem retrieving appointment data, please try again later.",
         statusMessage: "",
-        appointment_id= "",
+        appointment_id: "",
+        searchStr: "",
 
         newFullname: "",
         newNRIC: "",
@@ -53,7 +56,10 @@ var app1 = new Vue({
         editDate: "",
         editTime: "",
 
-        appointment_deleted: false
+        appointment_deleted: false,
+        hasAppointment: true,
+
+        no_avail_time: false
     },
     methods:{
         getAllAppointments: function(){
@@ -66,7 +72,7 @@ var app1 = new Vue({
                         // no appointments in db
                         this.message = data.message;
                     } else {
-                        this.appointments = data.data.appointments;
+                        this.all_appointments = data.data.appointments;
                     }
                 })
                 .catch(error => {
@@ -89,9 +95,10 @@ var app1 = new Vue({
                     if (data.code === 404) {
                         // no available time for this selected date
                         this.message = data.message;
+                        this.no_avail_time = true;
                     } else {
-                        this.all_available_time_string = data.data.doctor_availability.availability;
-                        console.log(this.all_available_time);
+                        this.all_available_time_string = data.data.available_doctors.availability;
+                        console.log(this.all_available_time_string);
                         this.all_available_time_array = this.all_available_time_string.split(",");
                         console.log(this.all_available_time_array);
                     }
@@ -156,7 +163,7 @@ var app1 = new Vue({
 
         findAppointmentByNRIC: function(){
             const response =
-                fetch(`${get_all_URL_5005}/all/${this.searchStr}`)
+                fetch(`${get_all_URL_5005}/nric/${this.searchStr}`)
                 .then(response => response.json())
                     .then(data => {
                         console.log(response);
@@ -164,7 +171,7 @@ var app1 = new Vue({
                             // no appointment details found in db
                             this.searchError = data.message;
                         } else {
-                            this.appointments = [data.data];
+                            this.appointments = data.data.appointments;
                             console.log(this.appointments);
                             this.searchError = "";
 
@@ -197,9 +204,18 @@ var app1 = new Vue({
             this.editAppointmentError = "";
 
             let jsonData = JSON.stringify({
-                appointment_id: this.editCurrentAppointment.appointment_id,
-                appointment_date: this.editDate,
-                appointment_time: this.editTime,
+                NRIC: this.editCurrentAppointment.NRIC,
+                aid: this.editCurrentAppointment.aid,
+                appointment_date: this.editDate, //Edited Date
+                appointment_time: this.editTime, //Edited Time
+                contact_number: this.editCurrentAppointment.contact_number,
+                did: this.editCurrentAppointment.did,
+                doctor_name: this.editCurrentAppointment.doctor_name,
+                email: this.editCurrentAppointment.email,
+                gender: this.editCurrentAppointment.gender,
+                patient_name: this.editCurrentAppointment.patient_name,
+                room_no: this.editCurrentAppointment.room_no,
+                status: this.editCurrentAppointment.status
             });
 
             fetch(`${get_all_URL_5005}/${this.editCurrentAppointment.appointment_id}`, {
