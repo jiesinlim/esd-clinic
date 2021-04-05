@@ -25,9 +25,7 @@ def getAvailDoctors(datetime):
     availDoctors = invoke_http(doctor_datetime_URL + str(datetime), method='GET')
     print('Available doctors:', availDoctors)
     return availDoctors
-    # availDoctors = json.loads(availDoctors)
-    # for i in range(len(availDoctors)):
-    #     print(availDoctors[i])
+
 
 def updateMatchDetails(appt_id,avail_id,doc_id,doc_name,time,doc_currentavail):
     #get patient appointment by appt id
@@ -41,25 +39,28 @@ def updateMatchDetails(appt_id,avail_id,doc_id,doc_name,time,doc_currentavail):
 
     print('\n-----Invoking appointments microservice-----')
 
-    appt_details = json.dumps({
-        "NRIC": "",
-        "aid": "",
-        "appointment_date": "",
-        "appointment_id": "",
-        "appointment_time": "",
-        "contact_number": "",
-        "did": int(doc_id),
-        "doctor_name": str(doc_name),
-        "email": "",
-        "gender": "",
-        "patient_name": "",
-        "room_no": "",
-        "status": "matched"
-        })
+    details = {
+                "NRIC": "",
+                "aid": "",
+                "appointment_date": "",
+                "appointment_id": "",
+                "appointment_time": "",
+                "contact_number": "",
+                "did": int(doc_id),
+                "doctor_name": str(doc_name),
+                "email": "",
+                "gender": "",
+                "patient_name": "",
+                "room_no": "",
+                "status": "matched"
+            }
 
-    print(appt_details)
+    appt_details = json.dumps(details)
+    print(type(appt_details))
     assignDoctor = invoke_http(appointments_URL + str(appt_id), method='PATCH', json=appt_details)
     print('Match result:', assignDoctor)
+    print("hello")
+
 
     # get doctors by aid
     # print('\n-----Invoking doctor microservice-----')
@@ -67,28 +68,32 @@ def updateMatchDetails(appt_id,avail_id,doc_id,doc_name,time,doc_currentavail):
     # print('assigned doctor result:', doctor_details)
 
     # handle doctor availability 
+    print('\n-----Invoking availability microservice-----')
 
-    # time_array = doc_currentavail.split(", ")
-    # updated_array = time_array.remove(time)
-    # newAvailability = ', '.join([str(slot) for slot in updated_array])
+    time_array = doc_currentavail.split(", ")
+    print(time_array)
+    updated_array = time_array.remove(time)
+    print(updated_array)
+    newAvailability = ', '.join([str(slot) for slot in updated_array])
+    print(newAvailability)
+    avail_obj = {
+                    "aid": avail_id,
+                    "availability": newAvailability,
+                    "date": "",
+                    "did": "",
+                    "doctor_name": ""
+                }
 
-    # new_avail = json.dumps({   
-    #     "aid": avail_id,
-    #     "availability": newAvailability,
-    #     "date": "",
-    #     "did": "",
-    #     "doctor_name": ""
-    #     })
+    new_avail = json.dumps(avail_obj)
 
-    # print(new_avail)
-    # # update doctor(specific avail_id) availability
-    # # Invoke the doctor microservice
-    # print('\n-----Invoking availability microservice-----')
+    print(new_avail)
+    # update doctor(specific avail_id) availability
+    # Invoke the doctor microservice
 
-    # updateAvailability = invoke_http(doctor_URL, method='PATCH', json=new_avail)
-    # print('updated timeslot result:', updateAvailability)
+    updateAvailability = invoke_http(doctor_URL, method='PATCH', json=new_avail)
+    print('updated timeslot result:', updateAvailability)
     # result = f"Successfully assigned doctor: {assignDoctor}, Successfully updated doctor's availability: {updateAvailability}"
-    return assignDoctor
+    return updateAvailability
 
 
 
