@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS `appointment` (
   `gender` varchar(15) NOT NULL,
   `contact_number` int(8) NOT NULL,
   `email` varchar(50) NOT NULL,
-  `appointment_date` date NOT NULL,
+  `appointment_date` varchar(20) NOT NULL,
   `appointment_time` varchar(9) NOT NULL,
   `did` int(5) DEFAULT NULL,
   `aid` int(11) DEFAULT NULL,
