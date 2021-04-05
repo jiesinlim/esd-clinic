@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, make_response
+from flask import Flask, request, jsonify
 from flask_cors import CORS
 import json
 
@@ -40,26 +40,24 @@ def updateMatchDetails(appt_id,avail_id,doc_id,doc_name,time,doc_currentavail):
     print('\n-----Invoking appointments microservice-----')
 
     appt_details = json.dumps({
-
         "NRIC": "",
         "aid": "",
         "appointment_date": "",
         "appointment_id": "",
         "appointment_time": "",
         "contact_number": "",
-        "did": doc_id,
-        "doctor_name": doc_name,
+        "did": int(doc_id),
+        "doctor_name": str(doc_name),
         "email": "",
         "gender": "",
         "patient_name": "",
         "room_no": "",
         "status": "matched"
-
         })
 
     print(appt_details)
     assignDoctor = invoke_http(appointments_URL + str(appt_id), method='PATCH', json=appt_details)
-    print('Match result:', json.dumps(assignDoctor))
+    print('Match result:', assignDoctor)
 
     # get doctors by aid
     # print('\n-----Invoking doctor microservice-----')
@@ -68,27 +66,27 @@ def updateMatchDetails(appt_id,avail_id,doc_id,doc_name,time,doc_currentavail):
 
     # handle doctor availability 
 
-    time_array = doc_currentavail.split(", ")
-    updated_array = time_array.remove(time)
-    newAvailability = ', '.join([str(slot) for slot in updated_array])
+    # time_array = doc_currentavail.split(", ")
+    # updated_array = time_array.remove(time)
+    # newAvailability = ', '.join([str(slot) for slot in updated_array])
 
-    new_avail = json.dumps({   
-        "aid": avail_id,
-        "availability": newAvailability,
-        "date": "",
-        "did": "",
-        "doctor_name": ""
-        })
+    # new_avail = json.dumps({   
+    #     "aid": avail_id,
+    #     "availability": newAvailability,
+    #     "date": "",
+    #     "did": "",
+    #     "doctor_name": ""
+    #     })
 
-    print(new_avail)
-    # update doctor(specific avail_id) availability
-    # Invoke the doctor microservice
-    print('\n-----Invoking availability microservice-----')
+    # print(new_avail)
+    # # update doctor(specific avail_id) availability
+    # # Invoke the doctor microservice
+    # print('\n-----Invoking availability microservice-----')
 
-    updateAvailability = invoke_http(doctor_URL, method='PATCH', json=new_avail)
-    print('updated timeslot result:', updateAvailability)
+    # updateAvailability = invoke_http(doctor_URL, method='PATCH', json=new_avail)
+    # print('updated timeslot result:', updateAvailability)
     # result = f"Successfully assigned doctor: {assignDoctor}, Successfully updated doctor's availability: {updateAvailability}"
-    return assignDoctor, updateAvailability
+    return assignDoctor
 
 
 
