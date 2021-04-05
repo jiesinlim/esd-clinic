@@ -20,7 +20,7 @@ from os import environ
 
 app = Flask(__name__)
 #REMEMBER TO CHANGE WINDOWS OR MAC ROOT or ROOT:ROOT
-app.config["SQLALCHEMY_DATABASE_URI"] = environ.get('dbURL') or 'mysql+mysqlconnector://root@localhost:3306/esd_clinic' or 'mysql+mysqlconnector://root:root@localhost:3306/esd_clinic' 
+app.config["SQLALCHEMY_DATABASE_URI"] = environ.get('dbURL') or 'mysql+mysqlconnector://root@localhost:3306/appointment' or 'mysql+mysqlconnector://root:root@localhost:3306/appointment' 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_recycle': 299}
 
@@ -28,165 +28,71 @@ db = SQLAlchemy(app)
 
 CORS(app)
 
-class Patient(db.Model):
-    __tablename__ = 'patient'
 
-    NRIC = db.Column(db.VARCHAR(9), primary_key=True)
+class Appointments(db.Model):
+    __tablename__ = 'appointment' 
+
+    appointment_id = db.Column(db.Integer, primary_key=True)
+    NRIC = db.Column(db.VARCHAR(9), nullable=False)
     patient_name = db.Column(db.VARCHAR(50), nullable=False)
     gender = db.Column(db.VARCHAR(1) , nullable=False)
-    # !!!!! need to find the actual one for F/M
     contact_number = db.Column(db.Integer, nullable=False)
     email = db.Column(db.VARCHAR(50) ,nullable=False) 
+    appointment_date = db.Column(db.VARCHAR(20), nullable=False)
+    appointment_time = db.Column(db.VARCHAR(9), nullable=False)
+    did = db.Column(db.Integer, nullable=True)
+    aid = db.Column(db.Integer, nullable=True)
+    doctor_name = db.Column(db.VARCHAR(50), nullable=True)
+    status = db.Column(db.VARCHAR(10), nullable=False)
+    room_no = db.Column(db.VARCHAR(10), nullable=True)
 
-    def __init__(self, NRIC, patient_name, gender, contact_number, email):
+    def __init__(self, appointment_id, NRIC, patient_name, gender, contact_number, email, appointment_date, appointment_time, did, aid, doctor_name, status, room_no):
+        self.appointment_id = appointment_id
         self.NRIC = NRIC
         self.patient_name = patient_name
         self.gender = gender
         self.contact_number = contact_number
         self.email = email
-
-    def json(self):
-        return {"NRIC": self.NRIC, "patient_name": self.patient_name, 
-                "gender": self.gender, "contact_number": self.contact_number, 
-                "email": self.email}
-
-class Appointments(db.Model):
-    __tablename__ = 'appointment' 
-    
-    #appointment_id is auto-generated
-    # appointment_id = db.Column(primary_key=True, db.ForeignKey(
-    #     'appointment.appointment_id', ondelete='CASCADE', onupdate='CASCADE'), nullable=False, index=True)
-    
-    # !!! need to test which code can auto-increment the appointment_id
-    appointment_id = db.Column(db.Integer, primary_key=True)
-    aid = db.Column(db.Integer, nullable=False)
-    NRIC = db.Column(db.VARCHAR(9), nullable=False)
-    appointment_date = db.Column(db.Date, nullable=False)
-    appointment_time = db.Column(db.VARCHAR(9), nullable=False)
-    did = db.Column(db.Integer, nullable=True)
-    doctor_name = db.Column(db.VARCHAR(50), nullable=True)
-    status = db.Column(db.VARCHAR(10), nullable=False)
-    room_no = db.Column(db.VARCHAR(10), nullable=True)
-
-    def __init__(self, appointment_id, aid, NRIC, did, doctor_name, appointment_date, appointment_time, status, room_no):
-        self.appointment_id = appointment_id
-        self.aid = aid
-        self.NRIC = NRIC
-        self.did = did
-        self.doctor_name = doctor_name
         self.appointment_date = appointment_date
         self.appointment_time = appointment_time
+        self.did = did
+        self.aid = aid
+        self.doctor_name = doctor_name
         self.status = status
         self.room_no = room_no
 
     def json(self):
-        return {"appointment_id": self.appointment_id, "aid": self.aid, "NRIC":self.NRIC, 
-                "did": self.did, "doctor_name": self.doctor_name, 
-                "appointment_date": self.appointment_date, 
-                "appointment_time": self.appointment_time, 
-                "status": self.status, "room_no": self.room_no}
-
-
-# Tentatively not using this set of code
-""" # Add new appointment
-# [POST] 
-@app.route("/appointment", methods=['POST'])
-def add_new_appointment():
-    # !!!!! need to check if the inputs are correct?
-    NRIC = request.json.get('NRIC', None)
-    appointment_date = request.json.get('appointment_date', None)
-    appointment_time = request.json.get('appointment_time', None)
-    status = 'booked'
-
-    if (Appointments.query.filter_by(NRIC=NRIC, appointment_date=appointment_date, appointment_time=appointment_time).first()):
-        return jsonify(
-            {
-                "code": 400,
-                "data": {
-                    "NRIC": NRIC,
-                    "appointment_date": appointment_date,
-                    "appointment_time" : appointment_time,
-                },
-                "message": "Appointment already exists."
-            }
-        ), 400
-
-    data = request.get_json()
-    appointment = Appointments(NRIC, appointment_date, appointment_time, status, **data)
-    #!!!!! check how to add status='booked'
-    
-    try:
-        db.session.add(appointment)
-        db.session.commit()
-    except:
-        return jsonify(
-            {
-                "code": 500,
-                "data": {
-                    "NRIC": NRIC,
-                    "appointment_date": appointment_date,
-                    "appointment_time" : appointment_time
-                },
-                "message": "An error occurred adding the new appointment"
-            }
-        ), 500
-
-    return jsonify(
-        {
-            "code": 201,
-            "data": appointment.json()
-        }
-    ), 201 """
-
-
+        return {"appointment_id": self.appointment_id, "NRIC": self.NRIC, "patient_name": self.patient_name, 
+                "gender": self.gender, "contact_number": self.contact_number, 
+                "email": self.email, "appointment_date": self.appointment_date, 
+                "appointment_time": self.appointment_time, "did": self.did, "aid": self.aid, 
+                "doctor_name": self.doctor_name, "status": self.status, "room_no": self.room_no}
 
 #----------------------------------------------------------------------------------------------------------------
-# Add new appointment
-# [POST] 
-@app.route("/appointment/<string:NRIC>", methods=['POST'])
-def add_new_appointment(NRIC):
-    if (Appointments.query.filter_by(NRIC=NRIC).first()):
+# Get all the appointments
+# [GET]
+
+@app.route("/appointment/all")
+def get_all_appointments():
+    appointments = Appointments.query.all()
+    if len(appointments):
         return jsonify(
             {
-                "code": 400,
+                "code": 200,
                 "data": {
-                    "NRIC": NRIC,
-                },
-                "message": "Appointment already exists."
+                    "appointments": [record.json() for record in appointments]
+                }
             }
-        ), 400
-
-    data = request.get_json()
-    appointment = Appointments(NRIC, **data)
-    #!!!!! check how to add status='booked'
-
-    try:
-        db.session.add(appointment)
-        db.session.commit()
-    except:
-
-        return jsonify(
-            {
-                "code": 500,
-                "data": {
-                    "NRIC": NRIC
-                },
-                "message": "An error occurred adding the new appointment"
-            }
-
-        ), 500
-
+        )
     return jsonify(
         {
-            "code": 201,
-            "data": appointment.json()
+            "code": 404,
+            "message": "There are no appointments."
         }
-    ), 201 
+    ), 404
 
-
-#----------------------------------------------------------------------------------------------
-		
-# Get appointment details
+#----------------------------------------------------------------------------------------------------------------
+# Get appointment details using appointment id
 # [GET] 
 @app.route("/appointment/<string:appointment_id>")
 def get_appointment_details(appointment_id):
@@ -205,9 +111,52 @@ def get_appointment_details(appointment_id):
         }
     ), 404
 
+#----------------------------------------------------------------------------------------------------------------
+# Add a new appointment
+# [POST] 
+@app.route("/appointment/<string:NRIC>", methods=['POST'])
+def add_new_appointment(NRIC):
+    if (Appointments.query.filter_by(NRIC=NRIC).first()):
+        return jsonify(
+            {
+                "code": 400,
+                "data": {
+                    "NRIC": NRIC,
+                },
+                "message": "Appointment already exists."
+            }
+        ), 400
+
+    data = request.get_json()
+    appointment = Appointments(NRIC, **data)
+
+    try:
+        db.session.add(appointment)
+        db.session.commit()
+
+    except:
+        return jsonify(
+            {
+                "code": 500,
+                "data": {
+                    "NRIC": NRIC
+                },
+                "message": "An error occurred adding the new appointment"
+            }
+        ), 500 
+        
+    return jsonify(
+        {
+            "code": 201,
+            "data": appointment.json()
+        }
+    ), 201 
+
+
+#----------------------------------------------------------------------------------------------
 # Change Date & Time of appointment 
-# [PUT] 
-@app.route("/appointment/<string:appointment_id>", methods=['PUT'])
+# [PATCH] 
+@app.route("/appointment/<string:appointment_id>", methods=['PATCH'])
 def change_appointment_details(appointment_id):
     appointment = Appointments.query.filter_by(appointment_id=appointment_id).first()
     if appointment:
@@ -216,7 +165,13 @@ def change_appointment_details(appointment_id):
             appointment.appointment_date = data['appointment_date']
         if data['appointment_time']:
             appointment.appointment_time = data['appointment_time']
-        
+        if data['did']:
+            appointment.did = data['did']
+        if data['doctor_name']:
+            appointment.doctor_name = data['doctor_name']
+        if data['status']:
+            appointment.status = data['status']
+
         db.session.commit()
         return jsonify(
             {
@@ -234,6 +189,7 @@ def change_appointment_details(appointment_id):
         }
     ), 404
 
+#----------------------------------------------------------------------------------------------
 # Delete appointment details
 # [DELETE]
 @app.route("/appointment/<string:appointment_id>", methods=['DELETE'])
@@ -259,6 +215,8 @@ def delete_appointment_details(appointment_id):
             "message": "Appointment not found."
         }
     ), 404
+
+
 
 # # -----------NURSE below-------------------------
 # # Get all new appointments made
@@ -291,24 +249,6 @@ def get_appointments(status):
 
 # OR
 
-@app.route("/appointment")
-def get_all_appointments():
-    appointments = Appointments.query.all()
-    if len(appointments):
-        return jsonify(
-            {
-                "code": 200,
-                "data": {
-                    "appointments": [record.json() for record in appointments]
-                }
-            }
-        )
-    return jsonify(
-        {
-            "code": 404,
-            "message": "There are no appointments."
-        }
-    ), 404
 
 
 # # Get all next day appointments

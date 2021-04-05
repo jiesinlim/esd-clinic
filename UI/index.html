@@ -86,6 +86,99 @@
   </section><!-- #intro -->
 
   <main id="main">
+  
+  <!--==========================
+    Book an Appointment section
+  ============================-->
+  <div id="app">
+    <section id="call-to-action" class="wow fadeInUp"> <!-- Book an Appointment section START -->
+      <div class="container px-5 mx-5">  <!-- Container START-->
+        <div class="row justify-content-center"> <!-- Row START-->
+          <h3 class="cta-title">Book an Appointment</h3>
+          <table class="table borderless">
+            <thead>
+              <tr>
+                <td class="form-group justify-content-center">
+                  <label for="fullname" class="cta-text">Full Name (As per NRIC)</label>
+                  <input v-model="newFullname" type="number" class="form-control" id="fullname" placeholder="Enter Full Name">
+                </td>
+              </tr>
+              <tr>
+                <td class="form-group">
+                  <label for="nric" class="cta-text">NRIC</label>
+                  <input v-model="newNRIC" type="text" class="form-control" id="nric" placeholder="Enter NRIC">
+                </td>
+              </tr>
+              <tr>
+                <td class="form-group">
+                  <label for="gender" class="cta-text">Gender</label>
+                    <div class="form-check form-check-inline">
+                      <input class="cta-text form-check-input" type="radio" name="gender" id="male" value="male">
+                      <label class="cta-text form-check-label" for="male">Male</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input class="cta-text form-check-input" type="radio" name="gender" id="female" value="female">
+                      <label class="cta-text form-check-label" for="female">Female</label>
+                    </div>
+                </td>
+              </tr>
+              <tr>
+                <td class="form-group">
+                  <label for="contact_number" class="cta-text">Contact Number</label>
+                  <input v-model="newContactNumber" type="number" class="form-control" id="contact_number" placeholder="Enter Contact Number">
+                </td>
+              </tr>
+              <tr>
+                <td class="form-group">
+                  <label for="email" class="cta-text">Email Address</label>
+                  <input v-model="newEmail" type="email" class="form-control" id="email" placeholder="johndoe@gmail.com">
+                </td>
+              </tr>
+              <tr>
+                <td class="form-group">
+                  <label for="selected_date" class="cta-text">Appointment Date</label>
+                  <input v-model="newAppointmentDate" type="date" class="form-control" id="selected_date"
+                    placeholder="Enter Date YYYY-MM-DD">
+                </td>
+              </tr>
+              <tr>
+                <td class="form-group">
+                  <label for="available_time" class="cta-text">Appointment Time</label>
+                  <select v-model="newAppointmentTime" type="text" class="form-control" id="available_time">
+                    <option v-for="each_time in time">{{each_time}}</option>
+                </td>
+              </tr>
+            </thead>
+          </table>
+        </div> <!-- Row END-->
+
+        <!-- Add Availability Button-->
+        <div class="row justify-content-center">
+          <button @click="addAppointment" class="btn btn-outline-light" v-on:submit.prevent="onSubmit">Book
+            Appointment</button>
+        </div> 
+
+        <!-- Status messages about adding and deleting-->
+        <div class="row mt-4 justify-content-center">
+          <div class="text-success" v-if="appointmentAdded">
+            {{ statusMessage }} <br>
+          </div>
+        </div>
+        <!-- <div class="row justify-content-center">
+          <div class="text-success" v-if="availDeleted">
+            {{ statusMessage }} <br>
+          </div>
+        </div>
+        <div class="row justify-content-center">
+          <div class="text-danger" v-if="addDoctorError!=''">
+            {{ statusMessage }}<br>
+            {{ addDoctorError}}
+            <br>
+          </div>
+        </div> -->
+      </div> <!-- Container END-->
+    </section> <!-- Add Availability Section END -->
+
 
     <!--==========================
       Services Section

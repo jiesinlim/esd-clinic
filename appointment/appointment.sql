@@ -68,7 +68,7 @@ CREATE TABLE IF NOT EXISTS `appointment` (
   `appointment_date` date NOT NULL,
   `appointment_time` varchar(9) NOT NULL,
   `did` int(5) DEFAULT NULL,
-  `aid` int(11) NULL,
+  `aid` int(11) DEFAULT NULL,
   `doctor_name` varchar(15) DEFAULT NULL,
   `status` varchar(10) NOT NULL DEFAULT 'booked',
   `room_no` varchar(10) NULL,
@@ -80,7 +80,11 @@ CREATE TABLE IF NOT EXISTS `appointment` (
 --
 
 INSERT INTO `appointment` (`appointment_id`,`NRIC`, `patient_name`,`gender`,`contact_number`,`email`, `appointment_date`, `appointment_time`, `did`,`aid`, `doctor_name`, `status`, `room_no`) VALUES
-(1, 'T0123456U', 'Jasmine','F','91332329', 'jasmine@gmail.com', '2021-03-22', '1200', NULL , NULL , NULL, 'booked', NULL);
+(1, 'T0123456U', 'Leslie','M','82873618', 'leslie123@gmail.com', '2021-03-22', '1200', NULL , NULL , NULL, 'booked', NULL),
+(2, 'T1234567I', 'Reuben','M','83476123', 'reuben234@yahoo.com', '2021-03-21', '0900', NULL , NULL , NULL, 'booked', NULL),
+(3, 'S1234567J', 'Jasmine','F','98374986', 'jasmine345@hotmail.com', '2021-03-23', '1600', NULL , NULL , NULL, 'booked', NULL),
+(4, 'S9234567I', 'Amelia','F','81097192', 'amelia456@abc.com', '2021-03-24', '0900', NULL , NULL , NULL, 'booked', NULL),
+(5, 'S8745120I', 'Jack','M','98683274', 'jack567@xyz.com', '2021-03-25', '1100', NULL , NULL , NULL, 'booked', NULL);
 
 COMMIT;
 
