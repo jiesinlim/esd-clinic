@@ -38,35 +38,33 @@ services:
   ###############################################
   # Notification
   ###############################################
-  # notification:
-  #   build:
-  #     context: ./
-  #     dockerfile: notification/notification.Dockerfile
-  #   image: marcsoh/notification:latest
-  #   restart: always
-  #   environment:
-  #     dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/esd_clinic
-  #     PYTHONUNBUFFERED: 1
-  #   ports:
-  #     - "5003:5003"
+  notification:
+    build:
+      context: ./
+      dockerfile: notification/notification.Dockerfile
+    image: marcsoh/notification:latest
+    restart: always
+    environment:
+      PYTHONUNBUFFERED: 1
+    ports:
+      - "5003:5003"
 
   ###############################################
   # Match
   ###############################################
-  # match:
-  #   build:
-  #     context: ./
-  #     dockerfile: match/match.Dockerfile
-  #   image: marcsoh/match:latest
-  #   restart: always
-  #   depends_on:
-  #     - availability
-  #     - appointment
-  #   environment:
-  #     dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/esd_clinic
-  #     PYTHONUNBUFFERED: 1
-  #   ports:
-  #     - "5002:5002"
+  match:
+    build:
+      context: ./
+      dockerfile: match/match.Dockerfile
+    image: marcsoh/match:latest
+    restart: always
+    depends_on:
+      - availability
+      - appointment
+    environment:
+      PYTHONUNBUFFERED: 1
+    ports:
+      - "5002:5002"
   
   
 
