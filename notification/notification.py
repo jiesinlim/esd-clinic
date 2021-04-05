@@ -6,14 +6,15 @@ import os
 app = Flask(__name__)
 
 #retrieve name, email address & date\time of appt
-@app.route("/notification", methods=['POST'])
-def create_book():
+@app.route("/notification", methods=['PATCH'])
+def send_notif():
     url = "https://rapidprod-sendgrid-v1.p.rapidapi.com/mail/send"
     #dissect the info here and put it into payload
+    data = request.get_json()
 
-    name = 'jiesin'
-    email = 'jiesin.lim.2019@smu.edu.sg'
-    appointment_time = '1100'
+    name = data['patient_name']
+    email = data['email']
+    appointment_time = data['appointment_time']
 
     msg = "Dear "+name+", \\n\\nYour appointment with G9T6 clinic will take place tomorrow at "+appointment_time+". Please arrive 5 minutes before your appointment time to check in. Thank you and see you.\\n\\nBest Regards, \\nG9T6 Clinic"
 
