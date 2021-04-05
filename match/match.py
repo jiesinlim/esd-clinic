@@ -1,28 +1,33 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-import json
-import amqp_setup
-import pika
 
 import os
+import sys
+from os import environ
 
 import requests
 from invokes import invoke_http
 
+import json
+
 app = Flask(__name__)
 CORS(app)
 
-appointments_URL = "http://127.0.0.1:5005/appointment/" # check correct patient url for updating patient record
+#build: docker build -t marcsoh/match:1.0 ./
+#run: 
+
+# check correct patient url for updating patient record
+appointment_URL = environ.get('appointment_URL') or "http://127.0.0.1:5005/appointment/"
 # add patient booked datetime to doctor_URL
-doctor_datetime_URL = "http://127.0.0.1:5001/availability/datetime/"
-doctor_URL = "http://127.0.0.1:5001/availability" #update doctor availability (remove alr matched timeslot)
+# update doctor availability (remove alr matched timeslot)
+doctor_URL = environ.get('availability_URL') or "http://127.0.0.1:5001/availability/"
 
 
 def getAvailDoctors(datetime):
     # Invoke the doctor microservice
     print('\n-----Invoking doctor microservice-----')
     # datetime = f"{date}+{time}"
-    availDoctors = invoke_http(doctor_datetime_URL + str(datetime), method='GET')
+    availDoctors = invoke_http(doctor_URL + 'datetime/' + str(datetime), method='GET')
     print('Available doctors:', availDoctors)
     return availDoctors
     # availDoctors = json.loads(availDoctors)
@@ -32,7 +37,7 @@ def getAvailDoctors(datetime):
 def updateMatchDetails(appt_id,avail_id,doc_id,doc_name,time,doc_currentavail):
     #get patient appointment by appt id
     # print('\n-----Invoking appointment microservice-----')
-    # appt_details = invoke_http(appointments_URL + str(appt_id), method='GET')
+    # appt_details = invoke_http(appointment_URL + str(appt_id), method='GET')
     # print('appointment details:', appt_details)
     # appt_obj = json.loads(appt_details)
 
@@ -58,7 +63,7 @@ def updateMatchDetails(appt_id,avail_id,doc_id,doc_name,time,doc_currentavail):
         })
 
     print(appt_details)
-    assignDoctor = invoke_http(appointments_URL + str(appt_id), method='PATCH', json=appt_details)
+    assignDoctor = invoke_http(appointment_URL + str(appt_id), method='PATCH', json=appt_details)
     print('Match result:', assignDoctor)
 
     # get doctors by aid
