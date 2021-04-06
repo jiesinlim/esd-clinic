@@ -39,22 +39,6 @@ services:
       - "5005:5005"
   
   ###############################################
-  # Notification
-  ###############################################
-  notification:
-    build:
-      context: ./
-      dockerfile: notification/notification.Dockerfile
-    image: marcsoh/notification:latest
-    restart: always
-    depends_on:
-      - rabbitmq
-    environment:
-      rabbit_host: rabbitmq
-      rabbit_port: 5672
-      PYTHONUNBUFFERED: 1
-
-  ###############################################
   # Match
   ###############################################
   match:
@@ -85,6 +69,23 @@ services:
       - "15672:15672"
     volumes: 
       - rabbitmq_data:/var/lib/rabbitmq
+
+  ###############################################
+  # Notification
+  ###############################################
+  notification:
+    build:
+      context: ./
+      dockerfile: notification/notification.Dockerfile
+    image: marcsoh/notification:latest
+    restart: always
+    depends_on:
+      - rabbitmq
+    environment:
+      rabbit_host: rabbitmq
+      rabbit_port: 5672
+      PYTHONUNBUFFERED: 1
+
 
   ###############################################
   # Notify Patient
