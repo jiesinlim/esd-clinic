@@ -20,14 +20,14 @@ CORS(app)
 appointment_URL = environ.get('appointment_URL') or "http://127.0.0.1:5005/appointment/"
 # add patient booked datetime to doctor_URL
 # update doctor availability (remove alr matched timeslot)
-doctor_URL = environ.get('availability_URL') or "http://127.0.0.1:5001/availability/"
+doctor_URL = environ.get('availability_URL') or "http://127.0.0.1:5001/availability"
 
 
 def getAvailDoctors(datetime):
     # Invoke the doctor microservice
     print('\n-----Invoking doctor microservice-----')
     # datetime = f"{date}+{time}"
-    availDoctors = invoke_http(doctor_URL + 'datetime/' + str(datetime), method='GET')
+    availDoctors = invoke_http(doctor_URL + '/datetime/' + str(datetime), method='GET')
     print('Available doctors:', availDoctors)
     return availDoctors
 
@@ -61,11 +61,9 @@ def updateMatchDetails(appt_id,avail_id,doc_id,doc_name,time,doc_currentavail):
             }
 
     appt_details = json.dumps(details)
-    print(type(appt_details))
-    assignDoctor = invoke_http(appointments_URL + str(appt_id), method='PATCH', json=appt_details)
+    # print(type(appt_details))
+    assignDoctor = invoke_http(appointment_URL + str(appt_id), method='PATCH', json=appt_details)
     print('Match result:', assignDoctor)
-    print("hello")
-
 
     # get doctors by aid
     # print('\n-----Invoking doctor microservice-----')
@@ -77,9 +75,8 @@ def updateMatchDetails(appt_id,avail_id,doc_id,doc_name,time,doc_currentavail):
 
     time_array = doc_currentavail.split(", ")
     print(time_array)
-    updated_array = time_array.remove(time)
-    print(updated_array)
-    newAvailability = ', '.join([str(slot) for slot in updated_array])
+    time_array.remove(time)
+    newAvailability = ', '.join([str(slot) for slot in time_array])
     print(newAvailability)
     avail_obj = {
                     "aid": avail_id,
@@ -91,14 +88,15 @@ def updateMatchDetails(appt_id,avail_id,doc_id,doc_name,time,doc_currentavail):
 
     new_avail = json.dumps(avail_obj)
 
-    print(new_avail)
+    print(type(new_avail), new_avail)
+    
     # update doctor(specific avail_id) availability
     # Invoke the doctor microservice
 
     updateAvailability = invoke_http(doctor_URL, method='PATCH', json=new_avail)
     print('updated timeslot result:', updateAvailability)
     # result = f"Successfully assigned doctor: {assignDoctor}, Successfully updated doctor's availability: {updateAvailability}"
-    return updateAvailability
+    return assignDoctor, updateAvailability
 
 
 
@@ -144,11 +142,11 @@ def match_doctor():
             time = data['appt_time']
             doc_currentavail = data['doc_avail']  #get this info by getting doctor's full availability by avail_id
 
+            print("avail id: ",avail_id)
+
             result = updateMatchDetails(appt_id,avail_id,doc_id,doc_name,time, doc_currentavail)
             print('\n------------------------')
-            print("hello")
             print('\nresult: ', result)
-            print("hello")
             return result, result["code"]
 
         except Exception as e:

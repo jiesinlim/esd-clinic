@@ -98,7 +98,7 @@
             to get patient booking with status "matched" -->
             <tr v-for="(record, index) in appointments" class="table-light">
               <th scope="row"> {{ record.appointment_id }} </th>
-              <td>{{ record.NRIC }}</td>
+              <td>{{ record.patient_name }}</td>
               <td> {{ date[index] }} </td>
               <td> {{ record.appointment_time }} </td>
               <td>{{ record.did }}</td>
