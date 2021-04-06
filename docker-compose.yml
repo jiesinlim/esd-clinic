@@ -47,10 +47,12 @@ services:
       dockerfile: notification/notification.Dockerfile
     image: marcsoh/notification:latest
     restart: always
+    depends_on:
+      - rabbitmq
     environment:
+      rabbit_host: rabbitmq
+      rabbit_port: 5672
       PYTHONUNBUFFERED: 1
-    ports:
-      - "5003:5003"
 
   ###############################################
   # Match
@@ -83,4 +85,26 @@ services:
       - "15672:15672"
     volumes: 
       - rabbitmq_data:/var/lib/rabbitmq
+
+  ###############################################
+  # Notify Patient
+  ###############################################
+  # notify:
+  #   build:
+  #     context: ./
+  #     dockerfile: notify/notify.Dockerfile
+  #   image: marcsoh/notify:latest
+  #   restart: always
+  #   depends_on:
+  #     - notification
+  #     - appointment
+  #     - rabbitmq
+  #   environment:
+  #     rabbit_host: rabbitmq
+  #     rabbit_port: 5672
+  #     notification_URL: http://notification:5003/notification
+  #     appointment_URL: http://appointment:5005/appointment
+  #     PYTHONUNBUFFERED: 1
+  #   ports:
+  #     - "5006:5006"
   
