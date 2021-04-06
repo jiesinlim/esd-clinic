@@ -78,12 +78,71 @@ def processAvailability(updatedAvailability):
         print('\n\n-----All is good-----')
         return availability_result
 
-#This works
-# def getAvailabilityByDateTime(datetime):
-#     availabilities = invoke_http(doctor_URL + 'datetime/' + str(datetime), method='GET')
-#     return availabilities
 
-# #This is the same as the one is availability
+@app.route("/match_patient", methods=['PATCH'])
+def matchPatient():
+    # Simple check of input format and data of the request are JSON
+    if request.is_json:
+        try:
+            # pass both assigned doctor and patient id and name, appt time
+            appointment = request.get_json()
+            print("\nReceived a patient update in JSON:", appointment)
+
+            result = processAppointment(appointment)
+            print('\n------------------------')
+            print('\nresult: ', result)
+            return jsonify(result), result["code"]
+
+        except Exception as e:
+            # Unexpected error in code
+            print(str(e))
+
+            return jsonify({
+                "code": 500,
+                "message": "match.py internal error"
+            }), 500
+
+    # if reached here, not a JSON request.
+    return jsonify({
+        "code": 400,
+        "message": "Invalid JSON input: " + str(request.get_data())
+    }), 400
+
+def processAppointment(updatedAppointment):
+    print('\n-----Invoking appointment microservice-----')
+    appointment_result = invoke_http(appointment_URL, method='PATCH', json=updatedAppointment)
+    print('appointmentresults:', appointment_result)
+
+    #Check the result; if a failure send it to the error microservice
+    code = appointment_result["code"]
+    message = json.dumps(appointment_result)
+
+    if code not in range (200,300):
+        print('\n\n-----Publishing the (appointment error) message-----')
+
+        return {
+            "code": 500,
+            "data": {"appointment_result": appointment_result},
+            "message": "Appointment update failure sent for error handling."
+        }
+
+    else:
+        print('\n\n-----All is good-----')
+        return appointment_result
+
+
+
+
+
+
+
+
+#This works
+def getAvailabilityByDateTime(datetime):
+    availabilities = invoke_http(availability_URL + '/datetime/' + str(datetime), method='GET')
+    return availabilities
+
+#This is the same as the one is availability
 @app.route("/availdoctors/<string:datetime>", methods=['GET'])
 def getAvailDoctorsbyDatetime(datetime):
 
@@ -107,60 +166,6 @@ def getAvailDoctorsbyDatetime(datetime):
         "code": 400,
         "message": "Invalid JSON input: " + str(request.get_data())
     }), 400
-
-# @app.route("/nurse/<string:pid>", methods=['PATCH'])
-# def match_doctor(pid):
-#     patient = Patient.query.filter_by(pid=pid).first()
-#     if patient:
-#         data = request.get_json()
-#         if data['doctor_name']:
-#             patient.doctor_name = data['doctor_name']
-#         if data['did']:
-#             patient.did = data['did']
-#         if data['doctor_name'] and data['did']:
-#             patient.status = "Matched" 
-#         db.session.commit()
-#         return jsonify(
-#             {
-#                 "code": 200,
-#                 "data": patient.json()
-#             }
-#         )
-#     return jsonify(
-#         {
-#             "code": 404,
-#             "data": {
-#                 "pid": pid
-#             },
-#             "message": "Patient not found in booked appointments."
-#         }  
-#     ), 404
-
-
-# @app.route("/nurse/confirm", methods=['PATCH'])
-# def confirm(pid):  #confirm and notify using AMQP
-#     patient = Patient.query.filter_by(pid=pid).first()
-#     if patient:
-#         data = request.get_json()  #returns data of  "confirm" when nurse clicks confirm
-#         if patient.status == "Matched" and data == "confirm":
-#             patient.status = "Confirmed" 
-#         db.session.commit()
-#         return jsonify(
-#             {
-#                 "code": 200,
-#                 "data": patient.json()
-#             }
-#         )
-#     return jsonify(
-#         {
-#             "code": 404,
-#             "data": {
-#                 "pid": pid
-#             },
-#             "message": "Patient not found in matched appointments."
-#         }  
-#     ), 404
-
 
 if __name__ == '__main__':
     print("This is flask " + os.path.basename(__file__) +
