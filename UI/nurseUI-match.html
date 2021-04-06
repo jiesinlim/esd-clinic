@@ -94,45 +94,42 @@
   <section id="intro">
     <div class="intro-content" id='app'>
       <h2 style="font-size:xx-large;"><span>Match </span>Patient Appointments</h2>
-      <div class="container">
-        <div class="table-responsive">
-          <table class="table table-hover table-bordered" v-if="hasAppointments">
-            <thead style="background-color:#0c2e8a; color:white">
-              <tr>
-                <th scope="col">Appointment ID</th>
-                <th scope="col">Patient Name</th>
-                <th scope="col">Appointment Date</th>
-                <th scope="col">Appointment Time</th>
-                <th scope="col">Available Doctors</th>
-                <th scope="col">Status</th>
-                <th scope="col">Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(record, index) in appointments" class="table-light">
-                <th scope="row"> {{ record.appointment_id }} </th>
-                <td>{{ record.patient_name }}</td>
-                <td> {{ date[index] }} </td>
-                <td> {{ record.appointment_time }} </td>
-                <td v-if='doctorsAvail'>
-                  <select v-model="selected">
-                    <option disabled value="">Please select a doctor</option>
-                    <option v-for="doctor in appointments[index].avail_doctors" :key='doctor.doctor_name'>
+      <div class="table-responsive">
+        <table class="table table-hover table-bordered" v-if="hasAppointments">
+          <thead class="table-info">
+            <tr>
+              <th scope="col">Appointment ID</th>
+              <th scope="col">Patient Name</th>
+              <th scope="col">Appointment Date</th>
+              <th scope="col">Appointment Time</th>
+              <th scope="col">Available Doctors</th>
+              <th scope="col">Status</th>
+              <th scope="col">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(record, index) in appointments" class="table-light">
+              <th scope="row"> {{ record.appointment_id }} </th>
+              <td>{{ record.patient_name }}</td>
+              <td> {{ date[index] }} </td>
+              <td> {{ record.appointment_time }} </td>
+              <td v-if='doctorsAvail'> 
+                <select v-model="selected" @change="selectDoctor(index)"> 
+                  <option disabled value="">Please select a doctor</option>
+                  <option v-for="doctor in appointments[index].avail_doctors" :key='doctor.doctor_name'>  
                       {{ doctor.doctor_name }}
-                    </option>
-                  </select>
-                </td>
-                <td class='text-danger' v-else>there are no doctors {{ noDrs }}</td>
-                <td> {{ record.status }} </td>
-                <td><button class="btn btn-blue" @click="successfulMatch(index)" data-toggle="modal"
-                    data-target="#matchedModal">Match</button> </td>
-              </tr>
+                  </option>
+                </select> 
+               </td>
+               <td class='text-danger' v-else>there are no doctors {{ noDrs }}</td>
+              <td> {{ record.status }} </td>
+              <td><button class="btn btn-success" @click="successfulMatch" data-toggle="modal" data-target="#matchedModal">Match</button> </td>
+            </tr>
+            
+          </tbody>
+        </table>
 
-            </tbody>
-          </table>
-
-          <div class="text-danger" v-else>{{ message }}</div> <!-- Error message if can't get data from microservice-->
-        </div>
+        <div class="text-danger" v-else>{{ message }}</div> <!-- Error message if can't get data from microservice-->
       </div>
 
 
@@ -151,10 +148,10 @@
                   </div>
                   <div class="modal-body mt-4">
                     <br>
-                    Patient's Name: <b>{{ selectedAppt[0] }}</b> <br>
-                    Appointed Doctor: <b>{{ selected }}</b> <br>
-                    Appointment Date: <b>{{ selectedAppt[1] }}</b> <br>
-                    Appointment Time: <b>{{ selectedAppt[2] }} </b> <br><br><br>
+                    Patient's Name: {{ selectedAppt.p_name }} <br>
+                    Appointed Doctor: {{ selected }} <br>
+                    Appointment Date: {{ selectedAppt.date }} <br>
+                    Appointment Time: {{ selectedAppt.time }} <br><br><br>
 
                   </div>
                 </div>

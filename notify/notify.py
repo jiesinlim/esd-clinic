@@ -14,7 +14,7 @@ app = Flask(__name__)
 CORS(app)
 
 #update appointment status from matched to confirmed
-matched_URL = environ.get('matched_URL') or "http://127.0.0.1:5005/appointment/status/matched" 
+matched_URL = environ.get('appointment_URL') or "http://127.0.0.1:5005/appointment/status/matched" 
 
 #send patient_name, email, appointment_time to notification.py
 notification_url = environ.get('notification_URL') or "http://127.0.0.1:5003/notification" 

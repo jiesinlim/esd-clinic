@@ -1,6 +1,5 @@
 #From flask import Flask, request, jsonify
 from os import environ
-import requests
 import os
 import amqp_setup
 
@@ -45,17 +44,19 @@ def processInfo(data):
 
     
     if(response):
-        return jsonify(
+        reply = json.dumps(
         {
             "code": 200,
             "message": "The email is sent successfully."
         })
     else:
-        return jsonify(
+        reply = json.dumps(
         {
             "code": 500,
             "message": "The email failed to send."
         })
+    
+    print(reply)
 
 if __name__ == "__main__":  # execute this program only if it is run as a script (not by 'import')
     print("\nThis is " + os.path.basename(__file__), end='')

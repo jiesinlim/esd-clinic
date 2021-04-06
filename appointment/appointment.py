@@ -179,28 +179,35 @@ def add_new_appointment():
 # [PATCH] 
 @app.route("/appointment", methods=['PATCH'])
 def change_appointment_details():
-    appointment_id = request.json.get('appointment_id', None)
-    appointment = Appointments.query.filter_by(appointment_id=appointment_id).first()
-    if appointment:
+    if request:
         data = request.get_json()
-        if data['appointment_date']:
-            appointment.appointment_date = data['appointment_date']
-        if data['appointment_time']:
-            appointment.appointment_time = data['appointment_time']
-        if data['did']:
-            appointment.did = data['did']
-        if data['doctor_name']:
-            appointment.doctor_name = data['doctor_name']
-        if data['status']:
-            appointment.status = data['status']
+        data = json.loads(data)
 
-        db.session.commit()
-        return jsonify(
-            {
-                "code": 200,
-                "data": appointment.json()
-            }
-        )
+        appointment_id = data['appointment_id']
+        appointment = Appointments.query.filter_by(appointment_id=appointment_id).first()
+
+    # appointment_id = request.json.get('appointment_id', None)
+    # appointment = Appointments.query.filter_by(appointment_id=appointment_id).first()
+        if appointment:
+
+            if data['appointment_date']:
+                appointment.appointment_date = data['appointment_date']
+            if data['appointment_time']:
+                appointment.appointment_time = data['appointment_time']
+            if data['did']:
+                appointment.did = data['did']
+            if data['doctor_name']:
+                appointment.doctor_name = data['doctor_name']
+            if data['status']:
+                appointment.status = data['status']
+
+            db.session.commit()
+            return jsonify(
+                {
+                    "code": 200,
+                    "data": appointment.json()
+                }
+            )
     return jsonify(
         {
             "code": 404,
