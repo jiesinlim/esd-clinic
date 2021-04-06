@@ -83,7 +83,7 @@
         <table class="table table-hover table-bordered" v-if="hasAppointments">
           <thead class="table-info">
             <tr>
-              <th scope="col">Patient ID</th>
+              <th scope="col">Appointment ID</th>
               <th scope="col">Patient NRIC</th>
               <th scope="col">Appointment Date</th>
               <th scope="col">Appointment Time</th>
@@ -136,7 +136,7 @@
         <h5 class="font-weight-bold text-center">You have successfully confirmed this appointment!</h5>
       </div>
       <div class="modal-footer mx-auto">
-        <button type="button" class="btn btn-primary" @click="closeConfirmedModal">Notify Patient</button>
+        <button type="button" class="btn btn-primary" @click="updateConfirmDetails">Notify Patient</button>
       </div>
     </div>
   </div>

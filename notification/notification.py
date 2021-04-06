@@ -9,9 +9,6 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)
 
-matched_appointments_URL = "http://localhost:5005/appointment/all/matched"
-confirmed_appointments_URL = "http://localhost:5005/appointment/all/confirmed"
-
 #retrieve name, email address & date\time of appt
 @app.route("/notification", methods=['PATCH'])
 def send_notif():
@@ -47,50 +44,6 @@ def send_notif():
             "code": 500,
             "message": "The email failed to send."
         })
-
-#updating status from matched to confirmed
-def updateConfirmDetails(appt_id,avail_id,doc_id,doc_name,time,doc_currentavail): 
-    #update patient appointment with assigned doctor id and name
-    # Invoke the appointment microservice
-    print('\n-----Invoking appointments microservice-----')
-    doctor_details = jsonify(
-        {
-            aid: "",
-            nric: "",
-            appointment_date: "",
-            appointment_time: "",
-            did: doc_id,
-            doctor_name: doc_name,
-            status: "confirmed",
-            room_no: ""
-        }
-    )
-    updateStatus = invoke_http(matched_appointments_URL, method='PATCH', json=doctor_details)
-    print('Update result:', updateStatus)
-
-def getConfirmedAppointmentDetails(patient_name,email,appointment_time): 
-    #update patient appointment with confirmed status
-    # Invoke the appointment microservice
-    
-    print('\n-----Invoking appointments microservice-----')
-    getDetails = invoke_http(confirmed_appointments_URL, method='GET')
-    print('Get result:', getDetails)
-
-@app.route("/appointment/confirmed", methods = ['GET'])
-def get_confirmed_appointments():
-   try:
-        # do the actual work
-        result = getConfirmedAppointmentDetails()
-        return result, result["code"]
-
-    except Exception as e:
-        pass  # do nothing.
-
-    # if reached here, not a JSON request.
-    return jsonify({
-        "code": 400,
-        "message": "Invalid JSON input: " + str(request.get_data())
-    }), 400
 
 if __name__ == '__main__':
     print("This is flask for " + os.path.basename(__file__) +
