@@ -41,6 +41,19 @@ var app = new Vue({
                         } else {
                             
                             this.appointments = data.data.appointments;
+                            
+                            // console.log(this.appointments);
+                            for (var patient of this.appointments) {
+                                this.date.push(new Date(patient.appointment_date).toDateString());
+
+                                var date = new Date(patient.appointment_date).toISOString();
+                                date = date.slice(0,10);
+                                dateTime = date + "+" + patient.appointment_time;
+
+                                this.datetime.push(dateTime);
+                            }
+                            // console.log(this.datetime);
+                            this.getAvailDoctors();
                         }
                     })
                     .catch(error => {
@@ -50,7 +63,42 @@ var app = new Vue({
 
                     });
                 },
+        // getAvailDoctors: function() {
+        //     //on Vue instance created, load the avail doctors list
+        //     // converting GMT to YYYY-MM-DD format
 
+        //     if (this.datetime.length > 0) {
+        //         for (var i=0; i<(this.appointments).length; i++) {
+        //             // console.log((this.datetime)[i]);
+        //             const response =
+        //                 fetch(`${get_avail_doctors_URL}/${this.datetime[i]}`)
+        //                     .then(response => response.json())
+        //                     .then(data => {
+        //                         console.log(response);
+        //                         if (data.code === 404) {
+        //                             // no doctor available in db
+        //                             this.noDrs = data.noDrs;
+        //                         } else {
+        //                             var patient_availdoc = [];
+        //                             for (var doctor of data.data.available_doctors) {
+        //                                 patient_availdoc.push(doctor);  // [Dr Marcus, Dr Hong Seng]
+        //                             }
+        //                             this.available_doctors.push(patient_availdoc);
+        //                             // console.log(patient_availdoc);
+            
+        //                         }
+        //                     })
+        //                     .catch(error => {
+        //                         // Errors when calling the service; such as network error, 
+        //                         // service offline, etc
+        //                         console.log(this.noDrs + error);
+
+        //                     });
+            
+        //         }
+        //         console.log(this.available_doctors);  // [[Dr Marcus, Dr Hong Seng],[Dr Alan, Dr Marcus]]
+        //     }
+        // },
         successfulConfirmation: function(appt_index) {
             console.log(appt_index);
             if (this.selected != "" && Number.isInteger(appt_index)) {

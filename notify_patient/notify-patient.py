@@ -21,7 +21,7 @@ confirmed_URL = environ.get('confirmed_URL') or "http://127.0.0.1:5005/appointme
 #send patient_name, email, appointment_time to notification.py
 notification_url = environ.get('notification_URL') or "http://127.0.0.1:5003/notification" 
 
-
+@app.route("/notify-patient", methods=['PATCH'])
 def updateConfirmDetails(appt_id,avail_id,doc_id,doc_name,time,doc_currentavail):
     # Invoke the appointment microservice
 
