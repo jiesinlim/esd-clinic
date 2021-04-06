@@ -67,3 +67,14 @@ def is_connection_open(connection):
         print("AMQP Error:", e)
         print("...creating a new connection.")
         return False
+
+# #AMQP setup for notification.py
+#     message = json.dumps({
+#         "appointment_time": "", 
+#         "email": "",
+#         "patient_name": ""
+#     })
+
+#     if(assignDoctor["code"] && updateAvailability["code"] in range(200, 300)):
+#         amqp_setup.channel.basic_publish(exchange=amqp_setup.notification, routing_key="send.email", 
+#             body=message, properties=pika.BasicProperties(delivery_mode = 2)) 
