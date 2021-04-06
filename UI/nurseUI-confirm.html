@@ -51,6 +51,13 @@
         <h1><a href="./index.html" class="scrollto">ESD <span>G7T6</span></a></h1>
       </div>
 
+      <nav id="nav-menu-container">
+        <ul class="nav-menu">
+          <li><a href="./patientLogin.html">Patient</a></li>
+          <li><a href="./nurseLogin.html">Nurse</a></li>
+          <li><a href="./doctorLogin.html">Doctor</a></li>
+        </ul>
+      </nav><!-- #nav-menu-container -->
 
     </div>
   </header><!-- #header -->
@@ -83,8 +90,8 @@
         <table class="table table-hover table-bordered" v-if="hasAppointments">
           <thead class="table-info">
             <tr>
-              <th scope="col">Patient ID</th>
-              <th scope="col">Patient NRIC</th>
+              <th scope="col">Appointment ID</th>
+              <th scope="col">Patient Name</th>
               <th scope="col">Appointment Date</th>
               <th scope="col">Appointment Time</th>
               <th scope="col">Appointed Doctor ID</th>
@@ -104,7 +111,7 @@
               <td>{{ record.did }}</td>
               <td>{{ record.doctor_name }}</td>
               <td>{{ record.status }}</td>
-              <td><button class="btn btn-success" data-toggle="modal" data-target="#confirmModal">Confirm</button></td>
+              <td><button class="btn btn-success" data-toggle="modal" data-target="#confirmModal" @click="updateConfirmDetails(index)">Confirm</button></td>
             </tr>
           </tbody>
         </table>
@@ -133,10 +140,12 @@
         </button>
       </div> -->
       <div class="modal-body mt-4">
-        <h5 class="font-weight-bold text-center">You have successfully confirmed this appointment!</h5>
+        <h5 class="font-weight-bold text-center">You have successfully confirmed this appointment!<br> A notification has been sent to the patient! </h5><br>
+          Patient's Name: {{ selectedAppt[0] }} <br>
+          Appointed Doctor: {{ selected }} <br>
+          Appointment Date: {{ selectedAppt[1] }} <br>
+          Appointment Time: {{ selectedAppt[2] }} <br><br><br>
       </div>
-      <div class="modal-footer mx-auto">
-        <button type="button" class="btn btn-primary" href='#'>Notify Patient</button>
       </div>
     </div>
   </div>
@@ -146,25 +155,7 @@
 
 </div>
 
-  <!--==========================
-    Footer
-  ============================-->
-  <footer id="footer">
-    <div class="container">
-      <div class="copyright">
-        &copy; Copyright <strong>Reveal</strong>. All Rights Reserved
-      </div>
-      <div class="credits">
-        <!--
-          All the links in the footer should remain intact.
-          You can delete the links only if you purchased the pro version.
-          Licensing information: https://bootstrapmade.com/license/
-          Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/buy/?theme=Reveal
-        -->
-        Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
-      </div>
-    </div>
-  </footer><!-- #footer -->
+
 
   <a href="#" class="back-to-top"><i class="fa fa-chevron-up"></i></a>
 
