@@ -183,7 +183,7 @@
                 <td>{{ doctor.aid }}</td>
                 <td>{{ doctor.did }}</td>
                 <td>{{ doctor.doctor_name }}</td>
-                <td>{{ doctor.date }}</td>
+                <td>{{ doctor.date.slice(0,16) }}</td>
                 <td>{{ doctor.availability }}</td>
                 <td><button @click="editDoctorForm(doctor)" type="button" class="btn btn-blue">Edit</button>
                 </td>
