@@ -4,6 +4,7 @@ var get_matched_appts_URL = "http://127.0.0.1:5005/appointment/status/matched";
 // var get_avail_doctors_URL = "http://localhost:5002/availdoctors";
 // var match_URL = "http://localhost:5002/match";
 
+var notify_URL = "http://127.0.0.1:5006/notify_patient/";
 
 var app = new Vue({
     el: "#app",
