@@ -1,4 +1,4 @@
-From flask import Flask, request, jsonify
+#From flask import Flask, request, jsonify
 from os import environ
 import requests
 import os
@@ -18,10 +18,15 @@ def send_notif():
     # set up a consumer and start to wait for coming messages
     amqp_setup.channel.basic_consume(queue=queue_name, on_message_callback=callback, auto_ack=True)
     amqp_setup.channel.start_consuming()
+
+def callback(channel, method, properties, body): # required signature for the callback; no return
+    print("\nReceived an order log by " + __file__)
+    processInfo(json.loads(body))
+    print() # print a new line feed
+
+def processInfo(data):
     url = "https://rapidprod-sendgrid-v1.p.rapidapi.com/mail/send"
     #dissect the info here and put it into payload
-    data = request.get_json()
-    #data=json.loads(body)
 
     name = data['patient_name']
     email = data['email']
@@ -51,7 +56,6 @@ def send_notif():
             "code": 500,
             "message": "The email failed to send."
         })
-
 #updating status from matched to confirmed
 # def updateConfirmDetails(appt_id,avail_id,doc_id,doc_name,time,doc_currentavail): 
 #     #get patient appointment by appt id
