@@ -25,8 +25,8 @@ availability_URL = environ.get(
     'availability_URL') or "http://127.0.0.1:5001/availability"
 
 
-@app.route("/match_doctor", methods=['PATCH'])
-def matchDoctor():
+@app.route("/update_doctor", methods=['PATCH'])
+def updateDoctor():
     # Simple check of input format and data of the request are JSON
     if request.is_json:
         try:
@@ -137,7 +137,7 @@ def processAppointment(updatedAppointment):
 
 
 #This works
-def getAvailabilityByDateTime(datetime):
+def processDateTime(datetime):
     availabilities = invoke_http(
         availability_URL + '/datetime/' + str(datetime), method='GET')
     return availabilities
@@ -145,7 +145,7 @@ def getAvailabilityByDateTime(datetime):
 #This is the same as the one is availability
 
 
-@app.route("/availdoctors/<string:datetime>", methods=['GET'])
+@app.route("/availability/<string:datetime>", methods=['GET'])
 def getAvailDoctorsbyDatetime(datetime):
 
     # if request.is_json:
@@ -157,7 +157,7 @@ def getAvailDoctorsbyDatetime(datetime):
             print("\nReceived a patient's appointment date & time:", datetime)
 
         # do the actual work
-            result = getAvailabilityByDateTime(datetime)
+            result = processDateTime(datetime)
             return result, result["code"]
 
         except Exception as e:
