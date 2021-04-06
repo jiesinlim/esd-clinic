@@ -103,41 +103,43 @@
             <!-- Search bar END-->
             <br>
             <!-- Appointment booked table START -->
-            <div v-show="!edit"> <!-- v-show: hasAppointment START--> 
-            <h3 class="cta-title text-center">Appointment Booked</h3>
-            <table class="table table-striped mt-4">
-              <thead>
-                <tr>
-                  <th>S/N</th>
-                  <th>Name</th>
-                  <th>NRIC</th>
-                  <th>Date</th>
-                  <th>Time</th>
-                  <th>Doctor_name</th>
-                  <th>Room_no</th>
-                  <th>Status</th>
-                  <th>Edit</th>
-                  <th>Del</th>
-                </tr>
-                <tr v-for="appointment in appointments">
-                  <td>{{ appointment.appointment_id }}</td>
-                  <td>{{ appointment.patient_name }}</td>
-                  <td>{{ appointment.NRIC }}</td>
-                  <td>{{ appointment.appointment_date }}</td>
-                  <td>{{ appointment.appointment_time }}</td>
-                  <td>{{ appointment.doctor_name }}</td>
-                  <td>{{ appointment.room_no }}</td>
-                  <td>{{ appointment.status }}</td>
-                  <td><button @click="editAppointmentForm(appointment)" type="button" class="btn btn-blue">Edit</button>
-                  </td>
-                  <td><button @click="delAppointmentBooked(appointment.appointment_id)" type="button" class="btn btn-blue">Del</button></td>
-                </tr>
-              </thead>
-            </table>
-            <!-- Appointment booked table END-->
-            <div class="text-danger" v-if="!hasAppointment">There is no appointment booked by this NRIC.</div> <!-- Error message if can't get data from microservice-->
-          </div> <!-- row v-show: !edit END-->
-          </div> <!-- row v-show: hasAppointment END-->
+            
+            <div v-show="searchBar"> <!-- v-show: searchbar START--> 
+              <div v-show="!edit"> <!-- v-show: !edit START--> 
+                <h3 class="cta-title text-center">Appointment Booked</h3>
+                <table class="table table-striped mt-4">
+                  <thead>
+                    <tr>
+                      <th>S/N</th>
+                      <th>Name</th>
+                      <th>NRIC</th>
+                      <th>Date</th>
+                      <th>Time</th>
+                      <th>Doctor_name</th>
+                      <th>Room_no</th>
+                      <th>Status</th>
+                      <th>Edit</th>
+                      <th>Del</th>
+                    </tr>
+                    <tr v-for="appointment in appointments">
+                      <td>{{ appointment.appointment_id }}</td>
+                      <td>{{ appointment.patient_name }}</td>
+                      <td>{{ appointment.NRIC }}</td>
+                      <td>{{ appointment.appointment_date }}</td>
+                      <td>{{ appointment.appointment_time }}</td>
+                      <td>{{ appointment.doctor_name }}</td>
+                      <td>{{ appointment.room_no }}</td>
+                      <td>{{ appointment.status }}</td>
+                      <td><button @click="editAppointmentForm(appointment)" type="button" class="btn btn-blue">Edit</button>
+                      </td>
+                      <td><button @click="delAppointmentBooked(appointment.appointment_id)" type="button" class="btn btn-blue">Del</button></td>
+                    </tr>
+                  </thead>
+                </table>
+                <!-- Appointment booked table END-->
+                <div class="text-danger" v-if="!hasAppointment">There is no appointment booked by this NRIC.</div> <!-- Error message if can't get data from microservice-->
+              </div> <!-- row v-show: !edit END-->
+          </div> <!-- row v-show: searchBar END-->
         </div> <!-- container END-->
 
         <!-- Appointment edit START -->
