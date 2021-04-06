@@ -32,6 +32,7 @@ def getAvailDoctors(datetime):
     return availDoctors
 
 
+
 def updateMatchDetails(appt_id,avail_id,doc_id,doc_name,time,doc_currentavail):
     #get patient appointment by appt id
     # print('\n-----Invoking appointment microservice-----')

@@ -37,13 +37,7 @@ var app1 = new Vue({
 
         searchStr: "",
         searchError: "",
-
-        // booked_appointment_id: "",
-        // booked_appointment_date: "", 
-        // booked_appointment_time: "", 
-        // booked_doctor_name: "", 
-        // booked_room_no: "", 
-        // booked_status: "",
+        searchBar: false,
 
         edit: false,
         editSuccessful: false,
@@ -207,33 +201,39 @@ var app1 = new Vue({
         },
 
         findAppointmentByNRIC: function(){
+            // this.searchBar = false;
+            console.log("in findappointmentsbynric function");
+            console.log("searchBar:", this.searchBar);
+            console.log("searchStr:", this.searchStr);
+            var searchStr = this.searchStr.toUpperCase();
+            console.log(searchStr);
+
             const response =
-                fetch(`${get_all_URL_5005}/nric/${this.searchStr}`)
+                fetch(`${get_all_URL_5005}/nric/${searchStr}`)
                 .then(response => response.json())
                     .then(data => {
                         console.log(response);
                         if (data.code === 404) {
                             // no appointment details found in db
                             this.searchError = data.message;
+                            console.log("in findappointmentsbynric if block");
                         } else {
                             this.appointments = data.data.appointments;
                             console.log(this.appointments);
                             this.searchError = "";
-
-                            // this.booked_appointment_id = data.data.aid;
-                            // this.booked_appointment_date = data.data.appointment_date;
-                            // this.booked_appointment_time = data.data.appointment_time;
-                            // this.booked_doctor_name = data.data.doctor_name;
-                            // this.booked_room_no = data.data.room_no;
-                            // this.booked_status = data.data.status;
+                            this.searchBar = true;
+                            console.log("in findappointmentsbynric else block");
                         }
                     })
                     .catch(error => {
                         // Errors when calling the service; such as network error, 
                         // service offline, etc
                         console.log(this.searchError + error);
+                        console.log("in findappointmentsbynric catch error block");
 
                     });
+            console.log("after function searchBar:", this.searchBar);
+            console.log("after searchStr:", this.searchStr);
         },
         editAppointmentForm: function(appointment){
             //resets the data setting
@@ -343,6 +343,7 @@ var app1 = new Vue({
             this.searchError = "";
             this.appointment_id = "";
             this.searchStr = "";
+            this.searchBar = false;
         }
     },
     created: function () {

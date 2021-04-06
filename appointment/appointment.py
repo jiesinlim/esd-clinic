@@ -271,6 +271,7 @@ def get_appointments_by_status(status):
     ), 404
 
 
+
 # # Get all next day appointments
 # # [GET] 
 # # /appointment?date={next day}
@@ -304,6 +305,7 @@ def get_appointments_by_next_day(date):
             "message": "There are no appointments."
         }
     ), 404
+
 
 
 if __name__ == '__main__':

@@ -18,6 +18,7 @@ var app = new Vue({
     data: {
         message: "There is a problem retrieving appointment data, please try again later.",
         "appointments": [],
+        status: "",
         noDrs: "There are currently no doctors available.",
         "available_doctors": [],
         selected: "",
@@ -30,6 +31,7 @@ var app = new Vue({
     methods: {
         getBookedAppointments: function () {
             // on Vue instance created, load the appointment list
+            console.log(this.appointments.status);
             const response =
                 fetch(get_booked_appts_URL)
                     .then(response => response.json())
@@ -61,11 +63,12 @@ var app = new Vue({
                         // service offline, etc
                         console.log(this.message + error);
                     });
-                },
+        
+        },
+        
         getAvailDoctors: function() {
             //on Vue instance created, load the avail doctors list
             // converting GMT to YYYY-MM-DD format
-
             if (this.datetime.length > 0) {
                 for (let i=0; i<(this.appointments).length; i++) {
                     // console.log((this.datetime)[i]);
@@ -128,7 +131,7 @@ var app = new Vue({
                     }
                 )
                 const response =
-                fetch(match_URL, {
+                fetch(`${match_URL}`, {
                     method: "PATCH",
                     headers: {
                         "Content-type": "application/json"
