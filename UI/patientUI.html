@@ -114,7 +114,7 @@
                   <th>Date</th>
                   <th>Time</th>
                   <th>Doctor_name</th>
-                  <th>Room_No</th>
+                  <th>Room_no</th>
                   <th>Status</th>
                   <th>Edit</th>
                   <th>Del</th>
@@ -184,10 +184,14 @@
                     {{ editCurrentAppointment.NRIC }}
                   </td>
                   <td class="form-group">
-                    <input type="date" class="form-control" v-model="editDate">
+                    <input type="date" class="form-control" v-model="editDate" @change="get_avail_time_by_date_for_edit_form">
+                    <span class="text-danger justify-content-center" v-if="no_avail_time">
+                      There is no available time for this date, please select another date.<br>
+                    </span>
                   </td>
                   <td class="form-group">
-                    <input type="text" class="form-control" v-model="editTime">
+                    <select type="text" class="form-control" v-model="editTime">
+                      <option v-for="each_time in all_available_time_array">{{each_time}}</option>
                   </td>
                 </tr>
               </thead>
@@ -195,8 +199,8 @@
 
             <div class="row mx-auto mb-4">
               <div class="col">
-                <button @click="pageRefresh" class="btn btn-blue ">Return to home
-                  page</button>
+                <button @click="pageRefresh" class="btn btn-blue ">Return to Patient
+                  Portal</button>
               </div>
               <div class="col">
                 <button @click="editAppointmentDateTime" class="btn btn-blue pull-right" v-on:submit.prevent="onSubmit">Confirm

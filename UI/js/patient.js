@@ -119,6 +119,42 @@ var app1 = new Vue({
 
                 });
         },
+        get_avail_time_by_date_for_edit_form: function(){
+            // reset data
+            this.all_available_time_string = "";
+            this.all_available_time_array = [];
+            this.no_avail_time = false;
+
+            console.log("in get_avail_time_by_date_for_edit_form function");
+            console.log(this.editDate, typeof(this.editDate));
+
+            const response =
+                fetch(`${get_all_URL_5001}/datetime/${this.editDate}`)
+                .then(response => response.json())
+                .then(data => {
+                    console.log(response);
+                    if (data.code === 404) {
+                        // no available time for this selected date
+                        console.log("in the 404 block");
+                        this.message = data.message;
+                        this.no_avail_time = true;
+                        console.log(this.no_avail_time);
+                    } else {
+                        console.log("in else block");
+                        this.all_available_time_string = data.data.available_doctors[0].availability;
+                        console.log("time string",this.all_available_time_string);
+                        this.all_available_time_array = this.all_available_time_string.split(',');
+                        console.log("time array",this.all_available_time_array);
+                    }
+                })
+                .catch(error => {
+                    // Errors when calling the service; such as network error, 
+                    // service offline, etc
+                    console.log("in catch error block");
+                    console.log(this.message + error);
+
+                });
+        },
 
         addAppointment: function(){
             //reset data to original setting
@@ -227,7 +263,7 @@ var app1 = new Vue({
                 status: this.editCurrentAppointment.status
             });
 
-            fetch(`${get_all_URL_5005}/${this.editCurrentAppointment.appointment_id}`, {
+            fetch(`${get_all_URL_5005}`, {
                     method: "PATCH",
                     headers: {
                         "Content-type": "application/json"
