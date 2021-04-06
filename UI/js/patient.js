@@ -84,8 +84,13 @@ var app1 = new Vue({
         },
 
         get_avail_time_by_date: function(){
+            // reset data
+            this.all_available_time_string = "";
+            this.all_available_time_array = [];
+            this.no_avail_time = false;
+
             console.log("in get_avail_time_by_date function");
-            console.log(this.newAppointmentDate);
+            console.log(this.newAppointmentDate, typeof(this.newAppointmentDate));
 
             const response =
                 fetch(`${get_all_URL_5001}/datetime/${this.newAppointmentDate}`)
@@ -94,18 +99,22 @@ var app1 = new Vue({
                     console.log(response);
                     if (data.code === 404) {
                         // no available time for this selected date
+                        console.log("in the 404 block");
                         this.message = data.message;
                         this.no_avail_time = true;
+                        console.log(this.no_avail_time);
                     } else {
-                        this.all_available_time_string = data.data.available_doctors.availability;
-                        console.log(this.all_available_time_string);
-                        this.all_available_time_array = this.all_available_time_string.split(",");
-                        console.log(this.all_available_time_array);
+                        console.log("in else block");
+                        this.all_available_time_string = data.data.available_doctors[0].availability;
+                        console.log("time string",this.all_available_time_string);
+                        this.all_available_time_array = this.all_available_time_string.split(',');
+                        console.log("time array",this.all_available_time_array);
                     }
                 })
                 .catch(error => {
                     // Errors when calling the service; such as network error, 
                     // service offline, etc
+                    console.log("in catch error block");
                     console.log(this.message + error);
 
                 });

@@ -65,8 +65,8 @@ services:
       - availability
       - appointment
     environment:
-      availability_URL: http://availability:5001/availability/
-      appointment_URL: http://appointment:5005/appointment/
+      availability_URL: http://availability:5001/availability
+      appointment_URL: http://appointment:5005/appointment
       PYTHONUNBUFFERED: 1
     ports:
       - "5002:5002"

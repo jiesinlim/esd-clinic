@@ -177,14 +177,12 @@ def add_new_appointment():
 #----------------------------------------------------------------------------------------------
 # Change Date & Time of appointment 
 # [PATCH] 
-@app.route("/appointment/<string:appointment_id>", methods=['PATCH'])
-def change_appointment_details(appointment_id):
+@app.route("/appointment", methods=['PATCH'])
+def change_appointment_details():
+    appointment_id = request.json.get('appointment_id', None)
     appointment = Appointments.query.filter_by(appointment_id=appointment_id).first()
     if appointment:
-        data = request.get_json() # get.json() not working???
-        data = json.loads(data)
-        print(type(data))
-        print(data)
+        data = request.get_json()
         if data['appointment_date']:
             appointment.appointment_date = data['appointment_date']
         if data['appointment_time']:
