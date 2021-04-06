@@ -32,3 +32,8 @@ Theme Name: Reveal
 Theme URL: https://bootstrapmade.com/reveal-bootstrap-corporate-template/
 Author: BootstrapMade.com
 Author URL: https://bootstrapmade.com
+
+
+Running Docker codes e.g.
+#build: docker build -t marcsoh/match:1.0 ./
+#run: docker run -p 5000:5000 -e dbURL=mysql+mysqlconnector://is213@host.docker.internal:3306/book <dockerid>/book:1.0	
