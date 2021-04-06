@@ -1,8 +1,8 @@
 //var get_all_URL = "http://localhost:8000/api/v1/doctor";
 // var get_all_URL = "http://localhost:5001/match";
 var get_booked_appts_URL = "http://127.0.0.1:5005/appointment/status/booked";
-var get_avail_doctors_URL = "http://localhost:5002/availdoctors";
-var match_URL = "http://localhost:5002/match";
+var get_avail_doctors_URL = "http://127.0.0.1:5002/availdoctors";
+var match_URL = "http://127.0.0.1:5002/match";
 
 
 var app = new Vue({
@@ -25,7 +25,7 @@ var app = new Vue({
         "date": [],
         showModal: false,
         modalTitle: "Appointment has been successfully matched!",
-        'selectedAppt': []
+        'selectedAppt': {}
     },
     methods: {
         getBookedAppointments: function () {
@@ -99,34 +99,55 @@ var app = new Vue({
             // console.log(this.available_doctors); //[[Dr Marcus, Dr Hong Seng],[Dr Alan, Dr Marcus]]
             console.log(this.appointments); 
         },
-        successfulMatch: function(appt_index) {
+        selectDoctor: function(appt_index) {
             console.log(appt_index);
             if (this.selected != "" && Number.isInteger(appt_index)) {
 
-                this.selectedAppt.push(this.appointments[appt_index].patient_name);
-                this.selectedAppt.push(this.date[appt_index]);
-                this.selectedAppt.push(this.appointments[appt_index].appointment_time);
-                this.selectedAppt.push(this.appointments[appt_index].appointment_id);
+                this.selectedAppt.p_name = this.appointments[appt_index].patient_name;
+                this.selectedAppt.date = this.date[appt_index];
+                this.selectedAppt.time = this.appointments[appt_index].appointment_time;
+                this.selectedAppt.appt_id = this.appointments[appt_index].appointment_id;
+                this.selectedAppt.d_name = this.selected;
 
                 //invoke match microservice (requires avail_id, did, doc_name, appt_id, appt_time, doc_avail)
-                for (var doctor of this.available_doctors[appt_index]) {
-                    if (doctor.doctor_name == this.selected) {
-                        this.selectedAppt.push(doctor.availability);
-                        this.selectedAppt.push(doctor.aid);
-                        this.selectedAppt.push(doctor.did);
-                        this.selectedAppt.push(this.selected);
-                    }
-                } 
+                
+                // [{doctor_name: paul,did: 2},{doctor_name: paul,did: 2},{doctor_name: paul,did: 2}]
+                // for loop part not working? sometimes
+                // for (var doctor of this.available_doctors[appt_index]) {
+                //     if (doctor.doctor_name == this.selected) {
+                //         this.selectedAppt.availslots = doctor.availability;
+                //         this.selectedAppt.avail_id = doctor.aid;
+                //         this.selectedAppt.did = doctor.did;
+                //     }
+                // } 
+                if (this.available_doctors[appt_index].length > 1) {
+                    var doc_idx = this.available_doctors[appt_index].findIndex(x => x.doctor_name === this.selected);
+                    console.log("more than 1 doctor available");
+                } else {
+                    doc_idx = 0;
+                    console.log("only 1 doctor available");
+                }
+
+                console.log(doc_idx);
+                this.selectedAppt.availslots = this.available_doctors[appt_index][doc_idx].availability;
+                this.selectedAppt.avail_id = this.available_doctors[appt_index][doc_idx].aid;
+                this.selectedAppt.did = this.available_doctors[appt_index][doc_idx].did;
+            } 
+        },
+        successfulMatch: function () {
+            if ("d_name" in this.selectedAppt) {
                 let jsonData = JSON.stringify(
                     {
-                        appointment_id: this.selectedAppt[3],
-                        aid: this.selectedAppt[5],
-                        did: this.selectedAppt[6],
-                        d_name: this.selectedAppt[7],
-                        appt_time: this.selectedAppt[2],
-                        doc_avail: this.selectedAppt[4]
+                        appointment_id: this.selectedAppt.appt_id,
+                        aid: this.selectedAppt.avail_id,
+                        did: this.selectedAppt.did,
+                        d_name: this.selectedAppt.d_name,
+                        appt_time: this.selectedAppt.time,
+                        doc_avail: this.selectedAppt.availslots
                     }
                 )
+                console.log(jsonData);
+
                 const response =
                 fetch(match_URL, {
                     method: "PATCH",
@@ -135,24 +156,24 @@ var app = new Vue({
                     },
                     body: jsonData
                 })
-                    .then(response => response.json())
-                    .then(data => {
-                        console.log(response);
-                        if (data.code === 404) {
-                            // no appointment in db
-                            this.message = data.message;
-                        } else {
-                            this.showModal = true;
-                            console.log("patient and doctor successfully matched!");
-                        }
-                    })
-                    .catch(error => {
-                        // Errors when calling the service; such as network error, 
-                        // service offline, etc
-                        console.log(this.message + error);
-                    });
-            } 
-            else {
+                .then(response => response.json())
+                .then(data => {
+                    console.log(response);
+                    if (data.code === 404) {
+                        // no appointment in db
+                        this.message = data.message;
+                    } else {
+                        this.showModal = true;
+                        console.log("patient and doctor successfully matched!");
+                    }
+                })
+                .catch(error => {
+                    // Errors when calling the service; such as network error, 
+                    // service offline, etc
+                    console.log(this.message + error);
+                });
+                
+            } else {
                 console.log("Select a doctor first before matching!");
             }
         },
@@ -169,4 +190,3 @@ var app = new Vue({
         this.getBookedAppointments();
     }
 });
-

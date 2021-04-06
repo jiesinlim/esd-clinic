@@ -17,7 +17,7 @@ CORS(app)
 #run: 
 
 # check correct patient url for updating patient record
-appointment_URL = environ.get('appointment_URL') or "http://127.0.0.1:5005/appointment/"
+appointment_URL = environ.get('appointment_URL') or "http://127.0.0.1:5005/appointment"
 # add patient booked datetime to doctor_URL
 # update doctor availability (remove alr matched timeslot)
 doctor_URL = environ.get('availability_URL') or "http://127.0.0.1:5001/availability"
@@ -26,21 +26,24 @@ doctor_URL = environ.get('availability_URL') or "http://127.0.0.1:5001/availabil
 def getAvailDoctors(datetime):
     # Invoke the doctor microservice
     print('\n-----Invoking doctor microservice-----')
-    # datetime = f"{date}+{time}"
+
     availDoctors = invoke_http(doctor_URL + '/datetime/' + str(datetime), method='GET')
     print('Available doctors:', availDoctors)
     return availDoctors
 
 
-def updateMatchDetails(appt_id,avail_id,doc_id,doc_name,time,doc_currentavail):
-    #get patient appointment by appt id
-    # print('\n-----Invoking appointment microservice-----')
-    # appt_details = invoke_http(appointment_URL + str(appt_id), method='GET')
-    # print('appointment details:', appt_details)
-    # appt_obj = json.loads(appt_details)
-
+def updateMatchDetails(data):
+    print(type(data))
     #update patient appointment with assigned doctor id and name
     # Invoke the appointment microservice
+        # do the actual work
+    #parse match into 6 separate values
+    appt_id = data['appointment_id']
+    avail_id = data['aid']
+    doc_id = data['did']
+    doc_name = data['d_name']
+    time = data['appt_time']
+    doc_currentavail = data['doc_avail']  #get this info by getting doctor's full availability by avail_id
 
     print('\n-----Invoking appointments microservice-----')
 
@@ -48,7 +51,7 @@ def updateMatchDetails(appt_id,avail_id,doc_id,doc_name,time,doc_currentavail):
                 "NRIC": "",
                 "aid": "",
                 "appointment_date": "",
-                "appointment_id": "",
+                "appointment_id": appt_id,
                 "appointment_time": "",
                 "contact_number": "",
                 "did": int(doc_id),
@@ -62,7 +65,7 @@ def updateMatchDetails(appt_id,avail_id,doc_id,doc_name,time,doc_currentavail):
 
     appt_details = json.dumps(details)
     # print(type(appt_details))
-    assignDoctor = invoke_http(appointment_URL + str(appt_id), method='PATCH', json=appt_details)
+    assignDoctor = invoke_http(appointment_URL, method='PATCH', json=appt_details)
     print('Match result:', assignDoctor)
 
     # get doctors by aid
@@ -133,18 +136,8 @@ def match_doctor():
             data = request.get_json()  #pass both assigned doctor and patient id and name, appt time
             print("\nReceived a doctor-patient match in JSON:", data)
 
-            # do the actual work
-            #parse match into 4 separate values
-            appt_id = data['appointment_id']
-            avail_id = data['aid']
-            doc_id = data['did']
-            doc_name = data['d_name']
-            time = data['appt_time']
-            doc_currentavail = data['doc_avail']  #get this info by getting doctor's full availability by avail_id
 
-            print("avail id: ",avail_id)
-
-            result = updateMatchDetails(appt_id,avail_id,doc_id,doc_name,time, doc_currentavail)
+            result = updateMatchDetails(data)
             print('\n------------------------')
             print('\nresult: ', result)
             return result, result["code"]
