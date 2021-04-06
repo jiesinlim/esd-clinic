@@ -123,25 +123,34 @@ def add_doctor():
 
 @app.route("/availability", methods=['PATCH'])
 def update_doctor():
-    aid = request.json.get('aid', None)
-    availability = Availability.query.filter_by(aid=aid).first()
-    if availability:
+    if request:
+    #     # aid = request.json.get('aid', None)
+    # if availability:
         data = request.get_json()
-        if data['did']:
-            availability.did = data['did']
-        if data['doctor_name']:
-            availability.doctor_name = data['doctor_name']
-        if data['date']:
-            availability.date = data['date']
-        if data['availability']:
-            availability.availability = data['availability']
-        db.session.commit()
-        return jsonify(
-            {
-                "code": 200,
-                "data": availability.json()
-            }
-        )
+        print(type(data))
+        data = json.loads(data)
+        print(type(data))
+
+        aid = data['aid']
+        availability = Availability.query.filter_by(aid=aid).first()
+
+        if availability:
+
+            if data['did']:
+                availability.did = data['did']
+            if data['doctor_name']:
+                availability.doctor_name = data['doctor_name']
+            if data['date']:
+                availability.date = data['date']
+            if data['availability']:
+                availability.availability = data['availability']
+            db.session.commit()
+            return jsonify(
+                {
+                    "code": 200,
+                    "data": availability.json()
+                }
+            )
     return jsonify(
         {
             "code": 404,
