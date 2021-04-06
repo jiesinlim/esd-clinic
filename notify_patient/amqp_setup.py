@@ -68,7 +68,7 @@ def is_connection_open(connection):
         print("...creating a new connection.")
         return False
 
-# #AMQP setup for notification.py
+# #AMQP setup for notification.py in notify.py
 #     message = json.dumps({
 #         "appointment_time": "", 
 #         "email": "",
