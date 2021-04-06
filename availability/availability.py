@@ -50,7 +50,8 @@ def get_all():
             {
                 "code": 200,
                 "data": {
-                    "doctor_availability": [availability.json() for availability in availability_list]
+                    "doctor_availability": [availability.json() for 
+                    availability in availability_list]
                 }
             }
         )

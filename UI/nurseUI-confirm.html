@@ -103,10 +103,10 @@
           <tbody>
             <!-- create a for loop in javascript after calling microservice api
             to get patient booking with status "matched" -->
-            <tr v-for="(record, index) in appointments" class="table-light">
+            <tr v-for="(record,index) in appointments" class="table-light">
               <th scope="row"> {{ record.appointment_id }} </th>
               <td>{{ record.patient_name }}</td>
-              <td> {{ date[index] }} </td>
+              <td> {{ record.appointment_date }} </td>
               <td> {{ record.appointment_time }} </td>
               <td>{{ record.did }}</td>
               <td>{{ record.doctor_name }}</td>
@@ -141,10 +141,10 @@
       </div> -->
       <div class="modal-body mt-4">
         <h5 class="font-weight-bold text-center">You have successfully confirmed this appointment!<br> A notification has been sent to the patient! </h5><br>
-          Patient's Name: {{ selectedAppt[0] }} <br>
-          Appointed Doctor: {{ selected }} <br>
-          Appointment Date: {{ selectedAppt[1] }} <br>
-          Appointment Time: {{ selectedAppt[2] }} <br><br><br>
+          Patient's Name: {{ confirm[0] }} <br>
+          Appointed Doctor: {{ confirm[1] }} <br>
+          Appointment Date: {{ confirm[2] }} <br>
+          Appointment Time: {{ confirm[3] }} <br><br><br>
       </div>
       </div>
     </div>
