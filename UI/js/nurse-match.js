@@ -138,6 +138,7 @@ var app = new Vue({
             } 
         },
         successfulMatch: function () {
+            this.showModal = true;
             if ("d_name" in this.selectedAppt) {
                 let jsonData = JSON.stringify(
                     {
@@ -166,7 +167,6 @@ var app = new Vue({
                         // no appointment in db
                         this.message = data.message;
                     } else {
-                        this.showModal = true;
                         console.log("patient and doctor successfully matched!");
                     }
                 })
