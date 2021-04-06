@@ -139,12 +139,12 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div> -->
-      <div class="modal-body mt-4">
-        <h5 class="font-weight-bold text-center">You have successfully confirmed this appointment!<br> A notification has been sent to the patient! </h5><br>
-          Patient's Name: {{ confirm[0] }} <br>
-          Appointed Doctor: {{ confirm[1] }} <br>
-          Appointment Date: {{ confirm[2] }} <br>
-          Appointment Time: {{ confirm[3] }} <br><br><br>
+      <div class="modal-body mt-4 text-center">
+        <h5 class="font-weight-bold ">You have successfully confirmed this appointment!<br> A notification has been sent to the patient! </h5><br>
+          Patient's Name: {{ confirm.patient_name }} <br>
+          Appointed Doctor: {{ confirm.doctor_name }} <br>
+          Appointment Date: {{ confirm.appointment_date }} <br>
+          Appointment Time: {{ confirm.appointment_time }} <br><br><br>
       </div>
       </div>
     </div>

@@ -14,7 +14,7 @@ app = Flask(__name__)
 CORS(app)
 
 #update appointment status from matched to confirmed
-matched_URL = environ.get('appointment_URL') or "http://127.0.0.1:5005/appointment/status/matched" 
+matched_URL = environ.get('matched_URL') or "http://127.0.0.1:5005/appointment/status/matched" 
 
 #send patient_name, email, appointment_time to notification.py
 notification_url = environ.get('notification_URL') or "http://127.0.0.1:5003/notification" 
@@ -61,7 +61,7 @@ def confirm_appointments():
             appt_id = data['appointment_id']
 
             # do the actual work
-            result = updateConfirmDetails(appt_id,patient_name,email,appt_time)
+            result = updateConfirmDetails(data)
             return result, result["code"]
 
         except Exception as e:
@@ -73,7 +73,17 @@ def confirm_appointments():
             "message": "Invalid JSON input: " + str(request.get_data())
         }), 400
 
-def updateConfirmDetails(appt_id,patient_name,email,appt_time):
+def updateConfirmDetails(data):
+    print(type(data))
+    #update patient appointment with assigned doctor id and name
+    # Invoke the appointment microservice
+        # do the actual work
+    #parse match into 6 separate values
+    appt_id = data['appointment_id']
+    patient_name = data['patient_name']
+    doc_name = data['d_name']
+    time = data['appt_time']
+    appt_date = data['appointment_date']
     # Invoke the appointment microservice
 
     print('\n-----Invoking appointments microservice-----')

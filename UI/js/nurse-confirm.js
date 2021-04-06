@@ -18,7 +18,7 @@ var app = new Vue({
         "appointments": [],
         showModal: false,
         modalTitle: "Appointment has been successfully confirmed!",
-        'confirm': []
+        'confirm': {}
     },
     methods: {
         getMatchedAppointments: function () {
@@ -46,11 +46,24 @@ var app = new Vue({
         },
         updateConfirmDetails: function (index) {
             console.log(index);
-            this.confirm.push(this.appointments[index].patient_name);
-            this.confirm.push(this.appointments[index].doctor_name);
-            this.confirm.push(this.appointments[index].appointment_date);
-            this.confirm.push(this.appointments[index].appointment_time);
+            this.confirm.patient_name = this.appointments[index].patient_name;
+            this.confirm.doctor_name = this.appointments[index].doctor_name;
+            this.confirm.appointment_date = this.appointments[index].appointment_date;
+            this.confirm.appointment_time = this.appointments[index].appointment_time;
+
+            this.confirm.email = this.appointments[index].email;
+            this.confirm.appointment_id = this.appointments[index].appointment_id;
+
+            // let jsonData = JSON.stringify(
+            //     {
+            //         patient_name: this.confirm.patient_name,
+            //         email: this.confirm.email,
+            //         appointment_id: this.confirm.appointment_id,
+            //         appointment_time: this.confirm.appointment_time
+            //     }
+            // )
             const response =
+           
                 fetch(`${confirmAppts_URL}`, {
                     method: "PATCH",
                     headers: {
