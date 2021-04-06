@@ -146,8 +146,10 @@
                 <td class="form-group">
                   <label for="selected_date" class="cta-text">Appointment Date</label>
                   <input v-model="newAppointmentDate" @change="get_avail_time_by_date" type="date" class="form-control" id="selected_date">
+                  <span class="text-danger justify-content-center" v-if="no_avail_time">
+                    There is no available time for this date, please select another date.<br>
+                  </span>
                 </td>
-                <span v-if="no_avail_time">There is no available time for this date</span>
               </tr>
               <tr>
                 <td class="form-group">
