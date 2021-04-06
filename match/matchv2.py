@@ -14,15 +14,15 @@ app = Flask(__name__)
 CORS(app)
 
 #build: docker build -t marcsoh/match:1.0 ./
-#run: 
+#run:
 
 # check correct patient url for updating patient record
-appointment_URL = environ.get('appointment_URL') or "http://127.0.0.1:5005/appointment"
+appointment_URL = environ.get(
+    'appointment_URL') or "http://127.0.0.1:5005/appointment"
 # add patient booked datetime to doctor_URL
 # update doctor availability (remove alr matched timeslot)
-availability_URL = environ.get('availability_URL') or "http://127.0.0.1:5001/availability"
-
-
+availability_URL = environ.get(
+    'availability_URL') or "http://127.0.0.1:5001/availability"
 
 
 @app.route("/match_doctor", methods=['PATCH'])
@@ -55,17 +55,20 @@ def matchDoctor():
     }), 400
 
 #This function updates availability for doctors
+
+
 def processAvailability(updatedAvailability):
 
     print('\n-----Invoking availability microservice-----')
-    availability_result = invoke_http(availability_URL, method='PATCH', json=updatedAvailability)
+    availability_result = invoke_http(
+        availability_URL, method='PATCH', json=updatedAvailability)
     print('Availability results:', availability_result)
 
     #Check the result; if a failure send it to the error microservice
     code = availability_result["code"]
     message = json.dumps(availability_result)
 
-    if code not in range (200,300):
+    if code not in range(200, 300):
         print('\n\n-----Publishing the (availability error) message-----')
 
         return {
@@ -108,16 +111,18 @@ def matchPatient():
         "message": "Invalid JSON input: " + str(request.get_data())
     }), 400
 
+
 def processAppointment(updatedAppointment):
     print('\n-----Invoking appointment microservice-----')
-    appointment_result = invoke_http(appointment_URL, method='PATCH', json=updatedAppointment)
+    appointment_result = invoke_http(
+        appointment_URL, method='PATCH', json=updatedAppointment)
     print('appointmentresults:', appointment_result)
 
     #Check the result; if a failure send it to the error microservice
     code = appointment_result["code"]
     message = json.dumps(appointment_result)
 
-    if code not in range (200,300):
+    if code not in range(200, 300):
         print('\n\n-----Publishing the (appointment error) message-----')
 
         return {
@@ -131,18 +136,15 @@ def processAppointment(updatedAppointment):
         return appointment_result
 
 
-
-
-
-
-
-
 #This works
 def getAvailabilityByDateTime(datetime):
-    availabilities = invoke_http(availability_URL + '/datetime/' + str(datetime), method='GET')
+    availabilities = invoke_http(
+        availability_URL + '/datetime/' + str(datetime), method='GET')
     return availabilities
 
 #This is the same as the one is availability
+
+
 @app.route("/availdoctors/<string:datetime>", methods=['GET'])
 def getAvailDoctorsbyDatetime(datetime):
 
@@ -155,7 +157,7 @@ def getAvailDoctorsbyDatetime(datetime):
             print("\nReceived a patient's appointment date & time:", datetime)
 
         # do the actual work
-            result = getAvailDoctors(datetime)
+            result = getAvailabilityByDateTime(datetime)
             return result, result["code"]
 
         except Exception as e:
@@ -167,7 +169,8 @@ def getAvailDoctorsbyDatetime(datetime):
         "message": "Invalid JSON input: " + str(request.get_data())
     }), 400
 
+
 if __name__ == '__main__':
     print("This is flask " + os.path.basename(__file__) +
-        " for matching a doctor to the patient...")
+          " for matching a doctor to the patient...")
     app.run(host='0.0.0.0', port=5002, debug=True)
