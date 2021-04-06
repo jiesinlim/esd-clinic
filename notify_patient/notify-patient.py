@@ -111,8 +111,10 @@ def updateConfirmDetails(appt_id,patient_name,email,appt_time):
     notification_details = json.dumps(notify_patient)
 
     print(notification_details)
-    notification = invoke_http(notification_URL, method='PATCH', json=notification_details)
-    print('Notification result:', notification)
+ #notification = invoke_http(notification_URL, method='PATCH', json=notification_details)
+    if(updateStatus["code"] in range(200, 300)):
+        amqp_setup.channel.basic_publish(exchange=amqp_setup.notification, routing_key="send.email", 
+        body=notification_details, properties=pika.BasicProperties(delivery_mode = 2))
 
 if __name__ == '__main__':
     print("This is flask for " + os.path.basename(__file__) +
