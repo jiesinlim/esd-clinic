@@ -14,31 +14,28 @@ app = Flask(__name__)
 CORS(app)
 
 #update appointment status from matched to confirmed
-appointment_URL = environ.get('appointment_URL') or "http://127.0.0.1:5005/appointment/"
+matched_URL = environ.get('matched_URL') or "http://127.0.0.1:5005/appointment/status/matched" 
 
 #send patient_name, email, appointment_time to notification.py
-notification_url = environ.get('notification_URL') or "http://127.0.0.1:5003/notification/" 
+notification_url = environ.get('notification_URL') or "http://127.0.0.1:5003/notification" 
 
-@app.route("/notify-patient", methods=['PATCH'])
-def updateConfirmDetails():
-    if request.is_json:
-        try: 
-            appointment = request.get_json()
-            print("\nReceived a status update in JSON:", appointment)
+@app.route("/confirm/all", methods=['GET'])
+def displayMatchedAppts():
+    # Invoke the appointment microservice
+    print('\n-----Invoking appointments microservice-----')
+    try:
+    # do the actual work
+        result = getMatchedAppts()
+        return result, result["code"]
 
-            result = updateStatus(appointment)
-            print('\n------------------------')
-            print('\nresult: ', result)
-            return jsonify(result), result["code"]
+    except Exception as e:
+        # Unexpected error in code
+        pass
 
-        except Exception as e:
-            # Unexpected error in code
-            print(str(e))
-
-            return jsonify({
-                "code": 500,
-                "message": "notify-patient.py internal error"
-            }), 500
+        return jsonify({
+            "code": 500,
+            "message": "appointment.py internal error"
+        }), 500
 
     # if reached here, not a JSON request.
     return jsonify({
@@ -46,31 +43,76 @@ def updateConfirmDetails():
         "message": "Invalid JSON input: " + str(request.get_data())
     }), 400
 
-#This function updates status of appointments
+def getMatchedAppts():
+    print('\n-----Invoking appt microservice-----')
+    matchedAppts = invoke_http(matched_URL, method='GET')
+    print('Matched Appts:', matchedAppts)
+    return matchedAppts
 
-def updateStatus(updatedStatus):
-    print('\n-----Invoking appointment microservice-----')
-    status_result = invoke_http(
-        appointment_URL, method='PATCH', json=updatedStatus)
-    print('Status results:', status_result)
+@app.route("/confirm/confirmAppts", methods = ['PATCH'])
+def confirm_appointments():
+    if request.is_json:
+        try:
+            data = request.get_json()
 
-    #Check the result; if a failure send it to the error microservice
-    code = status_result["code"]
-    message = json.dumps(status_result)
+            patient_name = data['patient_name']
+            email = data['email']
+            appt_time = data['appointment_time']
+            appt_id = data['appointment_id']
 
-    if code not in range(200, 300):
-        print('\n\n-----Publishing the (appointment error) message-----')
+            # do the actual work
+            result = updateConfirmDetails(appt_id,patient_name,email,appt_time)
+            return result, result["code"]
 
-        return {
-            "code": 500,
-            "data": {"appointment_result": status_result},
-            "message": "Appointment update failure sent for error handling."
-        }
+        except Exception as e:
+            pass  # do nothing.
 
-    else:
-        print('\n\n-----All is good-----')
-        return status_result
+        # if reached here, not a JSON request.
+        return jsonify({
+            "code": 400,
+            "message": "Invalid JSON input: " + str(request.get_data())
+        }), 400
 
+def updateConfirmDetails(appt_id,patient_name,email,appt_time):
+    # Invoke the appointment microservice
+
+    print('\n-----Invoking appointments microservice-----')
+
+    details = {
+            "NRIC": "",
+            "aid": "",
+            "appointment_date": "",
+            "appointment_id": appt_id,
+            "appointment_time": "",
+            "contact_number": "",
+            "did": "",
+            "doctor_name": "",
+            "email": "",
+            "gender": "",
+            "patient_name": "",
+            "room_no": "",
+            "status": "confirmed"
+            }
+
+    appt_details = json.dumps(details)
+
+    print(appt_details)
+    updateStatus = invoke_http(matched_URL, method='PATCH', json=appt_details)
+    print('Update result:', updateStatus)
+
+    print('\n-----Invoking notification microservice-----')
+
+    notify_patient = {
+            "patient_name": patient_name,
+            "email": email,
+            "appointment_time": appt_time
+            }
+
+    notification_details = json.dumps(notify_patient)
+
+    print(notification_details)
+    notification = invoke_http(notification_URL, method='PATCH', json=notification_details)
+    print('Notification result:', notification)
 
 if __name__ == '__main__':
     print("This is flask for " + os.path.basename(__file__) +

@@ -84,7 +84,7 @@
           <thead class="table-info">
             <tr>
               <th scope="col">Appointment ID</th>
-              <th scope="col">Patient NRIC</th>
+              <th scope="col">Patient Name</th>
               <th scope="col">Appointment Date</th>
               <th scope="col">Appointment Time</th>
               <th scope="col">Appointed Doctor ID</th>
@@ -104,7 +104,7 @@
               <td>{{ record.did }}</td>
               <td>{{ record.doctor_name }}</td>
               <td>{{ record.status }}</td>
-              <td><button class="btn btn-success" data-toggle="modal" data-target="#confirmModal">Confirm</button></td>
+              <td><button class="btn btn-success" data-toggle="modal" data-target="#confirmModal" @click="updateConfirmDetails(index)">Confirm</button></td>
             </tr>
           </tbody>
         </table>
@@ -133,10 +133,12 @@
         </button>
       </div> -->
       <div class="modal-body mt-4">
-        <h5 class="font-weight-bold text-center">You have successfully confirmed this appointment!</h5>
+        <h5 class="font-weight-bold text-center">You have successfully confirmed this appointment!<br> A notification has been sent to the patient! </h5><br>
+          Patient's Name: {{ selectedAppt[0] }} <br>
+          Appointed Doctor: {{ selected }} <br>
+          Appointment Date: {{ selectedAppt[1] }} <br>
+          Appointment Time: {{ selectedAppt[2] }} <br><br><br>
       </div>
-      <div class="modal-footer mx-auto">
-        <button type="button" class="btn btn-primary" @click="updateConfirmDetails">Notify Patient</button>
       </div>
     </div>
   </div>
