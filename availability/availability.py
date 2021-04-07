@@ -128,9 +128,6 @@ def update_doctor():
     #     # aid = request.json.get('aid', None)
     # if availability:
         data = request.get_json()
-        print(type(data))
-        data = json.loads(data)
-        print(type(data))
 
         aid = data['aid']
         availability = Availability.query.filter_by(aid=aid).first()
@@ -224,10 +221,7 @@ def find_by_appointmentslot(appointment):
 def remove_timeslot():
     if request:
         data = request.get_json()
-        print(type(data))
-
         data = json.loads(data)
-        # print(type(data))
 
         aid = data['aid']
         availability = Availability.query.filter_by(aid=aid).first()

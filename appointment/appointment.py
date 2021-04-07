@@ -181,7 +181,6 @@ def add_new_appointment():
 def change_appointment_details():
     if request:
         data = request.get_json()
-        data = json.loads(data)
 
         appointment_id = data['appointment_id']
         appointment = Appointments.query.filter_by(appointment_id=appointment_id).first()
