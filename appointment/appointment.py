@@ -295,7 +295,9 @@ def get_appointments_by_status(status):
 # # -------------------------------------------------
 @app.route("/appointment/nextday/<string:date>")
 def get_appointments_by_next_day(date):
-    appointments = Appointments.query.filter(Appointments.appointment_date.like(date)).all()
+    # appointments = Appointments.query.filter(Appointments.appointment_date.like(date)).all()
+    status = "matched"
+    appointments = Appointments.query.filter(Appointments.appointment_date.like(date), Appointments.status.like(status)).all()
 
     if appointments:
         return jsonify(
