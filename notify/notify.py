@@ -17,13 +17,7 @@ app = Flask(__name__)
 CORS(app)
 
 #get next day appts
-matched_URL = environ.get('matched_URL') or "http://127.0.0.1:5005/appointment/nextday/" 
-
-#update appointment status from matched to confirmed
-confirm_URL = environ.get('confirm_URL') or "http://127.0.0.1:5005/appointment" 
-
-#send patient_name, email, appointment_time to notification.py
-#notification_url = environ.get('notification_URL') or "http://127.0.0.1:5003/notification" 
+appointment_URL = environ.get('appointment_URL') or "http://127.0.0.1:5005/appointment" 
 
 @app.route("/confirm/<string:date>", methods=['GET'])
 def displayMatchedAppts(date):
@@ -52,7 +46,7 @@ def displayMatchedAppts(date):
 
 def getMatchedAppts(date):
     print('\n-----Invoking appt microservice-----')
-    matchedAppts = invoke_http(matched_URL + str(date), method='GET')
+    matchedAppts = invoke_http(appointment_URL + '/nextday/' + str(date), method='GET')
     print('Matched Appts:', matchedAppts)
     return matchedAppts
 
@@ -115,7 +109,7 @@ def updateConfirmDetails(data):
     appt_details = json.dumps(details)
 
     print(appt_details)
-    updateStatus = invoke_http(confirm_URL, method='PATCH', json=appt_details)
+    updateStatus = invoke_http(appointment_URL, method='PATCH', json=appt_details)
     print('Update result:', updateStatus)
 
     print('\n-----Invoking notification microservice-----')
