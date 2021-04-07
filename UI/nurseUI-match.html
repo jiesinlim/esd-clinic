@@ -121,7 +121,7 @@
                   </option>
                 </select> 
                </td>
-               <td class='text-danger' v-else>there are no doctors {{ noDrs }}</td>
+               <td class='text-danger' v-else>{{ noDrs }}</td>
               <td> {{ record.status }} </td>
               <td><button class="btn btn-success" @click="successfulMatch" data-toggle="modal" data-target="#matchedModal">Match</button> </td>
             </tr>

@@ -106,7 +106,7 @@
             <tr v-for="(record,index) in appointments" class="table-light">
               <th scope="row"> {{ record.appointment_id }} </th>
               <td>{{ record.patient_name }}</td>
-              <td> {{ record.appointment_date }} </td>
+              <td> {{ date[index] }} </td>
               <td> {{ record.appointment_time }} </td>
               <td>{{ record.did }}</td>
               <td>{{ record.doctor_name }}</td>
@@ -130,7 +130,7 @@
 
     <!-- Modal -->
     <!-- display success/error alert with if condition -->
-<div class="modal fade" id="confirmModal" @close='closeModal' tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
+<div v-if='showModal' class="modal fade" id="confirmModal" @click='closeModal' tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content" style="background-color:rgb(207, 252, 226);">
       <!-- <div class="modal-header">
@@ -140,11 +140,12 @@
         </button>
       </div> -->
       <div class="modal-body mt-4 text-center">
-        <h5 class="font-weight-bold ">You have successfully confirmed this appointment!<br> A notification has been sent to the patient! </h5><br>
-          Patient's Name: {{ confirm.patient_name }} <br>
-          Appointed Doctor: {{ confirm.doctor_name }} <br>
-          Appointment Date: {{ confirm.appointment_date }} <br>
-          Appointment Time: {{ confirm.appointment_time }} <br><br><br>
+        <h4 class="font-weight-bold ">You have successfully confirmed this appointment!</h4><br>
+        <h5>A notification has been sent to the patient!</h5><br>
+          Patient's Name: {{ appointments[index].patient_name }} <br>
+          Appointed Doctor: {{ appointments[index].doctor_name }} <br>
+          Appointment Date: {{ date[index] }} <br>
+          Appointment Time: {{ appointments[index].appointment_time }} <br><br><br>
       </div>
       </div>
     </div>

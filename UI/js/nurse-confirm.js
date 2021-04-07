@@ -16,9 +16,10 @@ var app = new Vue({
     data: {
         message: "There is a problem retrieving appointment data, please try again later.",
         "appointments": [],
+        index: 0,
         showModal: false,
         modalTitle: "Appointment has been successfully confirmed!",
-        'confirm': {}
+        "date": []
     },
     methods: {
         getMatchedAppointments: function () {
@@ -40,7 +41,13 @@ var app = new Vue({
                             this.message = data.message;
                         } else {
                             this.appointments = data.data.appointments;
+                            if (this.appointments) {
+                                for (var patient of this.appointments) {
+                                    this.date.push(new Date(patient.appointment_date).toDateString());
+                                }
                             }
+
+                        }
                       
                     })
                     
@@ -53,13 +60,16 @@ var app = new Vue({
         },
         updateConfirmDetails: function (index) {
             console.log(index);
-            this.confirm.patient_name = this.appointments[index].patient_name;
-            this.confirm.doctor_name = this.appointments[index].doctor_name;
-            this.confirm.appointment_date = this.appointments[index].appointment_date;
-            this.confirm.appointment_time = this.appointments[index].appointment_time;
+            this.index = index;
+            // this.confirm.patient_name = this.appointments[index].patient_name;
+            // this.confirm.doctor_name = this.appointments[index].doctor_name;
+            // this.confirm.appointment_date = this.date[index];
+            // this.confirm.appointment_time = this.appointments[index].appointment_time;
 
             // this.confirm.email = this.appointments[index].email;
             // this.confirm.appointment_id = this.appointments[index].appointment_id;
+
+            this.showModal = true;
 
             let jsonData = JSON.stringify(
                 {
@@ -85,8 +95,7 @@ var app = new Vue({
                             // no appointment in db
                             this.message = data.message;
                         } else {
-                            //reload page
-                           
+                            
                             console.log("notification successfully sent to patient!");
                         }
                     })
