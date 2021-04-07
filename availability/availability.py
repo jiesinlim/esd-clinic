@@ -224,6 +224,10 @@ def find_by_appointmentslot(appointment):
 def remove_timeslot():
     if request:
         data = request.get_json()
+        print(type(data))
+
+        data = json.loads(data)
+        # print(type(data))
 
         aid = data['aid']
         availability = Availability.query.filter_by(aid=aid).first()
@@ -242,8 +246,6 @@ def remove_timeslot():
 
             if data['did']:
                 availability.did = data['did']
-            if data['doctor_name']:
-                availability.doctor_name = data['doctor_name']
             if data['date']:
                 availability.date = data['date']
             if data['availability']:

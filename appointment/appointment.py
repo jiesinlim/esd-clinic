@@ -324,10 +324,10 @@ def get_appointments_by_next_day(date):
 def update_appointment_details():
     if request:
         data = request.get_json()
+        data = json.loads(data)
 
         appointment_id = data['appointment_id']
-        appointment = Appointments.query.filter_by(
-            appointment_id=appointment_id).first()
+        appointment = Appointments.query.filter_by(appointment_id=appointment_id).first()
 
         if appointment:
             if data['appointment_date']:

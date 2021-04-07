@@ -51,7 +51,7 @@ def updateMatchDetails(data):
                 "NRIC": "",
                 "aid": "",
                 "appointment_date": "",
-                "appointment_id": appt_id,
+                "appointment_id": int(appt_id),
                 "appointment_time": "",
                 "contact_number": "",
                 "did": int(doc_id),
@@ -65,7 +65,7 @@ def updateMatchDetails(data):
 
     appt_details = json.dumps(details)
     # print(type(appt_details))
-    assignDoctor = invoke_http(appointment_URL, method='PATCH', json=appt_details)
+    assignDoctor = invoke_http(f'{appointment_URL}/update', method='PATCH', json=appt_details)
     print('Match result:', assignDoctor)
 
 
