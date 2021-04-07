@@ -101,6 +101,8 @@ services:
       - appointment
       - rabbitmq
     environment:
+      rabbit_host: rabbitmq
+      rabbit_port: 5672
       appointment_URL: http://appointment:5005/appointment
       PYTHONUNBUFFERED: 1
     ports:
