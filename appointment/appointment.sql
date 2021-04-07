@@ -43,9 +43,9 @@ INSERT INTO `appointment` (`appointment_id`,`NRIC`, `patient_name`,`gender`,`con
 (2, 'T1234567I', 'Reuben','M','83476123', 'reuben234@yahoo.com', '2021-04-09', '1600', NULL , NULL , NULL, 'booked', NULL),
 (3, 'S1234567J', 'Jasmine','F','98374986', 'jasmine345@hotmail.com', '2021-04-10', '1000', NULL , NULL , NULL, 'booked', NULL),
 (4, 'S9234567I', 'Amelia','F','81097192', 'amelia456@abc.com', '2021-04-11', '1300', NULL , NULL , NULL, 'booked', NULL),
-(5, 'S9743227O', 'John','M','98334556', 'john567@xyz.com', '2021-04-09', '1800', NULL , NULL , NULL, 'booked', NULL);
-(6, 'T0188492K', 'Kelvin','M','89345782', 'kelvin557@xyz.com', '2021-04-08', '2000', NULL , NULL , NULL, 'booked', NULL);
-(7, 'S3445023L', 'Melissa','F','88334569', 'melissa569@xyz.com', '2021-04-12', '1400', NULL , NULL , NULL, 'booked', NULL);
+(5, 'S9743227O', 'John','M','98334556', 'john567@xyz.com', '2021-04-09', '1800', NULL , NULL , NULL, 'booked', NULL),
+(6, 'T0188492K', 'Kelvin','M','89345782', 'kelvin557@xyz.com', '2021-04-08', '2000', NULL , NULL , NULL, 'booked', NULL),
+(7, 'S3445023L', 'Melissa','F','88334569', 'melissa569@xyz.com', '2021-04-12', '1400', NULL , NULL , NULL, 'booked', NULL),
 (8, 'S9543245P', 'Jolin','F','93458900', 'jolin234@xyz.com', '2021-04-12', '1600', NULL , NULL , NULL, 'booked', NULL);
 
 COMMIT;
