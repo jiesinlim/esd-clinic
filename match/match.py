@@ -140,7 +140,10 @@ def match_doctor():
             result = updateMatchDetails(data)
             print('\n------------------------')
             print('\nresult: ', result)
-            return result, result["code"]
+            return jsonify({
+                "code": 200,
+                "message": "Matched"
+            }), 200
 
         except Exception as e:
             # Unexpected error in code
