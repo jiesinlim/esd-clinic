@@ -99,6 +99,7 @@ services:
     depends_on:
       - notification
       - appointment
+      - rabbitmq
     environment:
       appointment_URL: http://appointment:5005/appointment
       PYTHONUNBUFFERED: 1
