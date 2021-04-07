@@ -94,37 +94,39 @@
   <section id="intro">
     <div class="intro-content" id='app'>
       <h2 style="font-size:xx-large;"><span>View All </span>Patient Appointments</h2>
-      <div class="table-responsive">
-        <table class="table table-hover table-bordered" v-if="hasAppointments">
-          <thead class="table-info">
-            <tr>
-              <th scope="col">Appointment ID</th>
-              <th scope="col">Patient Name</th>
-              <th scope="col">Appointment Date</th>
-              <th scope="col">Appointment Time</th>
-              <th scope="col">Doctor ID</th>
-              <th scope="col">Doctor Name</th>
-              <th scope="col">Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(record, index) in appointments" class="table-light">
-              <th scope="row"> {{ record.appointment_id }} </th>
-              <td>{{ record.patient_name }}</td>
-              <td> {{ date[index] }} </td>
-              <td> {{ record.appointment_time }} </td>
-              <td>{{ record.did }}</td>
-              <td>{{ record.doctor_name }}</td>
-              <td> {{ record.status }} </td>
-            </tr>
-            
-          </tbody>
-        </table>
+      <div class="container"><!-- container START-->
+        <div class="table-responsive">
+          <table class="table table-hover table-bordered" v-if="hasAppointments">
+            <thead style="background-color: #0c2e8a; color: white">
+              <tr>
+                <th scope="col">Appointment ID</th>
+                <th scope="col">Patient Name</th>
+                <th scope="col">Appointment Date</th>
+                <th scope="col">Appointment Time</th>
+                <th scope="col">Doctor ID</th>
+                <th scope="col">Doctor Name</th>
+                <th scope="col">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(record, index) in appointments" class="table-light">
+                <th scope="row"> {{ record.appointment_id }} </th>
+                <td>{{ record.patient_name }}</td>
+                <td> {{ date[index] }} </td>
+                <td> {{ record.appointment_time }} </td>
+                <td>{{ record.did }}</td>
+                <td>{{ record.doctor_name }}</td>
+                <td> {{ record.status }} </td>
+              </tr>
 
-        <div class="text-danger" v-else>{{ message }}</div> <!-- Error message if can't get data from microservice-->
-      </div>
+            </tbody>
+          </table>
 
-<!-- 
+          <div class="text-danger" v-else>{{ message }}</div> <!-- Error message if can't get data from microservice-->
+        </div>
+        </div> <!-- Container END-->
+
+        <!-- 
       <div v-if='showModal' id="matchedModal" class="modal" tabindex="-1" role="dialog" @click='updateMatchDetails'>
         <transition name='modal'>
           <div class='modal-mask'>
@@ -152,20 +154,20 @@
           </div>
         </transition>
       </div> -->
-    </div>
+      </div>
 
-    <div id="intro-carousel" class="owl-carousel">
-      <div class="item" style="background-image: url('img/intro-carousel/1.jpg');"></div>
-      <div class="item" style="background-image: url('img/intro-carousel/2.jpg');"></div>
-      <div class="item" style="background-image: url('img/intro-carousel/3.jpg');"></div>
-      <div class="item" style="background-image: url('img/intro-carousel/4.jpg');"></div>
-      <div class="item" style="background-image: url('img/intro-carousel/5.jpg');"></div>
-    </div>
+      <div id="intro-carousel" class="owl-carousel">
+        <div class="item" style="background-image: url('img/intro-carousel/1.jpg');"></div>
+        <div class="item" style="background-image: url('img/intro-carousel/2.jpg');"></div>
+        <div class="item" style="background-image: url('img/intro-carousel/3.jpg');"></div>
+        <div class="item" style="background-image: url('img/intro-carousel/4.jpg');"></div>
+        <div class="item" style="background-image: url('img/intro-carousel/5.jpg');"></div>
+      </div>
 
   </section>
   <!-- #intro -->
 
- 
+
   <a href="#" class="back-to-top"><i class="fa fa-chevron-up"></i></a>
 
   <!-- JavaScript Libraries -->

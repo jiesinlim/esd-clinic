@@ -94,9 +94,10 @@
   <section id="intro">
     <div class="intro-content" id='app'>
       <h2 style="font-size:xx-large;"><span>Match </span>Patient Appointments</h2>
+      <div class="container"> <!-- container START-->
       <div class="table-responsive">
         <table class="table table-hover table-bordered" v-if="hasAppointments">
-          <thead class="table-info">
+          <thead style="background-color: #0c2e8a; color: white">
             <tr>
               <th scope="col">Appointment ID</th>
               <th scope="col">Patient Name</th>
@@ -123,7 +124,7 @@
                </td>
                <td class='text-danger' v-else>{{ noDrs }}</td>
               <td> {{ record.status }} </td>
-              <td><button class="btn btn-success" @click="successfulMatch" data-toggle="modal" data-target="#matchedModal">Match</button> </td>
+              <td><button class="btn btn-blue" @click="successfulMatch" data-toggle="modal" data-target="#matchedModal">Match</button> </td>
             </tr>
             
           </tbody>
@@ -131,6 +132,7 @@
 
         <div class="text-danger" v-else>{{ message }}</div> <!-- Error message if can't get data from microservice-->
       </div>
+      </div> <!-- Container END-->
 
 
       <div v-if='showModal' id="matchedModal" class="modal" tabindex="-1" role="dialog" @click='updateMatchDetails'>
