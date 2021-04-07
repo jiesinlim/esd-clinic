@@ -26,7 +26,7 @@ var app = new Vue({
             // on Vue instance created, load the appointment list
 
             var tomorrow = new Date();
-            tomorrow.setDate(day.getDate() + 1);
+            tomorrow.setDate(tomorrow.getDate() + 1);
             tomorrow = tomorrow.toISOString().slice(0,10);
 
             // var tomorrow = "2021-03-21";  // dummy variable for testing
