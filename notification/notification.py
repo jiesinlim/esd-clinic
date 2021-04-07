@@ -1,5 +1,6 @@
 #From flask import Flask, request, jsonify
 from os import environ
+import requests
 import json
 import os
 import amqp_setup
