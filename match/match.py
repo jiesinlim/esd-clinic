@@ -68,25 +68,22 @@ def updateMatchDetails(data):
     assignDoctor = invoke_http(appointment_URL, method='PATCH', json=appt_details)
     print('Match result:', assignDoctor)
 
-    # get doctors by aid
-    # print('\n-----Invoking doctor microservice-----')
-    # doctor_details = invoke_http(doctor_URL + str(avail_id), method='GET')
-    # print('assigned doctor result:', doctor_details)
+
 
     # handle doctor availability 
     print('\n-----Invoking availability microservice-----')
 
-    time_array = doc_currentavail.split(", ")
-    print(time_array)
-    time_array.remove(time)
-    newAvailability = ', '.join([str(slot) for slot in time_array])
-    print(newAvailability)
+    # time_array = doc_currentavail.split(", ")
+    # print(time_array)
+    # time_array.remove(time)
+    # newAvailability = ', '.join([str(slot) for slot in time_array])
+    # print(newAvailability)
     avail_obj = {
                     "aid": avail_id,
-                    "availability": newAvailability,
+                    "availability": doc_currentavail,
                     "date": "",
                     "did": "",
-                    "doctor_name": ""
+                    "timeslot": time
                 }
 
     new_avail = json.dumps(avail_obj)
@@ -96,7 +93,7 @@ def updateMatchDetails(data):
     # update doctor(specific avail_id) availability
     # Invoke the doctor microservice
 
-    updateAvailability = invoke_http(doctor_URL, method='PATCH', json=new_avail)
+    updateAvailability = invoke_http(f'{doctor_URL}/timeslot', method='PATCH', json=new_avail)
     print('updated timeslot result:', updateAvailability)
     # result = f"Successfully assigned doctor: {assignDoctor}, Successfully updated doctor's availability: {updateAvailability}"
     return assignDoctor, updateAvailability
@@ -160,60 +157,6 @@ def match_doctor():
         "message": "Invalid JSON input: " + str(request.get_data())
     }), 400
 
-
-
-# @app.route("/nurse/<string:pid>", methods=['PATCH'])
-# def match_doctor(pid):
-#     patient = Patient.query.filter_by(pid=pid).first()
-#     if patient:
-#         data = request.get_json()
-#         if data['doctor_name']:
-#             patient.doctor_name = data['doctor_name']
-#         if data['did']:
-#             patient.did = data['did']
-#         if data['doctor_name'] and data['did']:
-#             patient.status = "Matched" 
-#         db.session.commit()
-#         return jsonify(
-#             {
-#                 "code": 200,
-#                 "data": patient.json()
-#             }
-#         )
-#     return jsonify(
-#         {
-#             "code": 404,
-#             "data": {
-#                 "pid": pid
-#             },
-#             "message": "Patient not found in booked appointments."
-#         }  
-#     ), 404
-
-
-# @app.route("/nurse/confirm", methods=['PATCH'])
-# def confirm(pid):  #confirm and notify using AMQP
-#     patient = Patient.query.filter_by(pid=pid).first()
-#     if patient:
-#         data = request.get_json()  #returns data of  "confirm" when nurse clicks confirm
-#         if patient.status == "Matched" and data == "confirm":
-#             patient.status = "Confirmed" 
-#         db.session.commit()
-#         return jsonify(
-#             {
-#                 "code": 200,
-#                 "data": patient.json()
-#             }
-#         )
-#     return jsonify(
-#         {
-#             "code": 404,
-#             "data": {
-#                 "pid": pid
-#             },
-#             "message": "Patient not found in matched appointments."
-#         }  
-#     ), 404
 
 
 if __name__ == '__main__':
