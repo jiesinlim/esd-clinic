@@ -220,6 +220,52 @@ def find_by_appointmentslot(appointment):
     ), 404
 
 
+@app.route("/availability/timeslot", methods=['PATCH'])
+def remove_timeslot():
+    if request:
+        data = request.get_json()
+
+        aid = data['aid']
+        availability = Availability.query.filter_by(aid=aid).first()
+
+        timeslot = data['timeslot']
+        availability_timeslots = data['availability']
+
+        #remove booked timeslot from availability
+        availability_array = availability_timeslots.split(", ")
+        availability_array.remove(timeslot)
+
+        #connect back as a string
+        availability_timeslots = ', '.join([str(slot) for slot in availability_array])
+
+        if availability:
+
+            if data['did']:
+                availability.did = data['did']
+            if data['doctor_name']:
+                availability.doctor_name = data['doctor_name']
+            if data['date']:
+                availability.date = data['date']
+            if data['availability']:
+                availability.availability = availability_timeslots
+            db.session.commit()
+            return jsonify(
+                {
+                    "code": 200,
+                    "data": availability.json()
+                }
+            )
+    return jsonify(
+        {
+            "code": 404,
+            "data": {
+                "aid": aid
+            },
+            "message": "Doctor availability ID not found."
+        }
+    ), 404
+
+
 if __name__ == '__main__':
     print("This is flask for " + os.path.basename(__file__) +
           ": doctor availability ...")
