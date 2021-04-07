@@ -23,7 +23,7 @@ matched_URL = environ.get('matched_URL') or "http://127.0.0.1:5005/appointment/n
 confirm_URL = environ.get('confirm_URL') or "http://127.0.0.1:5005/appointment" 
 
 #send patient_name, email, appointment_time to notification.py
-notification_url = environ.get('notification_URL') or "http://127.0.0.1:5003/notification" 
+#notification_url = environ.get('notification_URL') or "http://127.0.0.1:5003/notification" 
 
 @app.route("/confirm/<string:date>", methods=['GET'])
 def displayMatchedAppts(date):
@@ -131,7 +131,7 @@ def updateConfirmDetails(data):
     print(notification_details)
     #notification = invoke_http(notification_URL, method='PATCH', json=notification_details)
     if(updateStatus["code"] in range(200, 300)):
-        amqp_setup.channel.basic_publish(exchange=amqp_setup.notification, routing_key="send.email", 
+        amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="send.email", 
         body=notification_details, properties=pika.BasicProperties(delivery_mode = 2)) 
 
 if __name__ == '__main__':

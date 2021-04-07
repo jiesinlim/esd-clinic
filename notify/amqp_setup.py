@@ -20,8 +20,8 @@ connection = pika.BlockingConnection(
     # - Use the Docker version of RabbitMQ instead: https://www.rabbitmq.com/download.html
 channel = connection.channel()
 # Set up the exchange if the exchange doesn't exist
-exchangename="notification"
-exchangetype="direct"
+exchangename="email"
+exchangetype="topic"
 channel.exchange_declare(exchange=exchangename, exchange_type=exchangetype, durable=True)
     # 'durable' makes the exchange survive broker restarts
 
@@ -35,7 +35,7 @@ channel.queue_declare(queue=queue_name, durable=True)
     # 'durable' makes the queue survive broker restarts
 
 #bind Notification queue
-channel.queue_bind(exchange=exchangename, queue=queue_name, routing_key='send.email') 
+channel.queue_bind(exchange=exchangename, queue=queue_name, routing_key='#') 
     # bind the queue to the exchange via the key
     
 
