@@ -78,7 +78,7 @@
       <h2>Clinic <span>Appointment</span><br>Booking System</h2>
       <div>
        
-        <a href="#app1" class="btn-get-started scrollto">Book an Appointment</a>
+        <a href="./patientUI.html" class="btn-get-started scrollto">Book an Appointment</a>
         <br>
         <a href="./patientUI.html" class="btn-get-started scrollto">Check Appointment Details</a>
         <br><br>
@@ -94,99 +94,6 @@
     </div>
 
   </section><!-- #intro -->
-
-  <!--==========================
-    Book an Appointment Form section
-  ============================-->
-  <div id="app1"> 
-    <section id="call-to-action" class="wow fadeInUp" > <!-- Book an Appointment section START -->
-      <div class="container">  <!-- Container START-->
-        <div class="row justify-content-center"> <!-- Row START-->
-          <h3 class="cta-title">Book an Appointment</h3>
-          <table class="table borderless">
-            <thead>
-              <tr>
-                <td class="form-group justify-content-center">
-                  <label for="fullname" class="cta-text">Full Name (As per NRIC)</label>
-                  <input v-model="newFullname" type="text" class="form-control" id="fullname" placeholder="Enter Full Name">
-                </td>
-              </tr>
-              <tr>
-                <td class="form-group">
-                  <label for="nric" class="cta-text">NRIC</label>
-                  <input v-model="newNRIC" type="text" class="form-control" id="nric" placeholder="Enter NRIC">
-                </td>
-              </tr>
-              <tr>
-                <td class="form-group">
-                  <label for="gender" class="cta-text">Gender</label>
-                    <div class="form-check form-check-inline">
-                      <input v-model="selected_gender" class="cta-text form-check-input" type="radio" name="gender" id="male" value="male">
-                      <label class="cta-text form-check-label" for="male">Male</label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                      <input v-model="selected_gender" class="cta-text form-check-input" type="radio" name="gender" id="female" value="female">
-                      <label class="cta-text form-check-label" for="female">Female</label>
-                    </div>
-                </td>
-              </tr>
-              <tr>
-                <td class="form-group">
-                  <label for="contact_number" class="cta-text">Contact Number</label>
-                  <input v-model="newContactNumber" type="number" class="form-control" id="contact_number" placeholder="Enter Contact Number">
-                </td>
-              </tr>
-              <tr>
-                <td class="form-group">
-                  <label for="email" class="cta-text">Email Address</label>
-                  <input v-model="newEmail" type="email" class="form-control" id="email" placeholder="johndoe@gmail.com">
-                </td>
-              </tr>
-              <tr>
-                <td class="form-group">
-                  <label for="selected_date" class="cta-text">Appointment Date</label>
-                  <input v-model="newAppointmentDate" @change="get_avail_time_by_date" type="date" class="form-control" id="selected_date">
-                  <span class="text-danger justify-content-center" v-if="no_avail_time">
-                    There is no available time for this date, please select another date.<br>
-                  </span>
-                </td>
-              </tr>
-              <tr>
-                <td class="form-group">
-                  <label for="available_time" class="cta-text">Appointment Time</label>
-                  <select v-model="newAppointmentTime" type="text" class="form-control" id="available_time">
-                    <option v-for="each_time in all_available_time_array">{{each_time}}</option>
-                </td>
-              </tr>
-            </thead>
-          </table>
-        </div> <!-- Row END-->
-
-        <!-- Add Availability Button-->
-        <div class="row justify-content-center">
-          <button @click="addAppointment" class="btn btn-outline-light" v-on:submit.prevent="onSubmit">Book
-            Appointment</button>
-        </div> 
-
-        <!-- Status messages about adding appointment -->
-        <div class="row mt-4 justify-content-center">
-          <div class="text-success" v-if="appointmentAdded">
-            {{ statusMessage }} <br>
-          </div>
-        </div>
-
-        <!-- Status messages about adding appointment ERROR-->
-        <div class="row mt-4 justify-content-center">
-          <div class="text-danger" v-if="addAppointmentError!=''">
-            {{ statusMessage }}<br>
-            {{ addAppointmentError}}
-            <br>
-          </div>
-        </div>
-
-      </div> <!-- Container END-->
-    </section> <!-- Add Availability Section END -->
-</div><!-- app1: container END -->
 
     <!--==========================
       Services Section
