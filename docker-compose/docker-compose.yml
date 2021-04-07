@@ -8,20 +8,20 @@ volumes:
   rabbitmq_data:
 
 services:
-  #################################
-  # Availability
-  #################################
-  availability:
-    build:
-      context: ./
-      dockerfile: availability/availability.Dockerfile
-    image: marcsoh/availability:latest
-    restart: always
-    environment:
-      dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/availability
-      PYTHONUNBUFFERED: 1
-    ports:
-      - "5001:5001"
+  # #################################
+  # # Availability
+  # #################################
+  # availability:
+  #   build:
+  #     context: ./
+  #     dockerfile: availability/availability.Dockerfile
+  #   image: marcsoh/availability:latest
+  #   restart: always
+  #   environment:
+  #     dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/availability
+  #     PYTHONUNBUFFERED: 1
+  #   ports:
+  #     - "5001:5001"
 
   ###############################################
   # Appointment
@@ -29,7 +29,7 @@ services:
   appointment:
     build:
       context: ./
-      dockerfile: appointment/appointment.Dockerfile
+      dockerfile: ./appointment.Dockerfile
     image: marcsoh/appointment:latest
     restart: always
     environment:
@@ -41,21 +41,21 @@ services:
   ###############################################
   # Match
   ###############################################
-  match:
-    build:
-      context: ./
-      dockerfile: match/match.Dockerfile
-    image: marcsoh/match:latest
-    restart: always
-    depends_on:
-      - availability
-      - appointment
-    environment:
-      availability_URL: http://availability:5001/availability
-      appointment_URL: http://appointment:5005/appointment
-      PYTHONUNBUFFERED: 1
-    ports:
-      - "5002:5002"
+  # match:
+  #   build:
+  #     context: ./
+  #     dockerfile: match/match.Dockerfile
+  #   image: marcsoh/match:latest
+  #   restart: always
+  #   depends_on:
+  #     - availability
+  #     - appointment
+  #   environment:
+  #     availability_URL: http://availability:5001/availability
+  #     appointment_URL: http://appointment:5005/appointment
+  #     PYTHONUNBUFFERED: 1
+  #   ports:
+  #     - "5002:5002"
 
   ####################################
   # RabbitMQ: The messaging broker   
@@ -76,7 +76,7 @@ services:
   notification:
     build:
       context: ./
-      dockerfile: notification/notification.Dockerfile
+      dockerfile: ./notification.Dockerfile
     image: marcsoh/notification:latest
     restart: always
     depends_on:
@@ -93,7 +93,7 @@ services:
   notify:
     build:
       context: ./
-      dockerfile: notify/notify.Dockerfile
+      dockerfile: ./notify.Dockerfile
     image: marcsoh/notify:latest
     restart: always
     depends_on:
