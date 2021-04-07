@@ -256,11 +256,12 @@ var app1 = new Vue({
             this.editDate ="";
             this.editTime ="";
         },
-        editAppointmentDateTime: function(appointment){
+        editAppointmentDateTime: function(){
             //reset data
             this.editAppointmentError = "";
 
             let jsonData = JSON.stringify({
+                appointment_id: this.editCurrentAppointment.appointment_id,
                 NRIC: this.editCurrentAppointment.NRIC,
                 aid: this.editCurrentAppointment.aid,
                 appointment_date: this.editDate, //Edited Date
