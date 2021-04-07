@@ -13,29 +13,33 @@ import json
 app = Flask(__name__)
 CORS(app)
 
+#get next day appts
+matched_URL = environ.get('matched_URL') or "http://127.0.0.1:5005/appointment/nextday/" 
+
 #update appointment status from matched to confirmed
-matched_URL = environ.get('matched_URL') or "http://127.0.0.1:5005/appointment/status/matched" 
+confirm_URL = environ.get('confirm_URL') or "http://127.0.0.1:5005/appointment" 
 
 #send patient_name, email, appointment_time to notification.py
 notification_url = environ.get('notification_URL') or "http://127.0.0.1:5003/notification" 
 
-@app.route("/confirm/all", methods=['GET'])
-def displayMatchedAppts():
+@app.route("/confirm/<string:date>", methods=['GET'])
+def displayMatchedAppts(date):
     # Invoke the appointment microservice
     print('\n-----Invoking appointments microservice-----')
-    try:
-    # do the actual work
-        result = getMatchedAppts()
-        return result, result["code"]
+    if date:
+        try:
+        # do the actual work
+            result = getMatchedAppts(date)
+            return result, result["code"]
 
-    except Exception as e:
-        # Unexpected error in code
-        pass
+        except Exception as e:
+            # Unexpected error in code
+            pass
 
-        return jsonify({
-            "code": 500,
-            "message": "appointment.py internal error"
-        }), 500
+            return jsonify({
+                "code": 500,
+                "message": "appointment.py internal error"
+            }), 500
 
     # if reached here, not a JSON request.
     return jsonify({
@@ -43,9 +47,9 @@ def displayMatchedAppts():
         "message": "Invalid JSON input: " + str(request.get_data())
     }), 400
 
-def getMatchedAppts():
+def getMatchedAppts(date):
     print('\n-----Invoking appt microservice-----')
-    matchedAppts = invoke_http(matched_URL, method='GET')
+    matchedAppts = invoke_http(matched_URL + str(date), method='GET')
     print('Matched Appts:', matchedAppts)
     return matchedAppts
 
@@ -54,11 +58,6 @@ def confirm_appointments():
     if request.is_json:
         try:
             data = request.get_json()
-
-            patient_name = data['patient_name']
-            email = data['email']
-            appt_time = data['appointment_time']
-            appt_id = data['appointment_id']
 
             # do the actual work
             result = updateConfirmDetails(data)
@@ -79,11 +78,17 @@ def updateConfirmDetails(data):
     # Invoke the appointment microservice
         # do the actual work
     #parse match into 6 separate values
-    appt_id = data['appointment_id']
     patient_name = data['patient_name']
-    doc_name = data['d_name']
-    time = data['appt_time']
-    appt_date = data['appointment_date']
+    email = data['email']
+    appt_id = data['appointment_id']
+    appt_time = data['appointment_time']
+ 
+
+    # appt_id = data['appointment_id']
+    # patient_name = data['patient_name']
+    # doc_name = data['d_name']
+    # time = data['appt_time']
+    # appt_date = data['appointment_date']
     # Invoke the appointment microservice
 
     print('\n-----Invoking appointments microservice-----')
@@ -107,7 +112,7 @@ def updateConfirmDetails(data):
     appt_details = json.dumps(details)
 
     print(appt_details)
-    updateStatus = invoke_http(matched_URL, method='PATCH', json=appt_details)
+    updateStatus = invoke_http(confirm_URL, method='PATCH', json=appt_details)
     print('Update result:', updateStatus)
 
     print('\n-----Invoking notification microservice-----')
