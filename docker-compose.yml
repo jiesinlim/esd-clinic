@@ -15,7 +15,7 @@ services:
     build:
       context: ./
       dockerfile: availability/availability.Dockerfile
-    image: marcsoh/availability:latest
+    image: jiesin/availability:latest
     restart: always
     environment:
       dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/availability
@@ -30,7 +30,7 @@ services:
     build:
       context: ./
       dockerfile: appointment/appointment.Dockerfile
-    image: marcsoh/appointment:latest
+    image: jiesin/appointment:latest
     restart: always
     environment:
       dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/appointment
@@ -45,7 +45,7 @@ services:
     build:
       context: ./
       dockerfile: match/match.Dockerfile
-    image: marcsoh/match:latest
+    image: jiesin/match:latest
     restart: always
     depends_on:
       - availability
@@ -77,7 +77,7 @@ services:
     build:
       context: ./
       dockerfile: notification/notification.Dockerfile
-    image: marcsoh/notification:latest
+    image: jiesin/notification:latest
     restart: always
     depends_on:
       - rabbitmq
@@ -94,7 +94,7 @@ services:
     build:
       context: ./
       dockerfile: notify/notify.Dockerfile
-    image: marcsoh/notify:latest
+    image: jiesin/notify:latest
     restart: always
     depends_on:
       - notification
