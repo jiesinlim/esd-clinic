@@ -109,7 +109,7 @@ def updateConfirmDetails(data):
     appt_details = json.dumps(details)
 
     print(appt_details)
-    updateStatus = invoke_http(appointment_URL, method='PATCH', json=appt_details)
+    updateStatus = invoke_http(appointment_URL + "/update", method='PATCH', json=appt_details)
     print('Update result:', updateStatus)
 
     print('\n-----Invoking notification microservice-----')
