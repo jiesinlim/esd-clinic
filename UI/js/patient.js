@@ -27,6 +27,11 @@ var app1 = new Vue({
         newEmail: "",
         newAppointmentDate: "",
         newAppointmentTime: "",
+        newDid: null,
+        newAid: null,
+        newDoctorName: null,
+        newStatus: "booked",
+        newRoom_No: null,
 
         selected_date: "",
         all_available_time_string: "",
@@ -165,7 +170,14 @@ var app1 = new Vue({
                 email: this.newEmail,
                 appointment_date: this.newAppointmentDate,
                 appointment_time: this.newAppointmentTime,
+                did: this.newDid,
+                aid: this.newAid,
+                doctor_name: this.newDoctorName,
+                status: this.newStatus,
+                room_no: this.newRoom_No,
+
             });
+            console.log(jsonData);
 
             fetch(`${get_all_URL_5005}`,{
                 method: "POST",
